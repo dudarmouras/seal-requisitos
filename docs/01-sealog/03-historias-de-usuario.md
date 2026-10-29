@@ -172,7 +172,7 @@ pedido.
 
 | # | Regra | Catálogo |
 |---|---|---|
-| RN1 | A loja edita ou cancela pelo WhatsApp até a terceirizada registrar a coleta; o limite está para confirmação. | `RN-SL-011`, `Q-SL-04` |
+| RN1 | A loja edita ou cancela pelo WhatsApp até a terceirizada registrar a coleta, e na edição altera só os itens que ainda não saíram para entrega. Pedir a alteração por código do produto ainda está em debate. | `RN-SL-011`, `Q-SL-04` |
 | RN2 | A edição passa pelas mesmas validações do pedido novo. | `RN-SL-005`, `RN-SL-006` |
 | RN3 | A autorização de entrega a outra pessoa pode ser incluída ou retirada na edição. | `RN-SL-013` |
 | RN4 | Mudança depois do despacho vai na hora para a terceirizada, com o que mudou em destaque. | `RN-SL-026` |
@@ -487,7 +487,7 @@ exportada para planilha com as mesmas colunas e filtros, mas nada exportado volt
 | RN1 | Há uma única lista de entregas, sem cópia por pessoa; toda alteração fica no histórico com autor, hora e valor anterior. | `RN-SL-020` |
 | RN2 | O status segue o ciclo da entrega; mudança fora do ciclo é recusada. | `RN-SL-021` |
 | RN3 | A lista se organiza pela data prevista e mostra a data e a hora do último registro. | `RN-SL-022` |
-| RN4 | Entrega despachada sem retorno há mais tempo que o limite combinado fica sinalizada. | `RN-SL-034`, `Q-SL-13` |
+| RN4 | Entrega despachada sem retorno fica sinalizada quando passa do prazo estimado pela terceirizada. | `RN-SL-034`, `Q-SL-13` |
 | RN5 | A lista pode ser exportada para planilha com as mesmas colunas e filtros; nada exportado volta. | `RN-SL-050` |
 | RN6 | O perfil Financeiro vê a lista sem poder alterá-la. | `RN-SL-051` |
 
@@ -590,7 +590,7 @@ solicitação; se a entrega falhar, o pedido fica sinalizado para a equipe.
 |---|---|---|
 | RN1 | O despacho leva o código, a coleta, o destinatário, o volume, a data prevista, as observações e quem pode receber. | `RN-SL-024` |
 | RN2 | Sai pela integração da terceirizada ou entra na lista do dia do portal. | `RN-SL-024` |
-| RN3 | A coleta é feita pela terceirizada na loja; as janelas de hoje estão para confirmação. | `RN-SL-025`, `Q-SL-02` |
+| RN3 | A coleta na loja é feita só pela terceirizada, hoje entre 14h e 18h; a loja não leva o volume ao galpão. | `RN-SL-025`, `Q-SL-02` |
 | RN4 | O pacote é identificado só pelo código SEALog, sem etiqueta da SEALog. | `RN-SL-027` |
 | RN5 | Retorno com código que não foi despachado para a terceirizada é recusado. | `RN-SL-027` |
 
@@ -641,7 +641,7 @@ ainda pode alterar dados do destinatário, mas a alteração fica marcada para a
 |---|---|---|
 | RN1 | Alteração ou cancelamento depois do despacho vai na hora para a terceirizada, com o que mudou em destaque. | `RN-SL-026` |
 | RN2 | A terceirizada confirma que recebeu a alteração. | `RN-SL-026` |
-| RN3 | Pela loja, a alteração só vale até a coleta; depois, só pelo atendimento. | `RN-SL-011` |
+| RN3 | Pela loja, a alteração só vale até a coleta; depois, só pelo atendimento. Na edição, só entram os itens que ainda não saíram para entrega. | `RN-SL-011` |
 | RN4 | A alteração fica no histórico, com autor, hora e valor anterior. | `RN-SL-020` |
 
 **Critérios de aceitação**
@@ -962,7 +962,7 @@ fica destacado.
 | RN1 | Toda ocorrência vira chamado no painel, com a sugestão do agente; não existe ocorrência tratada fora dele. | `RN-SL-039` |
 | RN2 | O chamado fica Pendente, Em atendimento ou Concluído. | `RN-SL-039` |
 | RN3 | Uma pessoa aprova, muda ou recusa a sugestão; o chamado registra quem, quando, a ação final e o motivo. | `RN-SL-040` |
-| RN4 | Quem aprova — atendente ou coordenador — está para confirmação. | `RN-SL-040`, `Q-SL-06` |
+| RN4 | Quem aprova é o coordenador, que é o administrador. | `RN-SL-040`, `Q-SL-06` |
 | RN5 | A loja recebe a resposta pelo WhatsApp. | `RN-SL-040`, `RN-SL-043` |
 | RN6 | Chamado sem conclusão até 19h fica destacado. | `RN-SL-046` |
 
@@ -1014,9 +1014,9 @@ guardado são decisões da SEALog.
 | # | Regra | Catálogo |
 |---|---|---|
 | RN1 | O pacote não entregue volta ao galpão da SEALog, e a chegada é registrada pelo código. | `RN-SL-041` |
-| RN2 | A janela de devolução de hoje (17h a 18h) está para confirmação com as terceirizadas. | `RN-SL-041`, `Q-SL-03` |
-| RN3 | O coordenador decide entre nova tentativa, devolver à loja, guardar aguardando instrução ou cancelar, com motivo. | `RN-SL-042` |
-| RN4 | O número de tentativas e o prazo de guarda dependem da política da SEALog. | `RN-SL-042`, `Q-SL-07` |
+| RN2 | A terceirizada devolve o pacote ao galpão no dia útil seguinte. | `RN-SL-041`, `Q-SL-03` |
+| RN3 | O coordenador decide entre nova tentativa, devolver à loja, guardar aguardando instrução ou cancelar, com motivo. Cada entrega tem duas tentativas; esgotadas, o pacote volta ao galpão e o coordenador decide. | `RN-SL-042` |
+| RN4 | O prazo de guarda do pacote no galpão ainda depende da política da SEALog. | `RN-SL-042`, `Q-SL-07` |
 | RN5 | A decisão gera aviso à loja. | `RN-SL-043` |
 
 **Critérios de aceitação**
@@ -1068,7 +1068,7 @@ chegou aparece no painel de chamados para reenvio.
 | RN2 | A decisão gera um segundo aviso. | `RN-SL-043` |
 | RN3 | Todo aviso fica registrado na entrega, com texto, hora e resultado. | `RN-SL-045` |
 | RN4 | Aviso que falhou aparece no painel para reenvio. | `RN-SL-045` |
-| RN5 | Se o destinatário também recebe aviso da SEALog está para confirmação. | `Q-SL-15` |
+| RN5 | O destinatário recebe aviso da SEALog só se algo der errado. | `Q-SL-15` |
 
 **Critérios de aceitação**
 
@@ -1269,7 +1269,7 @@ entra no painel: ela é reconhecida pelo número de WhatsApp autorizado.
 
 | # | Regra | Catálogo |
 |---|---|---|
-| RN1 | A equipe entra com usuário e senha, num de três perfis; a lista de perfis está para confirmação. | `RN-SL-051`, `Q-SL-10` |
+| RN1 | A equipe entra com usuário e senha, num de três perfis. O coordenador é o administrador e cadastra os usuários; atendente e financeiro ainda estão em confirmação. | `RN-SL-051`, `Q-SL-10` |
 | RN2 | A permissão é conferida no servidor, não só escondida na tela. | `RN-SL-051` |
 | RN3 | Depois de cinco tentativas seguidas sem sucesso, a entrada fica bloqueada por um tempo; a duração e o desbloqueio estão para confirmação. | `RN-SL-052`, `Q-SL-17` |
 | RN4 | A terceirizada entra com usuário próprio e vê só as entregas despachadas para ela. | `RN-SL-053` |
