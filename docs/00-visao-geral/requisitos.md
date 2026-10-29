@@ -42,8 +42,9 @@ a origem não traz, ela é **meta proposta** da equipe e vale até a SEALog conf
 |---|---|---|---|---|---|
 | `RF-SL-09` | Manter uma lista única de entregas, organizada pela data prevista, filtrável como planilha, com o histórico de cada alteração e a entrega sem retorno sinalizada | Despacho | RF-08 | `HU-SL-009` | `RN-SL-020`, `RN-SL-021`, `RN-SL-022`, `RN-SL-034` |
 | `RF-SL-10` | Distribuir sozinho o pedido à terceirizada da região, e levar ao coordenador o bairro que não está na tabela | Despacho | RF-12 | `HU-SL-010` | `RN-SL-017`, `RN-SL-018`, `RN-SL-023` |
-| `RF-SL-11` | Enviar à terceirizada a solicitação de coleta e entrega, com o código SEALog, pela integração ou pela lista do dia no portal | Despacho | RF-10, RF-11, RF-13 | `HU-SL-011` | `RN-SL-024`, `RN-SL-025`, `RN-SL-027` |
+| `RF-SL-11` | Enviar à terceirizada a solicitação de coleta e entrega, com o código SEALog, pela integração, pela lista do dia no portal ou pela exportação do `RF-SL-25` | Despacho | RF-10, RF-11, RF-13 | `HU-SL-011` | `RN-SL-024`, `RN-SL-025`, `RN-SL-027` |
 | `RF-SL-12` | Avisar a terceirizada, na hora, de toda alteração ou cancelamento depois do despacho | Despacho | RF-20 | `HU-SL-012` | `RN-SL-011`, `RN-SL-026` |
+| `RF-SL-25` | Exportar os pedidos de uma terceirizada, ou todos, em PDF ou planilha, para a equipe mandar pelo WhatsApp; o sistema gera o arquivo e não envia sozinho | Despacho | — | — | `RN-SL-024` |
 
 ### 1.4 Retorno da terceirizada
 
@@ -92,7 +93,7 @@ a origem não traz, ela é **meta proposta** da equipe e vale até a SEALog conf
 | RF-13 Visualização pelo motorista | Substituído pelo despacho à terceirizada (`RF-SL-11`) | O SEALog não constrói nada para o motorista |
 | RF-14, RF-15 | Mantidos, agora vindos da terceirizada (`RF-SL-13` a `RF-SL-16`) | Encontro 1 [25:39], [40:16] |
 | RF-16, RF-17, RF-18, RF-19, RF-20 | Mantidos (`RF-SL-19`, `RF-SL-17`, `RF-SL-03`, `RF-SL-12`); o RF-20 avisa a terceirizada, não o motorista | — |
-| Novos | `RF-SL-02` (acompanhar pelo WhatsApp), `RF-SL-08` (regiões), `RF-SL-15` (planilha traduzida), `RF-SL-21` (afetados por loja), `RF-SL-22`, `RF-SL-23` (financeiro) | Os casos do enunciado e o Encontro 1 |
+| Novos | `RF-SL-02` (acompanhar pelo WhatsApp), `RF-SL-08` (regiões), `RF-SL-15` (planilha traduzida), `RF-SL-21` (afetados por loja), `RF-SL-22`, `RF-SL-23` (financeiro), `RF-SL-25` (exportação para a terceirizada) | Os casos do enunciado e o Encontro 1 |
 
 ## 2. Requisitos não funcionais
 
