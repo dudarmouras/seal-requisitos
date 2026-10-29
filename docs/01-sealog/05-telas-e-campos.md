@@ -136,7 +136,7 @@ e ao complemento do pedido pendente registrado pela equipe, pedindo só o que fa
 |---|---|---|---|---|---|---|---|---|---|
 | `tamanho_volume` | Tamanho do volume | lista | texto | — | Sim | — | um dos valores de `06` §3.5 | `Entrega.tamanho_volume` | Pequeno, Médio, Grande |
 | `qtd_volumes` | Quantos volumes | campo numérico do formulário | inteiro | — | Sim | — | 1 ou mais | `Entrega.qtd_volumes` | Abre em 1 |
-| `data_desejada` | Data de entrega | seletor de data | data | — | Não | `dd/mm/aaaa` | dia útil seguinte ou depois | `Entrega.data_desejada` | Vazio vale o prazo padrão, o dia útil seguinte (`RN-SL-009`); horário de corte em `Q-SL-01` |
+| `data_desejada` | Data de entrega | seletor de data | data | — | Não | `dd/mm/aaaa` | dia útil seguinte ou depois | `Entrega.data_desejada` | Vazio vale o prazo padrão, o dia útil seguinte (`RN-SL-009`); pedido depois das 18h conta como do dia útil seguinte (`Q-SL-01`) |
 | `autorizados_receber` | Quem mais pode receber | campo de texto do formulário | texto | 200 | Não | — | — | `Entrega.autorizados_receber` | Vizinho, porteiro ou outra pessoa, com o nome (`RN-SL-013`); caso "deixar com Dona Lúcia" |
 | `observacoes` | Observações | campo de texto longo do formulário | texto | 500 | Não | — | — | `Entrega.observacoes` | Vão à terceirizada |
 
@@ -599,8 +599,8 @@ real); `RN-SL-039`, `RN-SL-043`, `RN-SL-045`, `RN-SL-046`.
 | **HUs** | `HU-SL-018` |
 
 Mostra o que o agente colheu e o que ele sugere pelo protocolo de atendimento, para a pessoa
-aprovar, mudar ou recusar. O agente nunca decide (`RN-SL-037`). Quem aprova — atendente ou
-coordenador — está em `Q-SL-06`; o protocolo, em `Q-SL-05`.
+aprovar, mudar ou recusar. O agente nunca decide (`RN-SL-037`). Quem aprova é o coordenador
+(`Q-SL-06`); não há protocolo escrito por enquanto (`Q-SL-05`).
 
 #### Blocos da página
 

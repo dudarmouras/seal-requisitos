@@ -290,7 +290,7 @@ Devolvido à loja ou Cancelado. A decisão de guardar o pacote mantém a entrega
 | Outro | Exige observação |
 
 A lista é proposta e vale igual para toda terceirizada (`RN-SL-019`). Os motivos que as
-terceirizadas já usam estão em `Q-SL-11`.
+terceirizadas já usam ficam com elas (`Q-SL-11`).
 
 ### 3.4 Tipo de chamado
 

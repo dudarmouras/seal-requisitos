@@ -906,7 +906,7 @@ relato e as fotos; os dados pessoais do destinatário não passam por ele.
 |---|---|---|
 | RN1 | A loja relata o problema a partir do acompanhamento do pedido. | `RN-SL-004`, `RN-SL-036` |
 | RN2 | O agente identifica o pedido pelo código, classifica o tipo, pede descrição e, se houver avaria, foto. | `RN-SL-036` |
-| RN3 | O agente compara o relato com o protocolo de atendimento da SEALog e escreve uma ação sugerida; o protocolo é da SEALog. | `RN-SL-037`, `Q-SL-05` |
+| RN3 | O agente compara o relato com o protocolo de atendimento e escreve uma ação sugerida. Por enquanto não há protocolo escrito: a sugestão se apoia nos dados do pedido e do relato. | `RN-SL-037`, `Q-SL-05` |
 | RN4 | O agente não decide nem responde a decisão à loja. | `RN-SL-037` |
 | RN5 | Nome, telefone e endereço do destinatário não vão ao agente; o sistema os junta ao gravar o chamado. | `RN-SL-038` |
 | RN6 | O relato vira um chamado no painel, com a sugestão. | `RN-SL-039` |

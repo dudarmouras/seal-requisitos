@@ -34,7 +34,7 @@ vê só os próprios pedidos (`RN-SL-054`).
 |---|---|---|
 | Atendimento | Segunda a sexta, 8h às 18h; sábado, 8h às 12h | Avisos à loja e acompanhamento funcionam sem atendente (`RN-SL-043`) |
 | Operação | Segunda a sábado, 7h às 19h | Chamado sem conclusão às 19h fica destacado (`RN-SL-046`) |
-| Coleta, antes da terceirização | 14h às 18h; a loja levava ao galpão até 17h | Se vale para a terceirizada: `Q-SL-02` |
-| Volta ao galpão, antes da terceirização | 17h às 18h | Se vale para a terceirizada: `Q-SL-03` |
+| Coleta, antes da terceirização | 14h às 18h; a loja levava ao galpão até 17h | Só a terceirizada coleta; a loja não leva mais ao galpão (`Q-SL-02`) |
+| Volta ao galpão, antes da terceirização | 17h às 18h | A terceirizada devolve no dia útil seguinte (`Q-SL-03`) |
 
 **Referências** — Enunciado §2; Encontro 1; Plano do agente.

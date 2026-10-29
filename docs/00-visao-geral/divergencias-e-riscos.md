@@ -51,7 +51,7 @@ saiu do escopo, `DIV-SL-02` diz o que mudou na lista da equipe, e as decisões e
 | `DIV-SL-05` | Conta e custo do WhatsApp | Pedir a conta e os modelos cedo; avisos com texto pronto no painel enquanto isso |
 | `DIV-SL-06` | Terceirizada não adotar a integração | API, portal e planilha com o mesmo padrão; entrega sem retorno sinalizada; pagamento só com comprovante |
 | `DIV-SL-07` | "A parceira diz que entregou" | Comprovante padrão obrigatório; recebedor não autorizado abre chamado |
-| `DIV-SL-08` | Dados pessoais no modelo de IA e nas fotos | O modelo não recebe dados do destinatário; guarda definida com a SEALog (`Q-SL-16`) |
+| `DIV-SL-08` | Dados pessoais no modelo de IA e nas fotos | O modelo não recebe dados do destinatário; guarda sem prazo, a rever pela LGPD (`Q-SL-16`) |
 | `DIV-SL-09` | Adoção e custo, com a meta de 400 entregas por dia | Serviços pagos por uso; entrada gradual (`Q-SL-14`) |
 
 ## 3. Perguntas que bloqueiam
@@ -60,11 +60,9 @@ As perguntas sem as quais uma parte do sistema não fecha:
 
 | Pergunta | O que bloqueia |
 |---|---|
-| `Q-SL-05` | A sugestão do agente de ocorrências: sem protocolo, ela fica genérica |
-| `Q-SL-07` | A regra formal do que volta ao galpão |
-| `Q-SL-08`, `Q-SL-09` | O valor da cobrança das lojas e do pagamento das terceirizadas |
-| `Q-SL-12` | O pedido pelo WhatsApp e o aviso proativo |
-| `Q-SL-02`, `Q-SL-03` | O que vai no despacho e a rotina do galpão |
+| `Q-SL-04` | Como a loja pede a alteração por código do produto, em lojas grandes |
+| `Q-SL-07` | O prazo de guarda do pacote no galpão |
+| `Q-SL-08`, `Q-SL-09` | O valor da cobrança das lojas e do pagamento das terceirizadas (fora da apresentação) |
 
 A lista completa está em
 [`docs/01-sealog/09-divergencias-e-lacunas.md`](../01-sealog/09-divergencias-e-lacunas.md) §3.

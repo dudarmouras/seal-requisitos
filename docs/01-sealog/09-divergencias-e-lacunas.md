@@ -23,7 +23,8 @@ fontes discordam, a reunião de 28/10/2026 manda sobre o enunciado (`fontes/READ
 **Desfecho** — vale a reunião. O SEALog não tem aplicativo do motorista, montagem de rotas nem
 etiqueta. No lugar entram o despacho pela tabela de regiões (`RN-SL-023`), o padrão único de
 retorno e comprovante (`RN-SL-019`, `RN-SL-030`) e o código SEALog como identificação do pacote
-(`RN-SL-027`). A coleta na loja passa a ser da terceirizada (`RN-SL-025`).
+(`RN-SL-027`). A coleta na loja passa a ser da terceirizada (`RN-SL-025`). O prazo de entrega ao
+cliente também é responsabilidade da terceirizada, pela resposta da SEALog a `Q-SL-12`.
 
 ### `DIV-SL-02` — Itens da lista da equipe que mudaram
 
@@ -39,7 +40,7 @@ retorno e comprovante (`RN-SL-019`, `RN-SL-030`) e o código SEALog como identif
 | RF-04 Sincronização de dados comerciais | Absorvido no RF-03: com banco único, não há o que sincronizar (`RN-SL-015`) |
 | RF-05, RF-06 Cadastro e análise de motoristas | Substituídos pelo cadastro de terceirizadas (`HU-SL-007`) |
 | RF-09 Notificação por e-mail | O aviso vai pelo WhatsApp, onde a loja já está (`RN-SL-043`) |
-| RF-10 Forma de coleta | A coleta é da terceirizada; se a loja ainda pode levar ao galpão está em `Q-SL-02` |
+| RF-10 Forma de coleta | A coleta é só da terceirizada; a loja não leva mais ao galpão (resposta da SEALog a `Q-SL-02`) |
 | RF-12 Distribuição por motorista | Vira distribuição por terceirizada, pela região (`HU-SL-010`) |
 | RF-13 Visualização pelo motorista | Vira o despacho à terceirizada, pela API ou pelo portal (`HU-SL-011`) |
 | RF-14 Ocorrências do motorista | Vira o Não entregue da terceirizada, que abre chamado (`HU-SL-013`) |
@@ -64,11 +65,11 @@ exportado volta (`RN-SL-050`).
 > agente de consulta de status.
 
 **Desfecho** — os tipos de chamado viraram atraso, não entregue, avaria, entregue no endereço
-errado, recebedor não autorizado, sem retorno e outro (`06-modelo-de-dados.md` §3.4). As ações do
-protocolo ficam para a SEALog definir (`Q-SL-05`), sem política inventada. O conteúdo enviado ao
-modelo não leva dados pessoais do destinatário (`RN-SL-038`). O agente de consulta de status não
-existe por enquanto: o acompanhamento é um botão do menu, sem IA. O mesmo vale para a coleta de CPF
-que ele faria.
+errado, recebedor não autorizado, sem retorno e outro (`06-modelo-de-dados.md` §3.4). Não há
+protocolo escrito por enquanto (`Q-SL-05`): o coordenador trata cada chamado manualmente, com a
+sugestão do agente, sem política inventada. O conteúdo enviado ao modelo não leva dados pessoais do
+destinatário (`RN-SL-038`). O agente de consulta de status não existe por enquanto: o acompanhamento
+é um botão do menu, sem IA. O mesmo vale para a coleta de CPF que ele faria.
 
 ## 2. Riscos
 
@@ -76,11 +77,13 @@ que ele faria.
 
 > **Risco:** o pedido, o acompanhamento e todos os avisos dependem da plataforma oficial do
 > WhatsApp (`INT-001`), que exige conta comercial, modelos de mensagem aprovados pela Meta e custo
-> por mensagem (`Q-SL-12`). Sem ela, o aviso proativo — a resposta ao caso "O buquê de sábado" —
-> volta a depender de uma pessoa, e uma pessoa só trabalha no horário do atendimento.
+> por mensagem. A conta comercial já existe (`Q-SL-12`). Sem a aprovação dos modelos, o aviso
+> proativo — a resposta ao caso "O buquê de sábado" — volta a depender de uma pessoa, e uma pessoa só
+> trabalha no horário do atendimento.
 
-Mitigação: pedir a conta e a aprovação dos modelos antes de tudo, como habilitador do backlog
-(`BL-SL-05`). Enquanto não sai, o painel de chamados mostra os avisos a enviar, com o texto pronto.
+Mitigação: confirmar que os modelos de mensagem estão aprovados antes de tudo, como habilitador do
+backlog (`BL-SL-05`). Enquanto não sai, o painel de chamados mostra os avisos a enviar, com o texto
+pronto.
 
 ### `DIV-SL-06` — A terceirizada não adotar a integração
 
@@ -88,8 +91,9 @@ Mitigação: pedir a conta e a aprovação dos modelos antes de tudo, como habil
 > retorno não chegar, o SEALog volta a não saber onde está a entrega.
 
 Mitigação na própria solução: três caminhos com o mesmo padrão — API, portal simples e planilha
-traduzida (`RN-SL-029`); entrega sem retorno sinalizada (`RN-SL-034`); e o pagamento só pelas
-entregas com comprovante aceito (`RN-SL-048`), que dá à terceirizada motivo para informar.
+traduzida (`RN-SL-029`); entrega sem retorno sinalizada depois do prazo estimado pela terceirizada
+(`RN-SL-034`); e o pagamento só pelas entregas com comprovante aceito (`RN-SL-048`), que dá à
+terceirizada motivo para informar.
 
 ### `DIV-SL-07` — "A parceira diz que entregou e o destinatário diz que não"
 
@@ -99,8 +103,8 @@ entregas com comprovante aceito (`RN-SL-048`), que dá à terceirizada motivo pa
 
 Mitigação: o comprovante padrão é obrigatório para o Entregue valer (`RN-SL-030`); o recebedor que
 não é o destinatário nem pessoa autorizada abre chamado (`RN-SL-031`); a loja relata pelo WhatsApp
-e o chamado já traz o comprovante (`HU-SL-017`). Se a foto precisa de requisito mínimo — mostrar o
-pacote, a porta, o número — fica para a SEALog (`Q-SL-11`).
+e o chamado já traz o comprovante (`HU-SL-017`). Os motivos de não entrega e a exigência de foto
+ficam com a terceirizada (resposta da SEALog a `Q-SL-11`).
 
 ### `DIV-SL-08` — Dados pessoais no modelo de IA e nas fotos
 
@@ -109,8 +113,11 @@ pacote, a porta, o número — fica para a SEALog (`Q-SL-11`).
 > cuidado com dados sensíveis na IA (Planejamento da equipe).
 
 O modelo recebe só o código, o tipo, o relato e as fotos que a própria loja mandou (`RN-SL-038`).
-As fotos ficam no armazenamento do SEALog, com acesso por perfil. O prazo de guarda é da SEALog
-(`Q-SL-16`), seguindo a LGPD (Lei 13.709/2018).
+As fotos ficam no armazenamento do SEALog, com acesso por perfil.
+
+> **Risco aberto:** a SEALog respondeu que as fotos e os dados do destinatário ficam guardados sem
+> prazo (`Q-SL-16`). A LGPD (Lei 13.709/2018) pede finalidade e prazo definidos para esses dados.
+> A resposta precisa ser revista antes de qualquer uso real.
 
 ### `DIV-SL-09` — Adoção e custo
 
@@ -120,30 +127,38 @@ As fotos ficam no armazenamento do SEALog, com acesso por perfil. O prazo de gua
 > [23:40]).
 
 A solução usa serviços pagos por uso e não pede nada novo à loja. A entrada é gradual
-([`adocao-gradual`](../00-visao-geral/adocao-gradual.md)). Quanto tempo a planilha convive com o
-sistema está em `Q-SL-14`.
+([`adocao-gradual`](../00-visao-geral/adocao-gradual.md)): a planilha sai aos poucos, à medida que
+cada terceirizada é formalizada e passa a enviar os dados direto para o banco e o painel (resposta
+da SEALog a `Q-SL-14`). Quanto tempo a planilha convive com o sistema segue em aberto em `Q-SL-14`.
 
 ## 3. Perguntas à SEALog
 
+### 3.1 Em aberto
+
 | ID | Pergunta | Por que importa | Onde afeta |
 |---|---|---|---|
-| `Q-SL-01` | A partir de que horário o pedido passa para o dia útil seguinte? | O prazo padrão é o dia útil seguinte (Enunciado §2), mas sem horário de corte não se sabe a data prevista do pedido feito à noite | `RN-SL-009` |
-| `Q-SL-02` | A coleta entre 14h e 18h vale para a terceirizada? A loja ainda pode levar o volume ao galpão da SEALog, ou à terceirizada? | Define o que vai no despacho e a lista da equipe (RF-10) | `RN-SL-025` |
-| `Q-SL-03` | A volta ao galpão entre 17h e 18h vale para a terceirizada? Em quanto tempo ela devolve o pacote não entregue? | Define a rotina do galpão e quando a decisão pode ser tomada | `RN-SL-041` |
-| `Q-SL-04` | Até quando a loja pode editar ou cancelar o pedido pelo WhatsApp? A proposta é até a coleta | Depois da coleta, a mudança passa pela terceirizada | `RN-SL-011` |
-| `Q-SL-05` | Qual é o protocolo de atendimento: o que a SEALog faz em cada tipo de ocorrência (reentrega, desconto, cobrança da terceirizada)? | É a base da sugestão do agente | `RN-SL-037`; `INT-004` |
-| `Q-SL-06` | Quem aprova o chamado: o atendente ou o coordenador? | Define o perfil que trata o painel de chamados | `RN-SL-040` |
-| `Q-SL-07` | Quantas tentativas uma entrega pode ter? Por quanto tempo o pacote fica guardado no galpão? O que acontece depois? | É a "regra formal" que hoje não existe (Enunciado §2) | `RN-SL-042` |
-| `Q-SL-08` | Qual é a tabela de preços das lojas? Tentativa sem sucesso e devolução são cobradas? | Sem ela a cobrança não tem valor | `RN-SL-047` |
-| `Q-SL-09` | Quanto a SEALog paga à terceirizada por entrega? Paga tentativa e devolução? Há desconto por entrega sem comprovante? | Sem ela o pagamento não tem valor | `RN-SL-048` |
-| `Q-SL-10` | Os perfis da equipe são atendente, coordenador e financeiro? Quem era analista vira atendente? Quem cadastra os usuários? | Define a matriz de permissões | `RN-SL-051`; `01-atores-e-permissoes.md` |
-| `Q-SL-11` | Que motivos de não entrega as terceirizadas já usam? A foto do comprovante precisa mostrar algo específico? | A lista e o padrão valem para todas as terceirizadas | `06-modelo-de-dados.md` §3.3; `RN-SL-030` |
-| `Q-SL-12` | A SEALog tem conta comercial na plataforma oficial do WhatsApp? Quem paga as mensagens? | O pedido e o aviso proativo dependem dela | `INT-001`; `DIV-SL-05` |
-| `Q-SL-13` | Depois de quanto tempo sem retorno da terceirizada uma entrega deve ser sinalizada? | Define o alerta de entrega parada | `RN-SL-034` |
-| `Q-SL-14` | Como será a transição: por quanto tempo planilha e sistema convivem, e com qual terceirizada se começa? | Adoção é risco | `DIV-SL-09` |
-| `Q-SL-15` | O destinatário recebe algum aviso da SEALog, ou só a loja? | Hoje o consumidor fala com a loja (Enunciado §2) | `00-visao-geral.md` §3 |
-| `Q-SL-16` | Por quanto tempo as fotos do comprovante e os dados do destinatário devem ser guardados? | Exigência da LGPD e custo de armazenamento | `DIV-SL-08` |
-| `Q-SL-17` | Por quanto tempo a entrada fica bloqueada depois de cinco tentativas? Quem desbloqueia? | Ponto a detalhar da lista da equipe (RNF-01) | `RN-SL-052` |
+| `Q-SL-04` | Pedir a alteração por código do produto ou pela lista de todos os itens editáveis? A lista da proposta é a dos itens que não saíram para entrega. | Define a tela de edição; a opção por código evita listas enormes em lojas grandes | `RN-SL-011` |
+| `Q-SL-07` | Por quanto tempo o pacote fica guardado no galpão, e o que acontece depois do prazo? | Sem prazo de guarda, o pacote não tem fim definido no galpão | `RN-SL-042` |
+| `Q-SL-08` | Qual é a tabela de preços das lojas? | Fora da apresentação: a SEALog não tem a tabela agora | `RN-SL-047` |
+| `Q-SL-09` | Quanto a SEALog paga à terceirizada por entrega? Paga tentativa e devolução? | Fora da apresentação: o valor é por contrato, cadastrado em `HU-SL-007` | `RN-SL-048` |
+| `Q-SL-10` | Os perfis atendente e financeiro são confirmados? | Define a matriz de permissões | `RN-SL-051`; `01-atores-e-permissoes.md` |
+| `Q-SL-14` | Por quanto tempo planilha e sistema convivem, e com qual terceirizada se começa? | Adoção é risco | `DIV-SL-09` |
+| `Q-SL-16` | Por quanto tempo as fotos do comprovante e os dados do destinatário devem ser guardados? A resposta "pra sempre" precisa ser revista pela LGPD. | Exigência da LGPD e custo de armazenamento | `DIV-SL-08` |
+| `Q-SL-17` | Quanto tempo a entrada da equipe fica bloqueada depois de cinco tentativas erradas, e quem desbloqueia? A pergunta anterior não ficou clara. | Ponto a detalhar da lista da equipe (RNF-01) | `RN-SL-052` |
+
+### 3.2 Respondidas em 29/10/2026
+
+| ID | Pergunta | Resposta | Onde afeta |
+|---|---|---|---|
+| `Q-SL-01` | A partir de que horário o pedido passa para o dia útil seguinte? | Corte às 18h: pedido depois disso conta como do dia útil seguinte | `RN-SL-009` |
+| `Q-SL-02` | A coleta entre 14h e 18h vale para a terceirizada? A loja ainda pode levar o volume ao galpão? | Só a terceirizada coleta; a loja não leva ao galpão | `RN-SL-025` |
+| `Q-SL-03` | Quando a terceirizada devolve o pacote não entregue ao galpão? | No dia útil seguinte | `RN-SL-041` |
+| `Q-SL-05` | Qual é o protocolo de atendimento para cada tipo de ocorrência? | Não há protocolo por enquanto; o coordenador trata cada chamado manualmente, com a sugestão do agente | `RN-SL-037`; `INT-004` |
+| `Q-SL-06` | Quem aprova o chamado: o atendente ou o coordenador? | O coordenador, que é o administrador | `RN-SL-040` |
+| `Q-SL-11` | Que motivos de não entrega e que foto de comprovante valem como padrão? | Não é da SEALog: fica com a terceirizada | `06-modelo-de-dados.md` §3.3; `RN-SL-030` |
+| `Q-SL-12` | A SEALog tem conta comercial na plataforma oficial do WhatsApp? Quem paga as mensagens? | A conta já existe; a SEALog paga as mensagens. O prazo de entrega ao cliente é da terceirizada | `INT-001`; `DIV-SL-05` |
+| `Q-SL-13` | Depois de quanto tempo sem retorno a entrega deve ser sinalizada? | Não há alerta enquanto a entrega estiver dentro do prazo estimado pela terceirizada; passou do prazo, fica sinalizada | `RN-SL-034` |
+| `Q-SL-15` | O destinatário recebe algum aviso da SEALog, ou só a loja? | Só se algo der errado | `00-visao-geral.md` §3 |
 
 ## Cobertura da conferência com a fonte
 

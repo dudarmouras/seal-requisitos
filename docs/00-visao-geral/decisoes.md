@@ -173,7 +173,7 @@ aplicativo do motorista e a montagem de rotas, está nas alternativas descartada
 | **Contexto** | O planejamento da equipe previa IA no roteamento e numa recomendação a partir do motivo da devolução, com cuidado com dados sensíveis. O plano do agente detalhou dois agentes: um de consulta de status e um de ocorrências |
 | **Decisão** | Fica só o agente de ocorrências. A loja relata o problema pelo WhatsApp; o agente classifica o tipo, colhe o relato e as fotos, compara com o protocolo de atendimento da SEALog e abre um chamado no painel com uma ação sugerida. Uma pessoa aprova, muda ou recusa. O agente não recebe nome, telefone nem endereço |
 | **Alternativas descartadas** | Agente de consulta de status: o botão de acompanhar responde do banco, sem IA, e sem custo de modelo — fica fora por enquanto. IA decidindo sozinha: a decisão envolve dinheiro e relação com a loja. Roteamento por IA: substituído pela tabela de regiões (`DEC-SL-05`) |
-| **Consequências** | Depende de a SEALog escrever o protocolo de atendimento (`Q-SL-05`) e de definir quem aprova (`Q-SL-06`). Sem protocolo, o agente só classifica e resume |
+| **Consequências** | Não há protocolo de atendimento escrito por enquanto (`Q-SL-05`): o agente se apoia nos dados do pedido e do relato, e o coordenador, que é quem aprova (`Q-SL-06`), trata cada chamado |
 | **Referências** | `RN-SL-036` a `RN-SL-040`, `HU-SL-017`, `HU-SL-018`, `DIV-SL-04`, `DIV-SL-08`; Plano do agente |
 
 ### DEC-SL-11 — Avisos pelo WhatsApp, não por e-mail
@@ -186,7 +186,7 @@ aplicativo do motorista e a montagem de rotas, está nas alternativas descartada
 | **Contexto** | A lista da equipe previa notificação por e-mail (RF-09). No caso "O buquê de sábado", a floricultura soube do problema pela consumidora, uma hora e meia depois do aviso do motorista (Enunciado §8). O atendimento vai só até 12h no sábado (Enunciado §2) |
 | **Decisão** | Todo aviso à loja vai pela mesma conversa do WhatsApp em que ela pede: pedido recebido, problema na entrega, decisão e aviso em lote. O aviso sai sozinho, sem depender do horário do atendimento |
 | **Alternativas descartadas** | E-mail: a loja pequena não acompanha e-mail ao longo do dia. Plantão no atendimento: custo de pessoal e continua dependendo de alguém ver o grupo |
-| **Consequências** | Aviso iniciado pela empresa usa modelo de mensagem aprovado e tem custo por mensagem (`DEC-SL-15`). Se o destinatário também recebe aviso está em `Q-SL-15` |
+| **Consequências** | Aviso iniciado pela empresa usa modelo de mensagem aprovado e tem custo por mensagem (`DEC-SL-15`). O destinatário recebe aviso só se algo der errado (`Q-SL-15`) |
 | **Referências** | `RN-SL-043` a `RN-SL-045`, `HU-SL-020`, `HU-SL-021`, `DIV-SL-02`, `DIV-SL-05` |
 
 ### DEC-SL-18 — Política de tentativas, guarda no galpão, preço e pagamento
@@ -281,7 +281,7 @@ aplicativo do motorista e a montagem de rotas, está nas alternativas descartada
 | **Contexto** | O menu, o formulário e os avisos automáticos dependem de envio e recebimento programados no número da SEALog (`DEC-SL-02`, `DEC-SL-11`) |
 | **Decisão** | Usar a plataforma oficial de mensagens da Meta, com formulários do WhatsApp para o pedido e modelos de mensagem de utilidade aprovados para os avisos. O pedido de aprovação dos modelos começa na primeira release, porque o prazo é da Meta |
 | **Alternativas descartadas** | Automação não oficial do WhatsApp: risco de bloqueio do número. SMS ou e-mail: a loja não está lá |
-| **Consequências** | Custo por mensagem iniciada pela empresa; a resposta dentro da janela de atendimento aberta pela loja não é cobrada, a conferir na tabela vigente. Se a SEALog já tem conta comercial e quem paga está em `Q-SL-12` |
+| **Consequências** | Custo por mensagem iniciada pela empresa; a resposta dentro da janela de atendimento aberta pela loja não é cobrada, a conferir na tabela vigente. A SEALog já tem conta comercial e paga as mensagens (`Q-SL-12`) |
 | **Referências** | `INT-001`, `RN-SL-043`, `DIV-SL-05`, `Q-SL-12` |
 
 ### DEC-SL-21 — Back end em Python com FastAPI, banco no Supabase e painel em React

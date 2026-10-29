@@ -26,8 +26,8 @@ ordem combina quatro critérios (`DEC-SL-20`):
 A **prioridade da HU** (Alta, Média), escrita em cada história, mede o valor para quem usa. A
 **ordem do backlog** soma a ela o esforço e a dependência, e por isso as duas podem divergir. Os
 fechamentos (`HU-SL-022`, `HU-SL-023`) são Média na história, mas Must na R3: são a razão de ser da
-release. O agente de ocorrências (`HU-SL-017`) é Alta, mas fica na R2: depende do protocolo de
-atendimento, que a SEALog ainda vai escrever (`Q-SL-05`).
+release. O agente de ocorrências (`HU-SL-017`) é Alta, mas fica na R2: a entrega depende do
+mapeamento do modelo, e não de um protocolo escrito, que a SEALog não tem por enquanto (`Q-SL-05`).
 
 As camadas sozinhas não definem a ordem. Antes de começar a tela de uma release, a API e o banco
 dela precisam existir; por isso a base técnica (`BL-SL-33`) e o canal do WhatsApp (`BL-SL-05`)
@@ -81,7 +81,7 @@ dia a dia. Cada uma corresponde a uma fase da adoção gradual.
 
 | ID | Ordem | Camada | Item | HUs | MoSCoW | Release | Valor | Esforço | Depende de | Por quê |
 |---|---|---|---|---|---|---|---|---|---|---|
-| `BL-SL-19` | 25 | Negócio | Protocolo de atendimento escrito com a SEALog | — | Must | R2 | Alto | M | — | Sem protocolo, o agente não tem com o que comparar (`Q-SL-05`) |
+| `BL-SL-19` | 25 | Negócio | Protocolo de atendimento escrito com a SEALog, se a SEALog quiser escrevê-lo | — | Must | R2 | Alto | M | — | Sem protocolo escrito, o agente se apoia nos dados do pedido e do relato (`Q-SL-05`) |
 | `BL-SL-20` | 26 | Front | Painel de chamados | `HU-SL-018` | Must | R2 | Alto | M | `BL-SL-13` | Nenhuma ocorrência tratada fora do painel; resolve o caso "O buquê de sábado" |
 | `BL-SL-40` | 27 | Agente | Chamado aberto pela API para o agente de ocorrências, com chave própria | — | Must | R2 | Alto | M | `BL-SL-20`, `BL-SL-34` | O agente abre e lê chamados só pela API, nunca direto no banco (`RNF-SL-11`) |
 | `BL-SL-23` | 28 | Agente | Relato de problema com o agente de ocorrências | `HU-SL-017` | Must | R2 | Alto | G | `BL-SL-19`, `BL-SL-40` | A loja relata a qualquer hora e o chamado chega com sugestão (`DEC-SL-10`) |

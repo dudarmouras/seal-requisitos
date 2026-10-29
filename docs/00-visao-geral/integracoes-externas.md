@@ -32,7 +32,7 @@ com a loja e abre o chamado.
 
 | Integração | Pergunta |
 |---|---|
-| `INT-001` | Conta comercial, modelos aprovados e quem paga as mensagens (`Q-SL-12`); risco em `DIV-SL-05` |
+| `INT-001` | Conta comercial já existe e a SEALog paga as mensagens (`Q-SL-12`); modelos aprovados pela Meta a confirmar; risco em `DIV-SL-05` |
 | `INT-002` | Terceirizada que não adota a API (`DIV-SL-06`) |
 | `INT-004` | Protocolo de atendimento da SEALog (`Q-SL-05`); dados pessoais e modelo de IA (`DIV-SL-08`) |
 

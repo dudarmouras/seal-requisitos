@@ -1584,7 +1584,7 @@
         },
         {
           "num": "RN3",
-          "text": "O agente compara o relato com o protocolo de atendimento da SEALog e escreve uma ação sugerida; o protocolo é da SEALog.",
+          "text": "O agente compara o relato com o protocolo de atendimento e escreve uma ação sugerida. Por enquanto não há protocolo escrito: a sugestão se apoia nos dados do pedido e do relato.",
           "catalog": "RN-SL-037, Q-SL-05"
         },
         {
@@ -4055,7 +4055,7 @@
                 "dia útil seguinte ou depois"
               ],
               "dbSource": "Entrega.data_desejada",
-              "notes": "Vazio vale o prazo padrão, o dia útil seguinte (`RN-SL-009`); horário de corte em `Q-SL-01`"
+              "notes": "Vazio vale o prazo padrão, o dia útil seguinte (`RN-SL-009`); pedido depois das 18h conta como do dia útil seguinte (`Q-SL-01`)"
             },
             {
               "field": "autorizados_receber",
@@ -4107,7 +4107,7 @@
           "notes": "Só no pedido pendente; pede só os campos de `Entrega.campos_pendentes` (`MSG-SL-013`)"
         }
       ],
-      "markdown": "| | |\n|---|---|\n| **Rota legada** | Hoje: mensagem livre no WhatsApp, conferida à mão pela atendente |\n| **Rota proposta** | — (formulário do WhatsApp, dentro da conversa) |\n| **Perfis** | Loja, pelo número autorizado |\n| **HUs** | `HU-SL-001`, `HU-SL-003`, `HU-SL-004` |\n\nO formulário abre dentro da conversa, sem aplicativo e sem conta. Não envia sem os dados\nobrigatórios (`RN-SL-006`). O mesmo formulário serve à edição, com os dados do pedido preenchidos,\ne ao complemento do pedido pendente registrado pela equipe, pedindo só o que falta.\n\n#### Destinatário\n\n| Campo | Rótulo | Controle | Tipo | Tam. | Obrig. | Máscara | Validações | Origem no banco | Observações |\n|---|---|---|---|---|---|---|---|---|---|\n| `nome_destinatario` | Nome de quem recebe | campo de texto do formulário | texto | 120 | Sim | — | não vazio (`MSG-SL-005`) | `Entrega.nome_destinatario` | — |\n| `telefone_destinatario` | Telefone de quem recebe | campo de texto do formulário | texto | 11 | Sim | `(00) 00000-0000` | DDD e 10 ou 11 dígitos (`RN-SL-007`, `MSG-SL-004`) | `Entrega.telefone_destinatario` | Guardado só com dígitos |\n\n#### Endereço\n\n| Campo | Rótulo | Controle | Tipo | Tam. | Obrig. | Máscara | Validações | Origem no banco | Observações |\n|---|---|---|---|---|---|---|---|---|---|\n| `rua` | Rua | campo de texto do formulário | texto | 150 | Sim | — | não vazio (`MSG-SL-005`) | `Entrega.rua` | — |\n| `numero` | Número | campo de texto do formulário | texto | 10 | Sim, salvo \"Sem número\" | — | obrigatório sem a marca (`RN-SL-008`, `MSG-SL-003`) | `Entrega.numero` | Texto, para aceitar \"120A\" |\n| `sem_numero` | Sem número | caixa de marcação | booleano | — | Não | — | marcada torna o ponto de referência obrigatório | `Entrega.sem_numero` | Caso do Sr. Paulo (Enunciado §8) |\n| `complemento` | Complemento | campo de texto do formulário | texto | 80 | Sim, salvo \"Sem complemento\" | — | obrigatório sem a marca (`MSG-SL-005`) | `Entrega.complemento` | Apartamento, bloco, sala |\n| `sem_complemento` | Sem complemento | caixa de marcação | booleano | — | Não | — | — | `Entrega.sem_complemento` | — |\n| `bairro` | Bairro | campo de texto do formulário | texto | 80 | Sim | — | não vazio | `Entrega.bairro` | Define a terceirizada pela tabela de regiões (`RN-SL-023`) |\n| `cidade` | Cidade | lista | texto | 80 | Sim | — | não vazio | `Entrega.cidade` | Abre com a cidade da loja |\n| `ponto_referencia` | Ponto de referência | campo de texto do formulário | texto | 150 | Sim, com \"Sem número\" | — | obrigatório quando `sem_numero` (`MSG-SL-005`) | `Entrega.ponto_referencia` | — |\n\n#### Entrega\n\n| Campo | Rótulo | Controle | Tipo | Tam. | Obrig. | Máscara | Validações | Origem no banco | Observações |\n|---|---|---|---|---|---|---|---|---|---|\n| `tamanho_volume` | Tamanho do volume | lista | texto | — | Sim | — | um dos valores de `06` §3.5 | `Entrega.tamanho_volume` | Pequeno, Médio, Grande |\n| `qtd_volumes` | Quantos volumes | campo numérico do formulário | inteiro | — | Sim | — | 1 ou mais | `Entrega.qtd_volumes` | Abre em 1 |\n| `data_desejada` | Data de entrega | seletor de data | data | — | Não | `dd/mm/aaaa` | dia útil seguinte ou depois | `Entrega.data_desejada` | Vazio vale o prazo padrão, o dia útil seguinte (`RN-SL-009`); horário de corte em `Q-SL-01` |\n| `autorizados_receber` | Quem mais pode receber | campo de texto do formulário | texto | 200 | Não | — | — | `Entrega.autorizados_receber` | Vizinho, porteiro ou outra pessoa, com o nome (`RN-SL-013`); caso \"deixar com Dona Lúcia\" |\n| `observacoes` | Observações | campo de texto longo do formulário | texto | 500 | Não | — | — | `Entrega.observacoes` | Vão à terceirizada |\n\n#### Ações da tela\n\n| Ação | Controle | Quem pode | Observações |\n|---|---|---|---|\n| Enviar pedido | botão do formulário | Loja | Só com todos os obrigatórios; pedido igual pede confirmação (`MSG-SL-006`, `RN-SL-010`); recebido, `MSG-SL-007` |\n| Salvar alteração | botão do formulário | Loja | Só na edição, até a coleta; confirma com `MSG-SL-011` e avisa a terceirizada se já despachado (`RN-SL-026`) |\n| Completar pedido | botão do formulário | Loja | Só no pedido pendente; pede só os campos de `Entrega.campos_pendentes` (`MSG-SL-013`) |\n\n**Referências** — Enunciado §2, §8; Encontro 1 [07:35], [35:39], [43:19]; `RN-SL-005` a\n`RN-SL-011`, `RN-SL-013`.\n\n---"
+      "markdown": "| | |\n|---|---|\n| **Rota legada** | Hoje: mensagem livre no WhatsApp, conferida à mão pela atendente |\n| **Rota proposta** | — (formulário do WhatsApp, dentro da conversa) |\n| **Perfis** | Loja, pelo número autorizado |\n| **HUs** | `HU-SL-001`, `HU-SL-003`, `HU-SL-004` |\n\nO formulário abre dentro da conversa, sem aplicativo e sem conta. Não envia sem os dados\nobrigatórios (`RN-SL-006`). O mesmo formulário serve à edição, com os dados do pedido preenchidos,\ne ao complemento do pedido pendente registrado pela equipe, pedindo só o que falta.\n\n#### Destinatário\n\n| Campo | Rótulo | Controle | Tipo | Tam. | Obrig. | Máscara | Validações | Origem no banco | Observações |\n|---|---|---|---|---|---|---|---|---|---|\n| `nome_destinatario` | Nome de quem recebe | campo de texto do formulário | texto | 120 | Sim | — | não vazio (`MSG-SL-005`) | `Entrega.nome_destinatario` | — |\n| `telefone_destinatario` | Telefone de quem recebe | campo de texto do formulário | texto | 11 | Sim | `(00) 00000-0000` | DDD e 10 ou 11 dígitos (`RN-SL-007`, `MSG-SL-004`) | `Entrega.telefone_destinatario` | Guardado só com dígitos |\n\n#### Endereço\n\n| Campo | Rótulo | Controle | Tipo | Tam. | Obrig. | Máscara | Validações | Origem no banco | Observações |\n|---|---|---|---|---|---|---|---|---|---|\n| `rua` | Rua | campo de texto do formulário | texto | 150 | Sim | — | não vazio (`MSG-SL-005`) | `Entrega.rua` | — |\n| `numero` | Número | campo de texto do formulário | texto | 10 | Sim, salvo \"Sem número\" | — | obrigatório sem a marca (`RN-SL-008`, `MSG-SL-003`) | `Entrega.numero` | Texto, para aceitar \"120A\" |\n| `sem_numero` | Sem número | caixa de marcação | booleano | — | Não | — | marcada torna o ponto de referência obrigatório | `Entrega.sem_numero` | Caso do Sr. Paulo (Enunciado §8) |\n| `complemento` | Complemento | campo de texto do formulário | texto | 80 | Sim, salvo \"Sem complemento\" | — | obrigatório sem a marca (`MSG-SL-005`) | `Entrega.complemento` | Apartamento, bloco, sala |\n| `sem_complemento` | Sem complemento | caixa de marcação | booleano | — | Não | — | — | `Entrega.sem_complemento` | — |\n| `bairro` | Bairro | campo de texto do formulário | texto | 80 | Sim | — | não vazio | `Entrega.bairro` | Define a terceirizada pela tabela de regiões (`RN-SL-023`) |\n| `cidade` | Cidade | lista | texto | 80 | Sim | — | não vazio | `Entrega.cidade` | Abre com a cidade da loja |\n| `ponto_referencia` | Ponto de referência | campo de texto do formulário | texto | 150 | Sim, com \"Sem número\" | — | obrigatório quando `sem_numero` (`MSG-SL-005`) | `Entrega.ponto_referencia` | — |\n\n#### Entrega\n\n| Campo | Rótulo | Controle | Tipo | Tam. | Obrig. | Máscara | Validações | Origem no banco | Observações |\n|---|---|---|---|---|---|---|---|---|---|\n| `tamanho_volume` | Tamanho do volume | lista | texto | — | Sim | — | um dos valores de `06` §3.5 | `Entrega.tamanho_volume` | Pequeno, Médio, Grande |\n| `qtd_volumes` | Quantos volumes | campo numérico do formulário | inteiro | — | Sim | — | 1 ou mais | `Entrega.qtd_volumes` | Abre em 1 |\n| `data_desejada` | Data de entrega | seletor de data | data | — | Não | `dd/mm/aaaa` | dia útil seguinte ou depois | `Entrega.data_desejada` | Vazio vale o prazo padrão, o dia útil seguinte (`RN-SL-009`); pedido depois das 18h conta como do dia útil seguinte (`Q-SL-01`) |\n| `autorizados_receber` | Quem mais pode receber | campo de texto do formulário | texto | 200 | Não | — | — | `Entrega.autorizados_receber` | Vizinho, porteiro ou outra pessoa, com o nome (`RN-SL-013`); caso \"deixar com Dona Lúcia\" |\n| `observacoes` | Observações | campo de texto longo do formulário | texto | 500 | Não | — | — | `Entrega.observacoes` | Vão à terceirizada |\n\n#### Ações da tela\n\n| Ação | Controle | Quem pode | Observações |\n|---|---|---|---|\n| Enviar pedido | botão do formulário | Loja | Só com todos os obrigatórios; pedido igual pede confirmação (`MSG-SL-006`, `RN-SL-010`); recebido, `MSG-SL-007` |\n| Salvar alteração | botão do formulário | Loja | Só na edição, até a coleta; confirma com `MSG-SL-011` e avisa a terceirizada se já despachado (`RN-SL-026`) |\n| Completar pedido | botão do formulário | Loja | Só no pedido pendente; pede só os campos de `Entrega.campos_pendentes` (`MSG-SL-013`) |\n\n**Referências** — Enunciado §2, §8; Encontro 1 [07:35], [35:39], [43:19]; `RN-SL-005` a\n`RN-SL-011`, `RN-SL-013`.\n\n---"
     },
     {
       "docId": "TL-SL-004",
@@ -5471,7 +5471,7 @@
           "notes": "Em Não entregue, abre `TL-SL-014` para a decisão do coordenador"
         }
       ],
-      "markdown": "| | |\n|---|---|\n| **Rota legada** | Hoje: o coordenador decide caso a caso, sem regra e sem registro |\n| **Rota proposta** | `/chamados/{id}` |\n| **Perfis** | Atendente, Coordenador |\n| **HUs** | `HU-SL-018` |\n\nMostra o que o agente colheu e o que ele sugere pelo protocolo de atendimento, para a pessoa\naprovar, mudar ou recusar. O agente nunca decide (`RN-SL-037`). Quem aprova — atendente ou\ncoordenador — está em `Q-SL-06`; o protocolo, em `Q-SL-05`.\n\n#### Blocos da página\n\n| Coluna | Rótulo | Origem | Observações |\n|---|---|---|---|\n| Pedido | Pedido e loja | `Entrega.codigo`, `Loja.nome` | Com o status e a terceirizada |\n| Relato | O que aconteceu | `Chamado.descricao` | — |\n| Conversa | Resumo da conversa | `Chamado.resumo_conversa` | Só na origem Loja |\n| Fotos | Fotos | `Chamado.fotos` | — |\n| Sugestão | Ação sugerida pelo agente | `Chamado.acao_sugerida` | Com a regra do protocolo que a justifica |\n| Contato | Contato da loja | `Chamado.telefone_loja` | Juntado pelo sistema; não vai ao agente (`RN-SL-038`) |\n\n#### Decisão\n\n| Campo | Rótulo | Controle | Tipo | Tam. | Obrig. | Máscara | Validações | Origem no banco | Observações |\n|---|---|---|---|---|---|---|---|---|---|\n| `acao_final` | Ação | text, preenchido com a sugestão | texto | 500 | Sim | — | não vazio | `Chamado.acao_final` | Aprovar mantém o texto do agente |\n| `motivo_decisao` | Motivo | text | texto | 300 | Sim, ao mudar ou recusar | — | não vazio | `Chamado.motivo_decisao` | — |\n| `resposta_loja` | Resposta à loja | textarea | texto | 500 | Sim | — | não vazio | `Aviso.texto` | Vai pelo WhatsApp (`MSG-SL-023`) |\n\n#### Ações da tela\n\n| Ação | Controle | Quem pode | Observações |\n|---|---|---|---|\n| Aprovar | botão | Atendente, Coordenador | Grava a sugestão como ação final, conclui o chamado e avisa a loja (`RN-SL-040`) |\n| Mudar a ação | botão | Atendente, Coordenador | Exige o motivo; conclui e avisa a loja |\n| Recusar | botão | Atendente, Coordenador | Exige o motivo; conclui sem ação e avisa a loja |\n| Mandar para o galpão | link | Atendente, Coordenador | Em Não entregue, abre `TL-SL-014` para a decisão do coordenador |\n\n**Referências** — Plano do agente; `RN-SL-036` a `RN-SL-040`; `Q-SL-05`, `Q-SL-06`.\n\n---"
+      "markdown": "| | |\n|---|---|\n| **Rota legada** | Hoje: o coordenador decide caso a caso, sem regra e sem registro |\n| **Rota proposta** | `/chamados/{id}` |\n| **Perfis** | Atendente, Coordenador |\n| **HUs** | `HU-SL-018` |\n\nMostra o que o agente colheu e o que ele sugere pelo protocolo de atendimento, para a pessoa\naprovar, mudar ou recusar. O agente nunca decide (`RN-SL-037`). Quem aprova é o coordenador\n(`Q-SL-06`); não há protocolo escrito por enquanto (`Q-SL-05`).\n\n#### Blocos da página\n\n| Coluna | Rótulo | Origem | Observações |\n|---|---|---|---|\n| Pedido | Pedido e loja | `Entrega.codigo`, `Loja.nome` | Com o status e a terceirizada |\n| Relato | O que aconteceu | `Chamado.descricao` | — |\n| Conversa | Resumo da conversa | `Chamado.resumo_conversa` | Só na origem Loja |\n| Fotos | Fotos | `Chamado.fotos` | — |\n| Sugestão | Ação sugerida pelo agente | `Chamado.acao_sugerida` | Com a regra do protocolo que a justifica |\n| Contato | Contato da loja | `Chamado.telefone_loja` | Juntado pelo sistema; não vai ao agente (`RN-SL-038`) |\n\n#### Decisão\n\n| Campo | Rótulo | Controle | Tipo | Tam. | Obrig. | Máscara | Validações | Origem no banco | Observações |\n|---|---|---|---|---|---|---|---|---|---|\n| `acao_final` | Ação | text, preenchido com a sugestão | texto | 500 | Sim | — | não vazio | `Chamado.acao_final` | Aprovar mantém o texto do agente |\n| `motivo_decisao` | Motivo | text | texto | 300 | Sim, ao mudar ou recusar | — | não vazio | `Chamado.motivo_decisao` | — |\n| `resposta_loja` | Resposta à loja | textarea | texto | 500 | Sim | — | não vazio | `Aviso.texto` | Vai pelo WhatsApp (`MSG-SL-023`) |\n\n#### Ações da tela\n\n| Ação | Controle | Quem pode | Observações |\n|---|---|---|---|\n| Aprovar | botão | Atendente, Coordenador | Grava a sugestão como ação final, conclui o chamado e avisa a loja (`RN-SL-040`) |\n| Mudar a ação | botão | Atendente, Coordenador | Exige o motivo; conclui e avisa a loja |\n| Recusar | botão | Atendente, Coordenador | Exige o motivo; conclui sem ação e avisa a loja |\n| Mandar para o galpão | link | Atendente, Coordenador | Em Não entregue, abre `TL-SL-014` para a decisão do coordenador |\n\n**Referências** — Plano do agente; `RN-SL-036` a `RN-SL-040`; `Q-SL-05`, `Q-SL-06`.\n\n---"
     },
     {
       "docId": "TL-SL-014",
@@ -6638,7 +6638,7 @@
           "anchor": "HU-SL-017",
           "level": 3,
           "title": "HU-SL-017 — Relatar um problema pelo WhatsApp",
-          "body": "| | |\n|---|---|\n| **Módulo** | `ocorrencias` |\n| **Sistema** | SEALog |\n| **Atores** | Loja, Agente de ocorrências |\n| **Telas** | `TL-SL-002` Conversa do WhatsApp |\n| **Origem legada** | Hoje: a loja reclama por mensagem ao Atendimento, que repassa no grupo interno; não há formato nem registro, e fora do horário a reclamação espera. Na lista da equipe: RF-18 (comunicação com o Atendimento quando destinatários relatam problemas) |\n| **Prioridade** | Alta |\n\n**Como** loja cliente da SEALog\n**Gostaria de** contar pelo WhatsApp o que deu errado num pedido\n**Para que** meu relato chegue organizado a quem resolve, a qualquer hora, sem eu repetir a história.\n\n**Descrição**\n\nNo acompanhamento de um pedido, a loja toca em \"Relatar problema\". Quem conversa com ela é o agente\nde ocorrências: ele confirma o pedido pelo código, entende o tipo de problema — atraso, não entregue,\navaria, entregue no endereço errado ou outro —, pede uma descrição e, se houver avaria, uma foto.\n\nCom o relato, o agente consulta o protocolo de atendimento da SEALog e escreve uma ação sugerida.\nEle não decide nem promete nada à loja: encerra dizendo que uma pessoa da equipe vai analisar e\nresponder ali mesmo, e o chamado aparece no painel da equipe. O agente recebe só o código, o tipo, o\nrelato e as fotos; os dados pessoais do destinatário não passam por ele.\n\n**Regras de negócio**\n\n| # | Regra | Catálogo |\n|---|---|---|\n| RN1 | A loja relata o problema a partir do acompanhamento do pedido. | `RN-SL-004`, `RN-SL-036` |\n| RN2 | O agente identifica o pedido pelo código, classifica o tipo, pede descrição e, se houver avaria, foto. | `RN-SL-036` |\n| RN3 | O agente compara o relato com o protocolo de atendimento da SEALog e escreve uma ação sugerida; o protocolo é da SEALog. | `RN-SL-037`, `Q-SL-05` |\n| RN4 | O agente não decide nem responde a decisão à loja. | `RN-SL-037` |\n| RN5 | Nome, telefone e endereço do destinatário não vão ao agente; o sistema os junta ao gravar o chamado. | `RN-SL-038` |\n| RN6 | O relato vira um chamado no painel, com a sugestão. | `RN-SL-039` |\n\n**Critérios de aceitação**\n\n| # | Cenário | Dado | Quando | Então |\n|---|---|---|---|---|\n| CA1 | Avaria | que a caixa chegou amassada | relato o problema e mando a foto | recebo a confirmação de que uma pessoa vai analisar, e o chamado aparece no painel com a foto e a sugestão. |\n| CA2 | Avaria sem foto | que relatei avaria | o agente pede a foto e eu não mando | o chamado é aberto mesmo assim, marcado sem foto. |\n| CA3 | Atraso | que a entrega era para hoje às 10h e não chegou | relato atraso | o chamado é aberto com o tipo atraso e a situação atual do pedido. |\n| CA4 | Pedido de outra loja | que informo o código de um pedido que não é meu | tento relatar | recebo a mensagem de pedido não encontrado, e nenhum chamado é aberto. |\n| CA5 | Sem promessa | que pergunto ao agente se vou receber reembolso | ele responde | ele diz que a equipe vai analisar e responder, sem prometer nada. |\n| CA6 | Fora do horário | que é domingo | relato um problema | o chamado é aberto e fica Pendente para a equipe no próximo turno. |\n\n**Integrações e APIs** — `INT-001` WhatsApp, para a conversa (`MSG-SL-025`); `INT-004` Agente de ocorrências (n8n com modelo de linguagem GPT-4o), que conduz a triagem e grava o chamado em `POST /api/v1/bot/incidents`.\n\n**Referências** — Plano do agente (triagem, coleta de evidências, análise de regras); Planejamento da equipe (RF-18; cuidado com dados sensíveis); Enunciado §2 (atendimento com horário limitado); Gargalos §5.\n\n---",
+          "body": "| | |\n|---|---|\n| **Módulo** | `ocorrencias` |\n| **Sistema** | SEALog |\n| **Atores** | Loja, Agente de ocorrências |\n| **Telas** | `TL-SL-002` Conversa do WhatsApp |\n| **Origem legada** | Hoje: a loja reclama por mensagem ao Atendimento, que repassa no grupo interno; não há formato nem registro, e fora do horário a reclamação espera. Na lista da equipe: RF-18 (comunicação com o Atendimento quando destinatários relatam problemas) |\n| **Prioridade** | Alta |\n\n**Como** loja cliente da SEALog\n**Gostaria de** contar pelo WhatsApp o que deu errado num pedido\n**Para que** meu relato chegue organizado a quem resolve, a qualquer hora, sem eu repetir a história.\n\n**Descrição**\n\nNo acompanhamento de um pedido, a loja toca em \"Relatar problema\". Quem conversa com ela é o agente\nde ocorrências: ele confirma o pedido pelo código, entende o tipo de problema — atraso, não entregue,\navaria, entregue no endereço errado ou outro —, pede uma descrição e, se houver avaria, uma foto.\n\nCom o relato, o agente consulta o protocolo de atendimento da SEALog e escreve uma ação sugerida.\nEle não decide nem promete nada à loja: encerra dizendo que uma pessoa da equipe vai analisar e\nresponder ali mesmo, e o chamado aparece no painel da equipe. O agente recebe só o código, o tipo, o\nrelato e as fotos; os dados pessoais do destinatário não passam por ele.\n\n**Regras de negócio**\n\n| # | Regra | Catálogo |\n|---|---|---|\n| RN1 | A loja relata o problema a partir do acompanhamento do pedido. | `RN-SL-004`, `RN-SL-036` |\n| RN2 | O agente identifica o pedido pelo código, classifica o tipo, pede descrição e, se houver avaria, foto. | `RN-SL-036` |\n| RN3 | O agente compara o relato com o protocolo de atendimento e escreve uma ação sugerida. Por enquanto não há protocolo escrito: a sugestão se apoia nos dados do pedido e do relato. | `RN-SL-037`, `Q-SL-05` |\n| RN4 | O agente não decide nem responde a decisão à loja. | `RN-SL-037` |\n| RN5 | Nome, telefone e endereço do destinatário não vão ao agente; o sistema os junta ao gravar o chamado. | `RN-SL-038` |\n| RN6 | O relato vira um chamado no painel, com a sugestão. | `RN-SL-039` |\n\n**Critérios de aceitação**\n\n| # | Cenário | Dado | Quando | Então |\n|---|---|---|---|---|\n| CA1 | Avaria | que a caixa chegou amassada | relato o problema e mando a foto | recebo a confirmação de que uma pessoa vai analisar, e o chamado aparece no painel com a foto e a sugestão. |\n| CA2 | Avaria sem foto | que relatei avaria | o agente pede a foto e eu não mando | o chamado é aberto mesmo assim, marcado sem foto. |\n| CA3 | Atraso | que a entrega era para hoje às 10h e não chegou | relato atraso | o chamado é aberto com o tipo atraso e a situação atual do pedido. |\n| CA4 | Pedido de outra loja | que informo o código de um pedido que não é meu | tento relatar | recebo a mensagem de pedido não encontrado, e nenhum chamado é aberto. |\n| CA5 | Sem promessa | que pergunto ao agente se vou receber reembolso | ele responde | ele diz que a equipe vai analisar e responder, sem prometer nada. |\n| CA6 | Fora do horário | que é domingo | relato um problema | o chamado é aberto e fica Pendente para a equipe no próximo turno. |\n\n**Integrações e APIs** — `INT-001` WhatsApp, para a conversa (`MSG-SL-025`); `INT-004` Agente de ocorrências (n8n com modelo de linguagem GPT-4o), que conduz a triagem e grava o chamado em `POST /api/v1/bot/incidents`.\n\n**Referências** — Plano do agente (triagem, coleta de evidências, análise de regras); Planejamento da equipe (RF-18; cuidado com dados sensíveis); Enunciado §2 (atendimento com horário limitado); Gargalos §5.\n\n---",
           "ids": [
             "HU-SL-017",
             "TL-SL-002",
@@ -6957,7 +6957,7 @@
           "anchor": "TL-SL-003",
           "level": 3,
           "title": "TL-SL-003 — Formulário de pedido no WhatsApp",
-          "body": "| | |\n|---|---|\n| **Rota legada** | Hoje: mensagem livre no WhatsApp, conferida à mão pela atendente |\n| **Rota proposta** | — (formulário do WhatsApp, dentro da conversa) |\n| **Perfis** | Loja, pelo número autorizado |\n| **HUs** | `HU-SL-001`, `HU-SL-003`, `HU-SL-004` |\n\nO formulário abre dentro da conversa, sem aplicativo e sem conta. Não envia sem os dados\nobrigatórios (`RN-SL-006`). O mesmo formulário serve à edição, com os dados do pedido preenchidos,\ne ao complemento do pedido pendente registrado pela equipe, pedindo só o que falta.\n\n#### Destinatário\n\n| Campo | Rótulo | Controle | Tipo | Tam. | Obrig. | Máscara | Validações | Origem no banco | Observações |\n|---|---|---|---|---|---|---|---|---|---|\n| `nome_destinatario` | Nome de quem recebe | campo de texto do formulário | texto | 120 | Sim | — | não vazio (`MSG-SL-005`) | `Entrega.nome_destinatario` | — |\n| `telefone_destinatario` | Telefone de quem recebe | campo de texto do formulário | texto | 11 | Sim | `(00) 00000-0000` | DDD e 10 ou 11 dígitos (`RN-SL-007`, `MSG-SL-004`) | `Entrega.telefone_destinatario` | Guardado só com dígitos |\n\n#### Endereço\n\n| Campo | Rótulo | Controle | Tipo | Tam. | Obrig. | Máscara | Validações | Origem no banco | Observações |\n|---|---|---|---|---|---|---|---|---|---|\n| `rua` | Rua | campo de texto do formulário | texto | 150 | Sim | — | não vazio (`MSG-SL-005`) | `Entrega.rua` | — |\n| `numero` | Número | campo de texto do formulário | texto | 10 | Sim, salvo \"Sem número\" | — | obrigatório sem a marca (`RN-SL-008`, `MSG-SL-003`) | `Entrega.numero` | Texto, para aceitar \"120A\" |\n| `sem_numero` | Sem número | caixa de marcação | booleano | — | Não | — | marcada torna o ponto de referência obrigatório | `Entrega.sem_numero` | Caso do Sr. Paulo (Enunciado §8) |\n| `complemento` | Complemento | campo de texto do formulário | texto | 80 | Sim, salvo \"Sem complemento\" | — | obrigatório sem a marca (`MSG-SL-005`) | `Entrega.complemento` | Apartamento, bloco, sala |\n| `sem_complemento` | Sem complemento | caixa de marcação | booleano | — | Não | — | — | `Entrega.sem_complemento` | — |\n| `bairro` | Bairro | campo de texto do formulário | texto | 80 | Sim | — | não vazio | `Entrega.bairro` | Define a terceirizada pela tabela de regiões (`RN-SL-023`) |\n| `cidade` | Cidade | lista | texto | 80 | Sim | — | não vazio | `Entrega.cidade` | Abre com a cidade da loja |\n| `ponto_referencia` | Ponto de referência | campo de texto do formulário | texto | 150 | Sim, com \"Sem número\" | — | obrigatório quando `sem_numero` (`MSG-SL-005`) | `Entrega.ponto_referencia` | — |\n\n#### Entrega\n\n| Campo | Rótulo | Controle | Tipo | Tam. | Obrig. | Máscara | Validações | Origem no banco | Observações |\n|---|---|---|---|---|---|---|---|---|---|\n| `tamanho_volume` | Tamanho do volume | lista | texto | — | Sim | — | um dos valores de `06` §3.5 | `Entrega.tamanho_volume` | Pequeno, Médio, Grande |\n| `qtd_volumes` | Quantos volumes | campo numérico do formulário | inteiro | — | Sim | — | 1 ou mais | `Entrega.qtd_volumes` | Abre em 1 |\n| `data_desejada` | Data de entrega | seletor de data | data | — | Não | `dd/mm/aaaa` | dia útil seguinte ou depois | `Entrega.data_desejada` | Vazio vale o prazo padrão, o dia útil seguinte (`RN-SL-009`); horário de corte em `Q-SL-01` |\n| `autorizados_receber` | Quem mais pode receber | campo de texto do formulário | texto | 200 | Não | — | — | `Entrega.autorizados_receber` | Vizinho, porteiro ou outra pessoa, com o nome (`RN-SL-013`); caso \"deixar com Dona Lúcia\" |\n| `observacoes` | Observações | campo de texto longo do formulário | texto | 500 | Não | — | — | `Entrega.observacoes` | Vão à terceirizada |\n\n#### Ações da tela\n\n| Ação | Controle | Quem pode | Observações |\n|---|---|---|---|\n| Enviar pedido | botão do formulário | Loja | Só com todos os obrigatórios; pedido igual pede confirmação (`MSG-SL-006`, `RN-SL-010`); recebido, `MSG-SL-007` |\n| Salvar alteração | botão do formulário | Loja | Só na edição, até a coleta; confirma com `MSG-SL-011` e avisa a terceirizada se já despachado (`RN-SL-026`) |\n| Completar pedido | botão do formulário | Loja | Só no pedido pendente; pede só os campos de `Entrega.campos_pendentes` (`MSG-SL-013`) |\n\n**Referências** — Enunciado §2, §8; Encontro 1 [07:35], [35:39], [43:19]; `RN-SL-005` a\n`RN-SL-011`, `RN-SL-013`.\n\n---",
+          "body": "| | |\n|---|---|\n| **Rota legada** | Hoje: mensagem livre no WhatsApp, conferida à mão pela atendente |\n| **Rota proposta** | — (formulário do WhatsApp, dentro da conversa) |\n| **Perfis** | Loja, pelo número autorizado |\n| **HUs** | `HU-SL-001`, `HU-SL-003`, `HU-SL-004` |\n\nO formulário abre dentro da conversa, sem aplicativo e sem conta. Não envia sem os dados\nobrigatórios (`RN-SL-006`). O mesmo formulário serve à edição, com os dados do pedido preenchidos,\ne ao complemento do pedido pendente registrado pela equipe, pedindo só o que falta.\n\n#### Destinatário\n\n| Campo | Rótulo | Controle | Tipo | Tam. | Obrig. | Máscara | Validações | Origem no banco | Observações |\n|---|---|---|---|---|---|---|---|---|---|\n| `nome_destinatario` | Nome de quem recebe | campo de texto do formulário | texto | 120 | Sim | — | não vazio (`MSG-SL-005`) | `Entrega.nome_destinatario` | — |\n| `telefone_destinatario` | Telefone de quem recebe | campo de texto do formulário | texto | 11 | Sim | `(00) 00000-0000` | DDD e 10 ou 11 dígitos (`RN-SL-007`, `MSG-SL-004`) | `Entrega.telefone_destinatario` | Guardado só com dígitos |\n\n#### Endereço\n\n| Campo | Rótulo | Controle | Tipo | Tam. | Obrig. | Máscara | Validações | Origem no banco | Observações |\n|---|---|---|---|---|---|---|---|---|---|\n| `rua` | Rua | campo de texto do formulário | texto | 150 | Sim | — | não vazio (`MSG-SL-005`) | `Entrega.rua` | — |\n| `numero` | Número | campo de texto do formulário | texto | 10 | Sim, salvo \"Sem número\" | — | obrigatório sem a marca (`RN-SL-008`, `MSG-SL-003`) | `Entrega.numero` | Texto, para aceitar \"120A\" |\n| `sem_numero` | Sem número | caixa de marcação | booleano | — | Não | — | marcada torna o ponto de referência obrigatório | `Entrega.sem_numero` | Caso do Sr. Paulo (Enunciado §8) |\n| `complemento` | Complemento | campo de texto do formulário | texto | 80 | Sim, salvo \"Sem complemento\" | — | obrigatório sem a marca (`MSG-SL-005`) | `Entrega.complemento` | Apartamento, bloco, sala |\n| `sem_complemento` | Sem complemento | caixa de marcação | booleano | — | Não | — | — | `Entrega.sem_complemento` | — |\n| `bairro` | Bairro | campo de texto do formulário | texto | 80 | Sim | — | não vazio | `Entrega.bairro` | Define a terceirizada pela tabela de regiões (`RN-SL-023`) |\n| `cidade` | Cidade | lista | texto | 80 | Sim | — | não vazio | `Entrega.cidade` | Abre com a cidade da loja |\n| `ponto_referencia` | Ponto de referência | campo de texto do formulário | texto | 150 | Sim, com \"Sem número\" | — | obrigatório quando `sem_numero` (`MSG-SL-005`) | `Entrega.ponto_referencia` | — |\n\n#### Entrega\n\n| Campo | Rótulo | Controle | Tipo | Tam. | Obrig. | Máscara | Validações | Origem no banco | Observações |\n|---|---|---|---|---|---|---|---|---|---|\n| `tamanho_volume` | Tamanho do volume | lista | texto | — | Sim | — | um dos valores de `06` §3.5 | `Entrega.tamanho_volume` | Pequeno, Médio, Grande |\n| `qtd_volumes` | Quantos volumes | campo numérico do formulário | inteiro | — | Sim | — | 1 ou mais | `Entrega.qtd_volumes` | Abre em 1 |\n| `data_desejada` | Data de entrega | seletor de data | data | — | Não | `dd/mm/aaaa` | dia útil seguinte ou depois | `Entrega.data_desejada` | Vazio vale o prazo padrão, o dia útil seguinte (`RN-SL-009`); pedido depois das 18h conta como do dia útil seguinte (`Q-SL-01`) |\n| `autorizados_receber` | Quem mais pode receber | campo de texto do formulário | texto | 200 | Não | — | — | `Entrega.autorizados_receber` | Vizinho, porteiro ou outra pessoa, com o nome (`RN-SL-013`); caso \"deixar com Dona Lúcia\" |\n| `observacoes` | Observações | campo de texto longo do formulário | texto | 500 | Não | — | — | `Entrega.observacoes` | Vão à terceirizada |\n\n#### Ações da tela\n\n| Ação | Controle | Quem pode | Observações |\n|---|---|---|---|\n| Enviar pedido | botão do formulário | Loja | Só com todos os obrigatórios; pedido igual pede confirmação (`MSG-SL-006`, `RN-SL-010`); recebido, `MSG-SL-007` |\n| Salvar alteração | botão do formulário | Loja | Só na edição, até a coleta; confirma com `MSG-SL-011` e avisa a terceirizada se já despachado (`RN-SL-026`) |\n| Completar pedido | botão do formulário | Loja | Só no pedido pendente; pede só os campos de `Entrega.campos_pendentes` (`MSG-SL-013`) |\n\n**Referências** — Enunciado §2, §8; Encontro 1 [07:35], [35:39], [43:19]; `RN-SL-005` a\n`RN-SL-011`, `RN-SL-013`.\n\n---",
           "ids": [
             "TL-SL-003",
             "HU-SL-001",
@@ -7195,7 +7195,7 @@
           "anchor": "TL-SL-013",
           "level": 3,
           "title": "TL-SL-013 — Detalhe do chamado",
-          "body": "| | |\n|---|---|\n| **Rota legada** | Hoje: o coordenador decide caso a caso, sem regra e sem registro |\n| **Rota proposta** | `/chamados/{id}` |\n| **Perfis** | Atendente, Coordenador |\n| **HUs** | `HU-SL-018` |\n\nMostra o que o agente colheu e o que ele sugere pelo protocolo de atendimento, para a pessoa\naprovar, mudar ou recusar. O agente nunca decide (`RN-SL-037`). Quem aprova — atendente ou\ncoordenador — está em `Q-SL-06`; o protocolo, em `Q-SL-05`.\n\n#### Blocos da página\n\n| Coluna | Rótulo | Origem | Observações |\n|---|---|---|---|\n| Pedido | Pedido e loja | `Entrega.codigo`, `Loja.nome` | Com o status e a terceirizada |\n| Relato | O que aconteceu | `Chamado.descricao` | — |\n| Conversa | Resumo da conversa | `Chamado.resumo_conversa` | Só na origem Loja |\n| Fotos | Fotos | `Chamado.fotos` | — |\n| Sugestão | Ação sugerida pelo agente | `Chamado.acao_sugerida` | Com a regra do protocolo que a justifica |\n| Contato | Contato da loja | `Chamado.telefone_loja` | Juntado pelo sistema; não vai ao agente (`RN-SL-038`) |\n\n#### Decisão\n\n| Campo | Rótulo | Controle | Tipo | Tam. | Obrig. | Máscara | Validações | Origem no banco | Observações |\n|---|---|---|---|---|---|---|---|---|---|\n| `acao_final` | Ação | text, preenchido com a sugestão | texto | 500 | Sim | — | não vazio | `Chamado.acao_final` | Aprovar mantém o texto do agente |\n| `motivo_decisao` | Motivo | text | texto | 300 | Sim, ao mudar ou recusar | — | não vazio | `Chamado.motivo_decisao` | — |\n| `resposta_loja` | Resposta à loja | textarea | texto | 500 | Sim | — | não vazio | `Aviso.texto` | Vai pelo WhatsApp (`MSG-SL-023`) |\n\n#### Ações da tela\n\n| Ação | Controle | Quem pode | Observações |\n|---|---|---|---|\n| Aprovar | botão | Atendente, Coordenador | Grava a sugestão como ação final, conclui o chamado e avisa a loja (`RN-SL-040`) |\n| Mudar a ação | botão | Atendente, Coordenador | Exige o motivo; conclui e avisa a loja |\n| Recusar | botão | Atendente, Coordenador | Exige o motivo; conclui sem ação e avisa a loja |\n| Mandar para o galpão | link | Atendente, Coordenador | Em Não entregue, abre `TL-SL-014` para a decisão do coordenador |\n\n**Referências** — Plano do agente; `RN-SL-036` a `RN-SL-040`; `Q-SL-05`, `Q-SL-06`.\n\n---",
+          "body": "| | |\n|---|---|\n| **Rota legada** | Hoje: o coordenador decide caso a caso, sem regra e sem registro |\n| **Rota proposta** | `/chamados/{id}` |\n| **Perfis** | Atendente, Coordenador |\n| **HUs** | `HU-SL-018` |\n\nMostra o que o agente colheu e o que ele sugere pelo protocolo de atendimento, para a pessoa\naprovar, mudar ou recusar. O agente nunca decide (`RN-SL-037`). Quem aprova é o coordenador\n(`Q-SL-06`); não há protocolo escrito por enquanto (`Q-SL-05`).\n\n#### Blocos da página\n\n| Coluna | Rótulo | Origem | Observações |\n|---|---|---|---|\n| Pedido | Pedido e loja | `Entrega.codigo`, `Loja.nome` | Com o status e a terceirizada |\n| Relato | O que aconteceu | `Chamado.descricao` | — |\n| Conversa | Resumo da conversa | `Chamado.resumo_conversa` | Só na origem Loja |\n| Fotos | Fotos | `Chamado.fotos` | — |\n| Sugestão | Ação sugerida pelo agente | `Chamado.acao_sugerida` | Com a regra do protocolo que a justifica |\n| Contato | Contato da loja | `Chamado.telefone_loja` | Juntado pelo sistema; não vai ao agente (`RN-SL-038`) |\n\n#### Decisão\n\n| Campo | Rótulo | Controle | Tipo | Tam. | Obrig. | Máscara | Validações | Origem no banco | Observações |\n|---|---|---|---|---|---|---|---|---|---|\n| `acao_final` | Ação | text, preenchido com a sugestão | texto | 500 | Sim | — | não vazio | `Chamado.acao_final` | Aprovar mantém o texto do agente |\n| `motivo_decisao` | Motivo | text | texto | 300 | Sim, ao mudar ou recusar | — | não vazio | `Chamado.motivo_decisao` | — |\n| `resposta_loja` | Resposta à loja | textarea | texto | 500 | Sim | — | não vazio | `Aviso.texto` | Vai pelo WhatsApp (`MSG-SL-023`) |\n\n#### Ações da tela\n\n| Ação | Controle | Quem pode | Observações |\n|---|---|---|---|\n| Aprovar | botão | Atendente, Coordenador | Grava a sugestão como ação final, conclui o chamado e avisa a loja (`RN-SL-040`) |\n| Mudar a ação | botão | Atendente, Coordenador | Exige o motivo; conclui e avisa a loja |\n| Recusar | botão | Atendente, Coordenador | Exige o motivo; conclui sem ação e avisa a loja |\n| Mandar para o galpão | link | Atendente, Coordenador | Em Não entregue, abre `TL-SL-014` para a decisão do coordenador |\n\n**Referências** — Plano do agente; `RN-SL-036` a `RN-SL-040`; `Q-SL-05`, `Q-SL-06`.\n\n---",
           "ids": [
             "TL-SL-013",
             "HU-SL-018",
@@ -7512,7 +7512,7 @@
           "anchor": "3-3-motivo-de-nao-entrega",
           "level": 3,
           "title": "3.3 Motivo de não entrega",
-          "body": "| Valor | Observação |\n|---|---|\n| Destinatário ausente | Enunciado §2 |\n| Endereço não encontrado | Enunciado §2; caso \"O buquê de sábado\" |\n| Endereço incompleto | Liga ao gargalo de pedido incompleto (Gargalos §1) |\n| Recusado pelo destinatário | Enunciado §2 |\n| Acesso impedido | Portaria, condomínio, rua fechada |\n| Pacote avariado | — |\n| Condição climática | Caso \"A segunda-feira de chuva\" |\n| Outro | Exige observação |\n\nA lista é proposta e vale igual para toda terceirizada (`RN-SL-019`). Os motivos que as\nterceirizadas já usam estão em `Q-SL-11`.",
+          "body": "| Valor | Observação |\n|---|---|\n| Destinatário ausente | Enunciado §2 |\n| Endereço não encontrado | Enunciado §2; caso \"O buquê de sábado\" |\n| Endereço incompleto | Liga ao gargalo de pedido incompleto (Gargalos §1) |\n| Recusado pelo destinatário | Enunciado §2 |\n| Acesso impedido | Portaria, condomínio, rua fechada |\n| Pacote avariado | — |\n| Condição climática | Caso \"A segunda-feira de chuva\" |\n| Outro | Exige observação |\n\nA lista é proposta e vale igual para toda terceirizada (`RN-SL-019`). Os motivos que as\nterceirizadas já usam ficam com elas (`Q-SL-11`).",
           "ids": [
             "RN-SL-019",
             "Q-SL-11"
@@ -7623,7 +7623,7 @@
           "anchor": "INT-001",
           "level": 2,
           "title": "INT-001 — WhatsApp",
-          "body": "| | |\n|---|---|\n| **Sistema externo** | Plataforma oficial de mensagens do WhatsApp (Meta Cloud API), no número que a SEALog já usa, com formulários do WhatsApp (WhatsApp Flows) que devolvem os campos estruturados |\n| **Direção** | Entrada: menu, formulário de pedido, acompanhamento, edição, relato. Saída: avisos à loja |\n| **HUs dependentes** | `HU-SL-001` a `HU-SL-005`, `HU-SL-017`, `HU-SL-018`, `HU-SL-020`, `HU-SL-021` |\n| **Autenticação** | Credencial da conta comercial da SEALog na Meta; o número da loja é conferido contra o cadastro (`RN-SL-003`) |\n| **Mensagens** | `MSG-SL-001` a `MSG-SL-011`, `MSG-SL-013`, `MSG-SL-022` a `MSG-SL-025` |\n\nA loja continua no mesmo número de WhatsApp (Enunciado §2; Encontro 1 [07:35]). A mensagem dela\nabre o menu de três opções (`RN-SL-004`); o novo pedido abre um formulário que não envia sem os\ndados obrigatórios (`RN-SL-006`). Os avisos que a SEALog manda por iniciativa própria — pedido\nrecebido, problema na entrega, decisão, lote — usam modelos de mensagem aprovados pela Meta.\n\n| Situação | Comportamento |\n|---|---|\n| Número não autorizado | `MSG-SL-002`; nada é registrado |\n| Envio aceito | Aviso registrado como Enviado; depois Entregue e Lido, quando a plataforma informa (`RN-SL-045`) |\n| Envio recusado ou número sem WhatsApp | Aviso registrado como Falhou e levado ao painel de chamados (`MSG-SL-027`) |\n| Plataforma fora do ar | Os avisos esperam e são reenviados; os que falharem vão ao painel |\n\n> **Pergunta `Q-SL-12`:** a SEALog já tem conta comercial na plataforma oficial? Quem paga as\n> mensagens? Os modelos de aviso precisam de aprovação da Meta antes do uso.\n\n**Referências** — Enunciado §2; Encontro 1 [07:35], [08:38], [14:33]; `DEC-SL-15`; `DIV-SL-05`.\n\n---",
+          "body": "| | |\n|---|---|\n| **Sistema externo** | Plataforma oficial de mensagens do WhatsApp (Meta Cloud API), no número que a SEALog já usa, com formulários do WhatsApp (WhatsApp Flows) que devolvem os campos estruturados |\n| **Direção** | Entrada: menu, formulário de pedido, acompanhamento, edição, relato. Saída: avisos à loja |\n| **HUs dependentes** | `HU-SL-001` a `HU-SL-005`, `HU-SL-017`, `HU-SL-018`, `HU-SL-020`, `HU-SL-021` |\n| **Autenticação** | Credencial da conta comercial da SEALog na Meta; o número da loja é conferido contra o cadastro (`RN-SL-003`) |\n| **Mensagens** | `MSG-SL-001` a `MSG-SL-011`, `MSG-SL-013`, `MSG-SL-022` a `MSG-SL-025` |\n\nA loja continua no mesmo número de WhatsApp (Enunciado §2; Encontro 1 [07:35]). A mensagem dela\nabre o menu de três opções (`RN-SL-004`); o novo pedido abre um formulário que não envia sem os\ndados obrigatórios (`RN-SL-006`). Os avisos que a SEALog manda por iniciativa própria — pedido\nrecebido, problema na entrega, decisão, lote — usam modelos de mensagem aprovados pela Meta.\n\n| Situação | Comportamento |\n|---|---|\n| Número não autorizado | `MSG-SL-002`; nada é registrado |\n| Envio aceito | Aviso registrado como Enviado; depois Entregue e Lido, quando a plataforma informa (`RN-SL-045`) |\n| Envio recusado ou número sem WhatsApp | Aviso registrado como Falhou e levado ao painel de chamados (`MSG-SL-027`) |\n| Plataforma fora do ar | Os avisos esperam e são reenviados; os que falharem vão ao painel |\n\n> **Resposta `Q-SL-12`:** a SEALog já tem conta comercial na plataforma oficial e paga as\n> mensagens. Os modelos de aviso precisam de aprovação da Meta antes do uso.\n\n**Referências** — Enunciado §2; Encontro 1 [07:35], [08:38], [14:33]; `DEC-SL-15`; `DIV-SL-05`.\n\n---",
           "ids": [
             "INT-001",
             "HU-SL-001",
@@ -7701,7 +7701,7 @@
           "anchor": "INT-004",
           "level": 2,
           "title": "INT-004 — Agente de ocorrências",
-          "body": "| | |\n|---|---|\n| **Sistema externo** | Fluxo no n8n Cloud com um modelo de linguagem (GPT-4o, da OpenAI), ligado ao mesmo número de WhatsApp |\n| **Direção** | Entrada: o agente abre o chamado no SEALog por `POST /api/v1/bot/incidents` |\n| **HUs dependentes** | `HU-SL-017`, `HU-SL-018` |\n| **Autenticação** | Token fixo no cabeçalho de autorização (`Authorization: Bearer`), aceito só nessa rota; CORS restrito; limite de chamadas |\n| **Mensagens** | `MSG-SL-025`, `MSG-SL-026` |\n\nO agente começa quando a loja toca em \"Relatar problema\" no acompanhamento do pedido\n(`RN-SL-004`). Ele classifica o tipo, colhe descrição e foto, compara com o protocolo de atendimento\nda SEALog, que vai nas instruções do agente, e envia o chamado ao SEALog. O SEALog grava o chamado\ne avisa o painel em tempo real. O agente não decide (`RN-SL-037`). O Não entregue que chega pela\nAPI da terceirizada também é mandado ao agente, só para ganhar a sugestão (`RN-SL-039`).\n\nConteúdo enviado ao SEALog, adaptado do plano do agente (`DIV-SL-04`):\n\n| Campo | Conteúdo |\n|---|---|\n| `order_id` | Código SEALog do pedido |\n| `customer_phone` | Número da loja que relatou |\n| `issue_type` | Um tipo do domínio de chamado (`06-modelo-de-dados.md` §3.4) |\n| `description` | Relato colhido pelo agente |\n| `chat_summary` | Resumo da conversa |\n| `suggested_action` | Ação sugerida pelo protocolo |\n| `attachments` | Endereços das fotos enviadas pela loja |\n\nDiferente do plano original, o conteúdo **não leva nome, telefone nem e-mail do destinatário**: o\nmodelo recebe só o código, o tipo, o relato e as fotos, e o SEALog junta os dados de contato ao\ngravar (`RN-SL-038`).\n\n| Situação | Comportamento |\n|---|---|\n| Código do pedido de outra loja ou inexistente | O agente não abre chamado e responde `MSG-SL-009` |\n| SEALog fora do ar | O n8n tenta de novo; a loja recebe `MSG-SL-025` só depois que o chamado foi gravado |\n| Token inválido | Chamado recusado; o erro aparece no monitoramento |\n\n> **Pergunta `Q-SL-05`:** o protocolo de atendimento — o que fazer em cada tipo de ocorrência — é\n> da SEALog. Sem ele, o agente classifica e resume, mas a sugestão fica genérica.\n\n**Referências** — Plano do agente; Planejamento da equipe (cuidado com dados sensíveis);\n`DEC-SL-10`, `DEC-SL-14`; `DIV-SL-04`, `DIV-SL-08`.",
+          "body": "| | |\n|---|---|\n| **Sistema externo** | Fluxo no n8n Cloud com um modelo de linguagem (GPT-4o, da OpenAI), ligado ao mesmo número de WhatsApp |\n| **Direção** | Entrada: o agente abre o chamado no SEALog por `POST /api/v1/bot/incidents` |\n| **HUs dependentes** | `HU-SL-017`, `HU-SL-018` |\n| **Autenticação** | Token fixo no cabeçalho de autorização (`Authorization: Bearer`), aceito só nessa rota; CORS restrito; limite de chamadas |\n| **Mensagens** | `MSG-SL-025`, `MSG-SL-026` |\n\nO agente começa quando a loja toca em \"Relatar problema\" no acompanhamento do pedido\n(`RN-SL-004`). Ele classifica o tipo, colhe descrição e foto, compara com o protocolo de atendimento\nda SEALog, que vai nas instruções do agente, e envia o chamado ao SEALog. O SEALog grava o chamado\ne avisa o painel em tempo real. O agente não decide (`RN-SL-037`). O Não entregue que chega pela\nAPI da terceirizada também é mandado ao agente, só para ganhar a sugestão (`RN-SL-039`).\n\nConteúdo enviado ao SEALog, adaptado do plano do agente (`DIV-SL-04`):\n\n| Campo | Conteúdo |\n|---|---|\n| `order_id` | Código SEALog do pedido |\n| `customer_phone` | Número da loja que relatou |\n| `issue_type` | Um tipo do domínio de chamado (`06-modelo-de-dados.md` §3.4) |\n| `description` | Relato colhido pelo agente |\n| `chat_summary` | Resumo da conversa |\n| `suggested_action` | Ação sugerida pelo protocolo |\n| `attachments` | Endereços das fotos enviadas pela loja |\n\nDiferente do plano original, o conteúdo **não leva nome, telefone nem e-mail do destinatário**: o\nmodelo recebe só o código, o tipo, o relato e as fotos, e o SEALog junta os dados de contato ao\ngravar (`RN-SL-038`).\n\n| Situação | Comportamento |\n|---|---|\n| Código do pedido de outra loja ou inexistente | O agente não abre chamado e responde `MSG-SL-009` |\n| SEALog fora do ar | O n8n tenta de novo; a loja recebe `MSG-SL-025` só depois que o chamado foi gravado |\n| Token inválido | Chamado recusado; o erro aparece no monitoramento |\n\n> **Resposta `Q-SL-05`:** não há protocolo de atendimento por enquanto. O agente sugere com base\n> nos dados do pedido, e o coordenador trata cada chamado manualmente.\n\n**Referências** — Plano do agente; Planejamento da equipe (cuidado com dados sensíveis);\n`DEC-SL-10`, `DEC-SL-14`; `DIV-SL-04`, `DIV-SL-08`.",
           "ids": [
             "INT-004",
             "HU-SL-017",
@@ -7850,21 +7850,22 @@
           "anchor": "DIV-SL-01",
           "level": 3,
           "title": "`DIV-SL-01` — A terceirização tira o motorista, a rota e a etiqueta do escopo",
-          "body": "> **Divergência `DIV-SL-01`:** o enunciado descreve motoristas próprios, rotas montadas pelo\n> coordenador e etiquetas escritas à mão (Enunciado §2). No Encontro 1, o cliente contou que\n> terceirizou as entregas para duas empresas, uma por região, e que o motorista e a comunicação com\n> ele ficam com a terceirizada (Encontro 1 [13:15], [17:36]).\n\n**Desfecho** — vale a reunião. O SEALog não tem aplicativo do motorista, montagem de rotas nem\netiqueta. No lugar entram o despacho pela tabela de regiões (`RN-SL-023`), o padrão único de\nretorno e comprovante (`RN-SL-019`, `RN-SL-030`) e o código SEALog como identificação do pacote\n(`RN-SL-027`). A coleta na loja passa a ser da terceirizada (`RN-SL-025`).",
+          "body": "> **Divergência `DIV-SL-01`:** o enunciado descreve motoristas próprios, rotas montadas pelo\n> coordenador e etiquetas escritas à mão (Enunciado §2). No Encontro 1, o cliente contou que\n> terceirizou as entregas para duas empresas, uma por região, e que o motorista e a comunicação com\n> ele ficam com a terceirizada (Encontro 1 [13:15], [17:36]).\n\n**Desfecho** — vale a reunião. O SEALog não tem aplicativo do motorista, montagem de rotas nem\netiqueta. No lugar entram o despacho pela tabela de regiões (`RN-SL-023`), o padrão único de\nretorno e comprovante (`RN-SL-019`, `RN-SL-030`) e o código SEALog como identificação do pacote\n(`RN-SL-027`). A coleta na loja passa a ser da terceirizada (`RN-SL-025`). O prazo de entrega ao\ncliente também é responsabilidade da terceirizada, pela resposta da SEALog a `Q-SL-12`.",
           "ids": [
             "DIV-SL-01",
             "RN-SL-023",
             "RN-SL-019",
             "RN-SL-030",
             "RN-SL-027",
-            "RN-SL-025"
+            "RN-SL-025",
+            "Q-SL-12"
           ]
         },
         {
           "anchor": "DIV-SL-02",
           "level": 3,
           "title": "`DIV-SL-02` — Itens da lista da equipe que mudaram",
-          "body": "> **Divergência `DIV-SL-02`:** a lista RF-01 a RF-20 do planejamento da equipe foi escrita antes da\n> terceirização. Parte dela pressupõe motorista próprio e conta com senha para a loja.\n\n**Desfecho** — a lista é a base, com estas mudanças, detalhadas em\n[`requisitos`](../00-visao-geral/requisitos.md):\n\n| Item da equipe | O que mudou |\n|---|---|\n| RF-02 Autenticação de clientes | A loja é identificada pelo número de WhatsApp autorizado, sem senha (`RN-SL-054`) |\n| RF-04 Sincronização de dados comerciais | Absorvido no RF-03: com banco único, não há o que sincronizar (`RN-SL-015`) |\n| RF-05, RF-06 Cadastro e análise de motoristas | Substituídos pelo cadastro de terceirizadas (`HU-SL-007`) |\n| RF-09 Notificação por e-mail | O aviso vai pelo WhatsApp, onde a loja já está (`RN-SL-043`) |\n| RF-10 Forma de coleta | A coleta é da terceirizada; se a loja ainda pode levar ao galpão está em `Q-SL-02` |\n| RF-12 Distribuição por motorista | Vira distribuição por terceirizada, pela região (`HU-SL-010`) |\n| RF-13 Visualização pelo motorista | Vira o despacho à terceirizada, pela API ou pelo portal (`HU-SL-011`) |\n| RF-14 Ocorrências do motorista | Vira o Não entregue da terceirizada, que abre chamado (`HU-SL-013`) |\n| RF-20 Avisar o motorista de alterações | Vira avisar a terceirizada (`HU-SL-012`) |\n| Decisão \"roteamento a partir de IA\" | Substituída pela regra fixa de região; a IA ficou no agente de ocorrências (`DEC-SL-05`, `DEC-SL-10`) |",
+          "body": "> **Divergência `DIV-SL-02`:** a lista RF-01 a RF-20 do planejamento da equipe foi escrita antes da\n> terceirização. Parte dela pressupõe motorista próprio e conta com senha para a loja.\n\n**Desfecho** — a lista é a base, com estas mudanças, detalhadas em\n[`requisitos`](../00-visao-geral/requisitos.md):\n\n| Item da equipe | O que mudou |\n|---|---|\n| RF-02 Autenticação de clientes | A loja é identificada pelo número de WhatsApp autorizado, sem senha (`RN-SL-054`) |\n| RF-04 Sincronização de dados comerciais | Absorvido no RF-03: com banco único, não há o que sincronizar (`RN-SL-015`) |\n| RF-05, RF-06 Cadastro e análise de motoristas | Substituídos pelo cadastro de terceirizadas (`HU-SL-007`) |\n| RF-09 Notificação por e-mail | O aviso vai pelo WhatsApp, onde a loja já está (`RN-SL-043`) |\n| RF-10 Forma de coleta | A coleta é só da terceirizada; a loja não leva mais ao galpão (resposta da SEALog a `Q-SL-02`) |\n| RF-12 Distribuição por motorista | Vira distribuição por terceirizada, pela região (`HU-SL-010`) |\n| RF-13 Visualização pelo motorista | Vira o despacho à terceirizada, pela API ou pelo portal (`HU-SL-011`) |\n| RF-14 Ocorrências do motorista | Vira o Não entregue da terceirizada, que abre chamado (`HU-SL-013`) |\n| RF-20 Avisar o motorista de alterações | Vira avisar a terceirizada (`HU-SL-012`) |\n| Decisão \"roteamento a partir de IA\" | Substituída pela regra fixa de região; a IA ficou no agente de ocorrências (`DEC-SL-05`, `DEC-SL-10`) |",
           "ids": [
             "DIV-SL-02",
             "RN-SL-054",
@@ -7895,7 +7896,7 @@
           "anchor": "DIV-SL-04",
           "level": 3,
           "title": "`DIV-SL-04` — O plano do agente foi adaptado à logística",
-          "body": "> **Divergência `DIV-SL-04`:** o plano do agente de ocorrências partiu de um modelo de loja virtual:\n> tipos como pedido errado e defeito, políticas como troca em 7 dias e cupom de frete, dados do\n> consumidor no conteúdo enviado. A SEALog não vende produto; transporta. O plano também previa um\n> agente de consulta de status.\n\n**Desfecho** — os tipos de chamado viraram atraso, não entregue, avaria, entregue no endereço\nerrado, recebedor não autorizado, sem retorno e outro (`06-modelo-de-dados.md` §3.4). As ações do\nprotocolo ficam para a SEALog definir (`Q-SL-05`), sem política inventada. O conteúdo enviado ao\nmodelo não leva dados pessoais do destinatário (`RN-SL-038`). O agente de consulta de status não\nexiste por enquanto: o acompanhamento é um botão do menu, sem IA. O mesmo vale para a coleta de CPF\nque ele faria.",
+          "body": "> **Divergência `DIV-SL-04`:** o plano do agente de ocorrências partiu de um modelo de loja virtual:\n> tipos como pedido errado e defeito, políticas como troca em 7 dias e cupom de frete, dados do\n> consumidor no conteúdo enviado. A SEALog não vende produto; transporta. O plano também previa um\n> agente de consulta de status.\n\n**Desfecho** — os tipos de chamado viraram atraso, não entregue, avaria, entregue no endereço\nerrado, recebedor não autorizado, sem retorno e outro (`06-modelo-de-dados.md` §3.4). Não há\nprotocolo escrito por enquanto (`Q-SL-05`): o coordenador trata cada chamado manualmente, com a\nsugestão do agente, sem política inventada. O conteúdo enviado ao modelo não leva dados pessoais do\ndestinatário (`RN-SL-038`). O agente de consulta de status não existe por enquanto: o acompanhamento\né um botão do menu, sem IA. O mesmo vale para a coleta de CPF que ele faria.",
           "ids": [
             "DIV-SL-04",
             "Q-SL-05",
@@ -7913,7 +7914,7 @@
           "anchor": "DIV-SL-05",
           "level": 3,
           "title": "`DIV-SL-05` — Conta e custo do WhatsApp",
-          "body": "> **Risco:** o pedido, o acompanhamento e todos os avisos dependem da plataforma oficial do\n> WhatsApp (`INT-001`), que exige conta comercial, modelos de mensagem aprovados pela Meta e custo\n> por mensagem (`Q-SL-12`). Sem ela, o aviso proativo — a resposta ao caso \"O buquê de sábado\" —\n> volta a depender de uma pessoa, e uma pessoa só trabalha no horário do atendimento.\n\nMitigação: pedir a conta e a aprovação dos modelos antes de tudo, como habilitador do backlog\n(`BL-SL-05`). Enquanto não sai, o painel de chamados mostra os avisos a enviar, com o texto pronto.",
+          "body": "> **Risco:** o pedido, o acompanhamento e todos os avisos dependem da plataforma oficial do\n> WhatsApp (`INT-001`), que exige conta comercial, modelos de mensagem aprovados pela Meta e custo\n> por mensagem. A conta comercial já existe (`Q-SL-12`). Sem a aprovação dos modelos, o aviso\n> proativo — a resposta ao caso \"O buquê de sábado\" — volta a depender de uma pessoa, e uma pessoa só\n> trabalha no horário do atendimento.\n\nMitigação: confirmar que os modelos de mensagem estão aprovados antes de tudo, como habilitador do\nbacklog (`BL-SL-05`). Enquanto não sai, o painel de chamados mostra os avisos a enviar, com o texto\npronto.",
           "ids": [
             "DIV-SL-05",
             "INT-001",
@@ -7925,7 +7926,7 @@
           "anchor": "DIV-SL-06",
           "level": 3,
           "title": "`DIV-SL-06` — A terceirizada não adotar a integração",
-          "body": "> **Risco:** as terceirizadas \"não têm tanta habilidade com tecnologia\" (Encontro 1 [23:17]). Se o\n> retorno não chegar, o SEALog volta a não saber onde está a entrega.\n\nMitigação na própria solução: três caminhos com o mesmo padrão — API, portal simples e planilha\ntraduzida (`RN-SL-029`); entrega sem retorno sinalizada (`RN-SL-034`); e o pagamento só pelas\nentregas com comprovante aceito (`RN-SL-048`), que dá à terceirizada motivo para informar.",
+          "body": "> **Risco:** as terceirizadas \"não têm tanta habilidade com tecnologia\" (Encontro 1 [23:17]). Se o\n> retorno não chegar, o SEALog volta a não saber onde está a entrega.\n\nMitigação na própria solução: três caminhos com o mesmo padrão — API, portal simples e planilha\ntraduzida (`RN-SL-029`); entrega sem retorno sinalizada depois do prazo estimado pela terceirizada\n(`RN-SL-034`); e o pagamento só pelas entregas com comprovante aceito (`RN-SL-048`), que dá à\nterceirizada motivo para informar.",
           "ids": [
             "DIV-SL-06",
             "RN-SL-029",
@@ -7937,7 +7938,7 @@
           "anchor": "DIV-SL-07",
           "level": 3,
           "title": "`DIV-SL-07` — \"A parceira diz que entregou e o destinatário diz que não\"",
-          "body": "> **Risco:** é a preocupação central do cliente depois da terceirização (Encontro 1 [26:53],\n> [38:44]). Hoje cada terceirizada tem seu padrão, e a foto, quando vem, é tirada \"do jeito que o\n> motorista quiser\" (Encontro 1 [43:19]).\n\nMitigação: o comprovante padrão é obrigatório para o Entregue valer (`RN-SL-030`); o recebedor que\nnão é o destinatário nem pessoa autorizada abre chamado (`RN-SL-031`); a loja relata pelo WhatsApp\ne o chamado já traz o comprovante (`HU-SL-017`). Se a foto precisa de requisito mínimo — mostrar o\npacote, a porta, o número — fica para a SEALog (`Q-SL-11`).",
+          "body": "> **Risco:** é a preocupação central do cliente depois da terceirização (Encontro 1 [26:53],\n> [38:44]). Hoje cada terceirizada tem seu padrão, e a foto, quando vem, é tirada \"do jeito que o\n> motorista quiser\" (Encontro 1 [43:19]).\n\nMitigação: o comprovante padrão é obrigatório para o Entregue valer (`RN-SL-030`); o recebedor que\nnão é o destinatário nem pessoa autorizada abre chamado (`RN-SL-031`); a loja relata pelo WhatsApp\ne o chamado já traz o comprovante (`HU-SL-017`). Os motivos de não entrega e a exigência de foto\nficam com a terceirizada (resposta da SEALog a `Q-SL-11`).",
           "ids": [
             "DIV-SL-07",
             "RN-SL-030",
@@ -7950,7 +7951,7 @@
           "anchor": "DIV-SL-08",
           "level": 3,
           "title": "`DIV-SL-08` — Dados pessoais no modelo de IA e nas fotos",
-          "body": "> **Segurança:** o agente de ocorrências usa um modelo de linguagem de terceiro, e as fotos do\n> comprovante podem mostrar rosto, documento ou o interior de uma casa. A equipe decidiu ter\n> cuidado com dados sensíveis na IA (Planejamento da equipe).\n\nO modelo recebe só o código, o tipo, o relato e as fotos que a própria loja mandou (`RN-SL-038`).\nAs fotos ficam no armazenamento do SEALog, com acesso por perfil. O prazo de guarda é da SEALog\n(`Q-SL-16`), seguindo a LGPD (Lei 13.709/2018).",
+          "body": "> **Segurança:** o agente de ocorrências usa um modelo de linguagem de terceiro, e as fotos do\n> comprovante podem mostrar rosto, documento ou o interior de uma casa. A equipe decidiu ter\n> cuidado com dados sensíveis na IA (Planejamento da equipe).\n\nO modelo recebe só o código, o tipo, o relato e as fotos que a própria loja mandou (`RN-SL-038`).\nAs fotos ficam no armazenamento do SEALog, com acesso por perfil.\n\n> **Risco aberto:** a SEALog respondeu que as fotos e os dados do destinatário ficam guardados sem\n> prazo (`Q-SL-16`). A LGPD (Lei 13.709/2018) pede finalidade e prazo definidos para esses dados.\n> A resposta precisa ser revista antes de qualquer uso real.",
           "ids": [
             "DIV-SL-08",
             "RN-SL-038",
@@ -7961,7 +7962,7 @@
           "anchor": "DIV-SL-09",
           "level": 3,
           "title": "`DIV-SL-09` — Adoção e custo",
-          "body": "> **Risco:** a empresa é pequena, ainda usa planilha e WhatsApp, e o custo pesou na decisão de\n> terceirizar (Encontro 1 [29:03], [30:33]). Ao mesmo tempo, a meta é chegar a cerca de 400\n> entregas por dia no mês que vem, o que \"do jeito que está não vai ser possível\" (Encontro 1\n> [23:40]).\n\nA solução usa serviços pagos por uso e não pede nada novo à loja. A entrada é gradual\n([`adocao-gradual`](../00-visao-geral/adocao-gradual.md)). Quanto tempo a planilha convive com o\nsistema está em `Q-SL-14`.",
+          "body": "> **Risco:** a empresa é pequena, ainda usa planilha e WhatsApp, e o custo pesou na decisão de\n> terceirizar (Encontro 1 [29:03], [30:33]). Ao mesmo tempo, a meta é chegar a cerca de 400\n> entregas por dia no mês que vem, o que \"do jeito que está não vai ser possível\" (Encontro 1\n> [23:40]).\n\nA solução usa serviços pagos por uso e não pede nada novo à loja. A entrada é gradual\n([`adocao-gradual`](../00-visao-geral/adocao-gradual.md)): a planilha sai aos poucos, à medida que\ncada terceirizada é formalizada e passa a enviar os dados direto para o banco e o painel (resposta\nda SEALog a `Q-SL-14`). Quanto tempo a planilha convive com o sistema segue em aberto em `Q-SL-14`.",
           "ids": [
             "DIV-SL-09",
             "Q-SL-14"
@@ -7971,7 +7972,39 @@
           "anchor": "3-perguntas-a-sealog",
           "level": 2,
           "title": "3. Perguntas à SEALog",
-          "body": "| ID | Pergunta | Por que importa | Onde afeta |\n|---|---|---|---|\n| `Q-SL-01` | A partir de que horário o pedido passa para o dia útil seguinte? | O prazo padrão é o dia útil seguinte (Enunciado §2), mas sem horário de corte não se sabe a data prevista do pedido feito à noite | `RN-SL-009` |\n| `Q-SL-02` | A coleta entre 14h e 18h vale para a terceirizada? A loja ainda pode levar o volume ao galpão da SEALog, ou à terceirizada? | Define o que vai no despacho e a lista da equipe (RF-10) | `RN-SL-025` |\n| `Q-SL-03` | A volta ao galpão entre 17h e 18h vale para a terceirizada? Em quanto tempo ela devolve o pacote não entregue? | Define a rotina do galpão e quando a decisão pode ser tomada | `RN-SL-041` |\n| `Q-SL-04` | Até quando a loja pode editar ou cancelar o pedido pelo WhatsApp? A proposta é até a coleta | Depois da coleta, a mudança passa pela terceirizada | `RN-SL-011` |\n| `Q-SL-05` | Qual é o protocolo de atendimento: o que a SEALog faz em cada tipo de ocorrência (reentrega, desconto, cobrança da terceirizada)? | É a base da sugestão do agente | `RN-SL-037`; `INT-004` |\n| `Q-SL-06` | Quem aprova o chamado: o atendente ou o coordenador? | Define o perfil que trata o painel de chamados | `RN-SL-040` |\n| `Q-SL-07` | Quantas tentativas uma entrega pode ter? Por quanto tempo o pacote fica guardado no galpão? O que acontece depois? | É a \"regra formal\" que hoje não existe (Enunciado §2) | `RN-SL-042` |\n| `Q-SL-08` | Qual é a tabela de preços das lojas? Tentativa sem sucesso e devolução são cobradas? | Sem ela a cobrança não tem valor | `RN-SL-047` |\n| `Q-SL-09` | Quanto a SEALog paga à terceirizada por entrega? Paga tentativa e devolução? Há desconto por entrega sem comprovante? | Sem ela o pagamento não tem valor | `RN-SL-048` |\n| `Q-SL-10` | Os perfis da equipe são atendente, coordenador e financeiro? Quem era analista vira atendente? Quem cadastra os usuários? | Define a matriz de permissões | `RN-SL-051`; `01-atores-e-permissoes.md` |\n| `Q-SL-11` | Que motivos de não entrega as terceirizadas já usam? A foto do comprovante precisa mostrar algo específico? | A lista e o padrão valem para todas as terceirizadas | `06-modelo-de-dados.md` §3.3; `RN-SL-030` |\n| `Q-SL-12` | A SEALog tem conta comercial na plataforma oficial do WhatsApp? Quem paga as mensagens? | O pedido e o aviso proativo dependem dela | `INT-001`; `DIV-SL-05` |\n| `Q-SL-13` | Depois de quanto tempo sem retorno da terceirizada uma entrega deve ser sinalizada? | Define o alerta de entrega parada | `RN-SL-034` |\n| `Q-SL-14` | Como será a transição: por quanto tempo planilha e sistema convivem, e com qual terceirizada se começa? | Adoção é risco | `DIV-SL-09` |\n| `Q-SL-15` | O destinatário recebe algum aviso da SEALog, ou só a loja? | Hoje o consumidor fala com a loja (Enunciado §2) | `00-visao-geral.md` §3 |\n| `Q-SL-16` | Por quanto tempo as fotos do comprovante e os dados do destinatário devem ser guardados? | Exigência da LGPD e custo de armazenamento | `DIV-SL-08` |\n| `Q-SL-17` | Por quanto tempo a entrada fica bloqueada depois de cinco tentativas? Quem desbloqueia? | Ponto a detalhar da lista da equipe (RNF-01) | `RN-SL-052` |",
+          "body": "",
+          "ids": []
+        },
+        {
+          "anchor": "3-1-em-aberto",
+          "level": 3,
+          "title": "3.1 Em aberto",
+          "body": "| ID | Pergunta | Por que importa | Onde afeta |\n|---|---|---|---|\n| `Q-SL-04` | Pedir a alteração por código do produto ou pela lista de todos os itens editáveis? A lista da proposta é a dos itens que não saíram para entrega. | Define a tela de edição; a opção por código evita listas enormes em lojas grandes | `RN-SL-011` |\n| `Q-SL-07` | Por quanto tempo o pacote fica guardado no galpão, e o que acontece depois do prazo? | Sem prazo de guarda, o pacote não tem fim definido no galpão | `RN-SL-042` |\n| `Q-SL-08` | Qual é a tabela de preços das lojas? | Fora da apresentação: a SEALog não tem a tabela agora | `RN-SL-047` |\n| `Q-SL-09` | Quanto a SEALog paga à terceirizada por entrega? Paga tentativa e devolução? | Fora da apresentação: o valor é por contrato, cadastrado em `HU-SL-007` | `RN-SL-048` |\n| `Q-SL-10` | Os perfis atendente e financeiro são confirmados? | Define a matriz de permissões | `RN-SL-051`; `01-atores-e-permissoes.md` |\n| `Q-SL-14` | Por quanto tempo planilha e sistema convivem, e com qual terceirizada se começa? | Adoção é risco | `DIV-SL-09` |\n| `Q-SL-16` | Por quanto tempo as fotos do comprovante e os dados do destinatário devem ser guardados? A resposta \"pra sempre\" precisa ser revista pela LGPD. | Exigência da LGPD e custo de armazenamento | `DIV-SL-08` |\n| `Q-SL-17` | Quanto tempo a entrada da equipe fica bloqueada depois de cinco tentativas erradas, e quem desbloqueia? A pergunta anterior não ficou clara. | Ponto a detalhar da lista da equipe (RNF-01) | `RN-SL-052` |",
+          "ids": [
+            "Q-SL-04",
+            "RN-SL-011",
+            "Q-SL-07",
+            "RN-SL-042",
+            "Q-SL-08",
+            "RN-SL-047",
+            "Q-SL-09",
+            "HU-SL-007",
+            "RN-SL-048",
+            "Q-SL-10",
+            "RN-SL-051",
+            "Q-SL-14",
+            "DIV-SL-09",
+            "Q-SL-16",
+            "DIV-SL-08",
+            "Q-SL-17",
+            "RN-SL-052"
+          ]
+        },
+        {
+          "anchor": "3-2-respondidas-em-29-10-2026",
+          "level": 3,
+          "title": "3.2 Respondidas em 29/10/2026",
+          "body": "| ID | Pergunta | Resposta | Onde afeta |\n|---|---|---|---|\n| `Q-SL-01` | A partir de que horário o pedido passa para o dia útil seguinte? | Corte às 18h: pedido depois disso conta como do dia útil seguinte | `RN-SL-009` |\n| `Q-SL-02` | A coleta entre 14h e 18h vale para a terceirizada? A loja ainda pode levar o volume ao galpão? | Só a terceirizada coleta; a loja não leva ao galpão | `RN-SL-025` |\n| `Q-SL-03` | Quando a terceirizada devolve o pacote não entregue ao galpão? | No dia útil seguinte | `RN-SL-041` |\n| `Q-SL-05` | Qual é o protocolo de atendimento para cada tipo de ocorrência? | Não há protocolo por enquanto; o coordenador trata cada chamado manualmente, com a sugestão do agente | `RN-SL-037`; `INT-004` |\n| `Q-SL-06` | Quem aprova o chamado: o atendente ou o coordenador? | O coordenador, que é o administrador | `RN-SL-040` |\n| `Q-SL-11` | Que motivos de não entrega e que foto de comprovante valem como padrão? | Não é da SEALog: fica com a terceirizada | `06-modelo-de-dados.md` §3.3; `RN-SL-030` |\n| `Q-SL-12` | A SEALog tem conta comercial na plataforma oficial do WhatsApp? Quem paga as mensagens? | A conta já existe; a SEALog paga as mensagens. O prazo de entrega ao cliente é da terceirizada | `INT-001`; `DIV-SL-05` |\n| `Q-SL-13` | Depois de quanto tempo sem retorno a entrega deve ser sinalizada? | Não há alerta enquanto a entrega estiver dentro do prazo estimado pela terceirizada; passou do prazo, fica sinalizada | `RN-SL-034` |\n| `Q-SL-15` | O destinatário recebe algum aviso da SEALog, ou só a loja? | Só se algo der errado | `00-visao-geral.md` §3 |",
           "ids": [
             "Q-SL-01",
             "RN-SL-009",
@@ -7979,21 +8012,11 @@
             "RN-SL-025",
             "Q-SL-03",
             "RN-SL-041",
-            "Q-SL-04",
-            "RN-SL-011",
             "Q-SL-05",
             "RN-SL-037",
             "INT-004",
             "Q-SL-06",
             "RN-SL-040",
-            "Q-SL-07",
-            "RN-SL-042",
-            "Q-SL-08",
-            "RN-SL-047",
-            "Q-SL-09",
-            "RN-SL-048",
-            "Q-SL-10",
-            "RN-SL-051",
             "Q-SL-11",
             "RN-SL-030",
             "Q-SL-12",
@@ -8001,13 +8024,7 @@
             "DIV-SL-05",
             "Q-SL-13",
             "RN-SL-034",
-            "Q-SL-14",
-            "DIV-SL-09",
-            "Q-SL-15",
-            "Q-SL-16",
-            "DIV-SL-08",
-            "Q-SL-17",
-            "RN-SL-052"
+            "Q-SL-15"
           ]
         },
         {
@@ -8325,7 +8342,7 @@
           "anchor": "3-horarios-que-limitam-os-atores",
           "level": 2,
           "title": "3. Horários que limitam os atores",
-          "body": "| Quem | Horário | Efeito na solução |\n|---|---|---|\n| Atendimento | Segunda a sexta, 8h às 18h; sábado, 8h às 12h | Avisos à loja e acompanhamento funcionam sem atendente (`RN-SL-043`) |\n| Operação | Segunda a sábado, 7h às 19h | Chamado sem conclusão às 19h fica destacado (`RN-SL-046`) |\n| Coleta, antes da terceirização | 14h às 18h; a loja levava ao galpão até 17h | Se vale para a terceirizada: `Q-SL-02` |\n| Volta ao galpão, antes da terceirização | 17h às 18h | Se vale para a terceirizada: `Q-SL-03` |\n\n**Referências** — Enunciado §2; Encontro 1; Plano do agente.",
+          "body": "| Quem | Horário | Efeito na solução |\n|---|---|---|\n| Atendimento | Segunda a sexta, 8h às 18h; sábado, 8h às 12h | Avisos à loja e acompanhamento funcionam sem atendente (`RN-SL-043`) |\n| Operação | Segunda a sábado, 7h às 19h | Chamado sem conclusão às 19h fica destacado (`RN-SL-046`) |\n| Coleta, antes da terceirização | 14h às 18h; a loja levava ao galpão até 17h | Só a terceirizada coleta; a loja não leva mais ao galpão (`Q-SL-02`) |\n| Volta ao galpão, antes da terceirização | 17h às 18h | A terceirizada devolve no dia útil seguinte (`Q-SL-03`) |\n\n**Referências** — Enunciado §2; Encontro 1; Plano do agente.",
           "ids": [
             "RN-SL-043",
             "RN-SL-046",
@@ -8345,7 +8362,7 @@
           "anchor": "1-como-se-prioriza",
           "level": 2,
           "title": "1. Como se prioriza",
-          "body": "Um item sobe na ordem quando entrega valor ao cliente com pouco esforço e sem esperar outro. O\ncliente aqui são três: a loja que pede, a terceirizada que entrega e o consumidor que acompanha. A\nordem combina quatro critérios (`DEC-SL-20`):\n\n| Critério | Pergunta | Valores |\n|---|---|---|\n| **MoSCoW** | A release funciona sem isto? | **Must (essencial)** — sem ele a release não resolve o caso a que se propõe · **Should (importante)** — há contorno, mas a equipe sente falta · **Could (desejável)** — entra se sobrar tempo · **Won't (fora)** — fora desta versão, de propósito |\n| **Valor** | Quanto isto muda a vida do cliente? | **Alto** — resolve um dos casos do enunciado ou a causa comum · **Médio** — tira trabalho manual · **Baixo** — conforto |\n| **Esforço** | Quanto custa construir? | **P** — dias · **M** — uma a duas semanas · **G** — mais de duas semanas, ou depende de terceiro |\n| **Dependência** | O que precisa existir antes? | Os itens da coluna `Depende de` |\n\nA **prioridade da HU** (Alta, Média), escrita em cada história, mede o valor para quem usa. A\n**ordem do backlog** soma a ela o esforço e a dependência, e por isso as duas podem divergir. Os\nfechamentos (`HU-SL-022`, `HU-SL-023`) são Média na história, mas Must na R3: são a razão de ser da\nrelease. O agente de ocorrências (`HU-SL-017`) é Alta, mas fica na R2: depende do protocolo de\natendimento, que a SEALog ainda vai escrever (`Q-SL-05`).\n\nAs camadas sozinhas não definem a ordem. Antes de começar a tela de uma release, a API e o banco\ndela precisam existir; por isso a base técnica (`BL-SL-33`) e o canal do WhatsApp (`BL-SL-05`)\naparecem primeiro, mesmo sem valor visível para o cliente: um deles tem prazo da Meta, e o outro\né a fundação de tudo.",
+          "body": "Um item sobe na ordem quando entrega valor ao cliente com pouco esforço e sem esperar outro. O\ncliente aqui são três: a loja que pede, a terceirizada que entrega e o consumidor que acompanha. A\nordem combina quatro critérios (`DEC-SL-20`):\n\n| Critério | Pergunta | Valores |\n|---|---|---|\n| **MoSCoW** | A release funciona sem isto? | **Must (essencial)** — sem ele a release não resolve o caso a que se propõe · **Should (importante)** — há contorno, mas a equipe sente falta · **Could (desejável)** — entra se sobrar tempo · **Won't (fora)** — fora desta versão, de propósito |\n| **Valor** | Quanto isto muda a vida do cliente? | **Alto** — resolve um dos casos do enunciado ou a causa comum · **Médio** — tira trabalho manual · **Baixo** — conforto |\n| **Esforço** | Quanto custa construir? | **P** — dias · **M** — uma a duas semanas · **G** — mais de duas semanas, ou depende de terceiro |\n| **Dependência** | O que precisa existir antes? | Os itens da coluna `Depende de` |\n\nA **prioridade da HU** (Alta, Média), escrita em cada história, mede o valor para quem usa. A\n**ordem do backlog** soma a ela o esforço e a dependência, e por isso as duas podem divergir. Os\nfechamentos (`HU-SL-022`, `HU-SL-023`) são Média na história, mas Must na R3: são a razão de ser da\nrelease. O agente de ocorrências (`HU-SL-017`) é Alta, mas fica na R2: a entrega depende do\nmapeamento do modelo, e não de um protocolo escrito, que a SEALog não tem por enquanto (`Q-SL-05`).\n\nAs camadas sozinhas não definem a ordem. Antes de começar a tela de uma release, a API e o banco\ndela precisam existir; por isso a base técnica (`BL-SL-33`) e o canal do WhatsApp (`BL-SL-05`)\naparecem primeiro, mesmo sem valor visível para o cliente: um deles tem prazo da Meta, e o outro\né a fundação de tudo.",
           "ids": [
             "DEC-SL-20",
             "HU-SL-022",
@@ -8434,7 +8451,7 @@
           "anchor": "r2-ocorrencias-e-comunicacao",
           "level": 3,
           "title": "R2 — Ocorrências e comunicação",
-          "body": "| ID | Ordem | Camada | Item | HUs | MoSCoW | Release | Valor | Esforço | Depende de | Por quê |\n|---|---|---|---|---|---|---|---|---|---|---|\n| `BL-SL-19` | 25 | Negócio | Protocolo de atendimento escrito com a SEALog | — | Must | R2 | Alto | M | — | Sem protocolo, o agente não tem com o que comparar (`Q-SL-05`) |\n| `BL-SL-20` | 26 | Front | Painel de chamados | `HU-SL-018` | Must | R2 | Alto | M | `BL-SL-13` | Nenhuma ocorrência tratada fora do painel; resolve o caso \"O buquê de sábado\" |\n| `BL-SL-40` | 27 | Agente | Chamado aberto pela API para o agente de ocorrências, com chave própria | — | Must | R2 | Alto | M | `BL-SL-20`, `BL-SL-34` | O agente abre e lê chamados só pela API, nunca direto no banco (`RNF-SL-11`) |\n| `BL-SL-23` | 28 | Agente | Relato de problema com o agente de ocorrências | `HU-SL-017` | Must | R2 | Alto | G | `BL-SL-19`, `BL-SL-40` | A loja relata a qualquer hora e o chamado chega com sugestão (`DEC-SL-10`) |\n| `BL-SL-22` | 29 | Back | Devolução no galpão e decisão | `HU-SL-019` | Must | R2 | Alto | M | `BL-SL-20` | Os quatro destinos registrados (`DEC-SL-09`) |\n| `BL-SL-21` | 30 | Canal | Aviso automático à loja | `HU-SL-020` | Must | R2 | Alto | P | `BL-SL-05`, `BL-SL-20` | A loja sabe do problema antes do consumidor (`DEC-SL-11`) |\n| `BL-SL-24` | 31 | Back | Entregas afetadas por loja e aviso em lote | `HU-SL-021` | Must | R2 | Alto | M | `BL-SL-21` | Resolve o caso \"A segunda-feira de chuva\": um aviso por loja em vez de 120 mensagens |\n| `BL-SL-43` | 32 | Front | Exportação da lista de entregas para o financeiro | — | Must | R2 | Alto | P | `BL-SL-09` | Até o fechamento, o financeiro confere pela lista exportada |\n| `BL-SL-42` | 33 | Front | Painel de chamados em tempo real | — | Should | R2 | Médio | M | `BL-SL-20` | A equipe vê o chamado novo sem recarregar a tela (`RNF-SL-09`) |\n| `BL-SL-25` | 34 | Front | Manutenção dos dados comerciais da loja | `HU-SL-006` | Could | R2 | Baixo | P | `BL-SL-02` | Até lá, o cadastro inicial basta; a mudança passa pelo coordenador |\n| `BL-SL-26` | 35 | Front | Painel de adoção | — | Should | R2 | Médio | P | `BL-SL-09` | Mede os critérios de avanço de cada fase (`DEC-SL-16`) |",
+          "body": "| ID | Ordem | Camada | Item | HUs | MoSCoW | Release | Valor | Esforço | Depende de | Por quê |\n|---|---|---|---|---|---|---|---|---|---|---|\n| `BL-SL-19` | 25 | Negócio | Protocolo de atendimento escrito com a SEALog, se a SEALog quiser escrevê-lo | — | Must | R2 | Alto | M | — | Sem protocolo escrito, o agente se apoia nos dados do pedido e do relato (`Q-SL-05`) |\n| `BL-SL-20` | 26 | Front | Painel de chamados | `HU-SL-018` | Must | R2 | Alto | M | `BL-SL-13` | Nenhuma ocorrência tratada fora do painel; resolve o caso \"O buquê de sábado\" |\n| `BL-SL-40` | 27 | Agente | Chamado aberto pela API para o agente de ocorrências, com chave própria | — | Must | R2 | Alto | M | `BL-SL-20`, `BL-SL-34` | O agente abre e lê chamados só pela API, nunca direto no banco (`RNF-SL-11`) |\n| `BL-SL-23` | 28 | Agente | Relato de problema com o agente de ocorrências | `HU-SL-017` | Must | R2 | Alto | G | `BL-SL-19`, `BL-SL-40` | A loja relata a qualquer hora e o chamado chega com sugestão (`DEC-SL-10`) |\n| `BL-SL-22` | 29 | Back | Devolução no galpão e decisão | `HU-SL-019` | Must | R2 | Alto | M | `BL-SL-20` | Os quatro destinos registrados (`DEC-SL-09`) |\n| `BL-SL-21` | 30 | Canal | Aviso automático à loja | `HU-SL-020` | Must | R2 | Alto | P | `BL-SL-05`, `BL-SL-20` | A loja sabe do problema antes do consumidor (`DEC-SL-11`) |\n| `BL-SL-24` | 31 | Back | Entregas afetadas por loja e aviso em lote | `HU-SL-021` | Must | R2 | Alto | M | `BL-SL-21` | Resolve o caso \"A segunda-feira de chuva\": um aviso por loja em vez de 120 mensagens |\n| `BL-SL-43` | 32 | Front | Exportação da lista de entregas para o financeiro | — | Must | R2 | Alto | P | `BL-SL-09` | Até o fechamento, o financeiro confere pela lista exportada |\n| `BL-SL-42` | 33 | Front | Painel de chamados em tempo real | — | Should | R2 | Médio | M | `BL-SL-20` | A equipe vê o chamado novo sem recarregar a tela (`RNF-SL-09`) |\n| `BL-SL-25` | 34 | Front | Manutenção dos dados comerciais da loja | `HU-SL-006` | Could | R2 | Baixo | P | `BL-SL-02` | Até lá, o cadastro inicial basta; a mudança passa pelo coordenador |\n| `BL-SL-26` | 35 | Front | Painel de adoção | — | Should | R2 | Médio | P | `BL-SL-09` | Mede os critérios de avanço de cada fase (`DEC-SL-16`) |",
           "ids": [
             "BL-SL-19",
             "Q-SL-05",
@@ -8693,7 +8710,7 @@
           "anchor": "DEC-SL-10",
           "level": 3,
           "title": "DEC-SL-10 — A IA é um agente de ocorrências que sugere; a decisão é humana",
-          "body": "| | |\n|---|---|\n| **Status** | Tomada |\n| **Data** | 29/10/2026 |\n| **Tema** | Produto |\n| **Contexto** | O planejamento da equipe previa IA no roteamento e numa recomendação a partir do motivo da devolução, com cuidado com dados sensíveis. O plano do agente detalhou dois agentes: um de consulta de status e um de ocorrências |\n| **Decisão** | Fica só o agente de ocorrências. A loja relata o problema pelo WhatsApp; o agente classifica o tipo, colhe o relato e as fotos, compara com o protocolo de atendimento da SEALog e abre um chamado no painel com uma ação sugerida. Uma pessoa aprova, muda ou recusa. O agente não recebe nome, telefone nem endereço |\n| **Alternativas descartadas** | Agente de consulta de status: o botão de acompanhar responde do banco, sem IA, e sem custo de modelo — fica fora por enquanto. IA decidindo sozinha: a decisão envolve dinheiro e relação com a loja. Roteamento por IA: substituído pela tabela de regiões (`DEC-SL-05`) |\n| **Consequências** | Depende de a SEALog escrever o protocolo de atendimento (`Q-SL-05`) e de definir quem aprova (`Q-SL-06`). Sem protocolo, o agente só classifica e resume |\n| **Referências** | `RN-SL-036` a `RN-SL-040`, `HU-SL-017`, `HU-SL-018`, `DIV-SL-04`, `DIV-SL-08`; Plano do agente |",
+          "body": "| | |\n|---|---|\n| **Status** | Tomada |\n| **Data** | 29/10/2026 |\n| **Tema** | Produto |\n| **Contexto** | O planejamento da equipe previa IA no roteamento e numa recomendação a partir do motivo da devolução, com cuidado com dados sensíveis. O plano do agente detalhou dois agentes: um de consulta de status e um de ocorrências |\n| **Decisão** | Fica só o agente de ocorrências. A loja relata o problema pelo WhatsApp; o agente classifica o tipo, colhe o relato e as fotos, compara com o protocolo de atendimento da SEALog e abre um chamado no painel com uma ação sugerida. Uma pessoa aprova, muda ou recusa. O agente não recebe nome, telefone nem endereço |\n| **Alternativas descartadas** | Agente de consulta de status: o botão de acompanhar responde do banco, sem IA, e sem custo de modelo — fica fora por enquanto. IA decidindo sozinha: a decisão envolve dinheiro e relação com a loja. Roteamento por IA: substituído pela tabela de regiões (`DEC-SL-05`) |\n| **Consequências** | Não há protocolo de atendimento escrito por enquanto (`Q-SL-05`): o agente se apoia nos dados do pedido e do relato, e o coordenador, que é quem aprova (`Q-SL-06`), trata cada chamado |\n| **Referências** | `RN-SL-036` a `RN-SL-040`, `HU-SL-017`, `HU-SL-018`, `DIV-SL-04`, `DIV-SL-08`; Plano do agente |",
           "ids": [
             "DEC-SL-10",
             "DEC-SL-05",
@@ -8711,7 +8728,7 @@
           "anchor": "DEC-SL-11",
           "level": 3,
           "title": "DEC-SL-11 — Avisos pelo WhatsApp, não por e-mail",
-          "body": "| | |\n|---|---|\n| **Status** | Tomada |\n| **Data** | 29/10/2026 |\n| **Tema** | Produto |\n| **Contexto** | A lista da equipe previa notificação por e-mail (RF-09). No caso \"O buquê de sábado\", a floricultura soube do problema pela consumidora, uma hora e meia depois do aviso do motorista (Enunciado §8). O atendimento vai só até 12h no sábado (Enunciado §2) |\n| **Decisão** | Todo aviso à loja vai pela mesma conversa do WhatsApp em que ela pede: pedido recebido, problema na entrega, decisão e aviso em lote. O aviso sai sozinho, sem depender do horário do atendimento |\n| **Alternativas descartadas** | E-mail: a loja pequena não acompanha e-mail ao longo do dia. Plantão no atendimento: custo de pessoal e continua dependendo de alguém ver o grupo |\n| **Consequências** | Aviso iniciado pela empresa usa modelo de mensagem aprovado e tem custo por mensagem (`DEC-SL-15`). Se o destinatário também recebe aviso está em `Q-SL-15` |\n| **Referências** | `RN-SL-043` a `RN-SL-045`, `HU-SL-020`, `HU-SL-021`, `DIV-SL-02`, `DIV-SL-05` |",
+          "body": "| | |\n|---|---|\n| **Status** | Tomada |\n| **Data** | 29/10/2026 |\n| **Tema** | Produto |\n| **Contexto** | A lista da equipe previa notificação por e-mail (RF-09). No caso \"O buquê de sábado\", a floricultura soube do problema pela consumidora, uma hora e meia depois do aviso do motorista (Enunciado §8). O atendimento vai só até 12h no sábado (Enunciado §2) |\n| **Decisão** | Todo aviso à loja vai pela mesma conversa do WhatsApp em que ela pede: pedido recebido, problema na entrega, decisão e aviso em lote. O aviso sai sozinho, sem depender do horário do atendimento |\n| **Alternativas descartadas** | E-mail: a loja pequena não acompanha e-mail ao longo do dia. Plantão no atendimento: custo de pessoal e continua dependendo de alguém ver o grupo |\n| **Consequências** | Aviso iniciado pela empresa usa modelo de mensagem aprovado e tem custo por mensagem (`DEC-SL-15`). O destinatário recebe aviso só se algo der errado (`Q-SL-15`) |\n| **Referências** | `RN-SL-043` a `RN-SL-045`, `HU-SL-020`, `HU-SL-021`, `DIV-SL-02`, `DIV-SL-05` |",
           "ids": [
             "DEC-SL-11",
             "DEC-SL-15",
@@ -8818,7 +8835,7 @@
           "anchor": "DEC-SL-15",
           "level": 3,
           "title": "DEC-SL-15 — WhatsApp pela plataforma oficial da Meta",
-          "body": "| | |\n|---|---|\n| **Status** | Proposta |\n| **Data** | 29/10/2026 |\n| **Tema** | Infraestrutura |\n| **Contexto** | O menu, o formulário e os avisos automáticos dependem de envio e recebimento programados no número da SEALog (`DEC-SL-02`, `DEC-SL-11`) |\n| **Decisão** | Usar a plataforma oficial de mensagens da Meta, com formulários do WhatsApp para o pedido e modelos de mensagem de utilidade aprovados para os avisos. O pedido de aprovação dos modelos começa na primeira release, porque o prazo é da Meta |\n| **Alternativas descartadas** | Automação não oficial do WhatsApp: risco de bloqueio do número. SMS ou e-mail: a loja não está lá |\n| **Consequências** | Custo por mensagem iniciada pela empresa; a resposta dentro da janela de atendimento aberta pela loja não é cobrada, a conferir na tabela vigente. Se a SEALog já tem conta comercial e quem paga está em `Q-SL-12` |\n| **Referências** | `INT-001`, `RN-SL-043`, `DIV-SL-05`, `Q-SL-12` |",
+          "body": "| | |\n|---|---|\n| **Status** | Proposta |\n| **Data** | 29/10/2026 |\n| **Tema** | Infraestrutura |\n| **Contexto** | O menu, o formulário e os avisos automáticos dependem de envio e recebimento programados no número da SEALog (`DEC-SL-02`, `DEC-SL-11`) |\n| **Decisão** | Usar a plataforma oficial de mensagens da Meta, com formulários do WhatsApp para o pedido e modelos de mensagem de utilidade aprovados para os avisos. O pedido de aprovação dos modelos começa na primeira release, porque o prazo é da Meta |\n| **Alternativas descartadas** | Automação não oficial do WhatsApp: risco de bloqueio do número. SMS ou e-mail: a loja não está lá |\n| **Consequências** | Custo por mensagem iniciada pela empresa; a resposta dentro da janela de atendimento aberta pela loja não é cobrada, a conferir na tabela vigente. A SEALog já tem conta comercial e paga as mensagens (`Q-SL-12`) |\n| **Referências** | `INT-001`, `RN-SL-043`, `DIV-SL-05`, `Q-SL-12` |",
           "ids": [
             "DEC-SL-15",
             "DEC-SL-02",
@@ -8920,7 +8937,7 @@
           "anchor": "2-riscos-do-sealog",
           "level": 2,
           "title": "2. Riscos do SEALog",
-          "body": "| ID | Risco | Mitigação |\n|---|---|---|\n| `DIV-SL-05` | Conta e custo do WhatsApp | Pedir a conta e os modelos cedo; avisos com texto pronto no painel enquanto isso |\n| `DIV-SL-06` | Terceirizada não adotar a integração | API, portal e planilha com o mesmo padrão; entrega sem retorno sinalizada; pagamento só com comprovante |\n| `DIV-SL-07` | \"A parceira diz que entregou\" | Comprovante padrão obrigatório; recebedor não autorizado abre chamado |\n| `DIV-SL-08` | Dados pessoais no modelo de IA e nas fotos | O modelo não recebe dados do destinatário; guarda definida com a SEALog (`Q-SL-16`) |\n| `DIV-SL-09` | Adoção e custo, com a meta de 400 entregas por dia | Serviços pagos por uso; entrada gradual (`Q-SL-14`) |",
+          "body": "| ID | Risco | Mitigação |\n|---|---|---|\n| `DIV-SL-05` | Conta e custo do WhatsApp | Pedir a conta e os modelos cedo; avisos com texto pronto no painel enquanto isso |\n| `DIV-SL-06` | Terceirizada não adotar a integração | API, portal e planilha com o mesmo padrão; entrega sem retorno sinalizada; pagamento só com comprovante |\n| `DIV-SL-07` | \"A parceira diz que entregou\" | Comprovante padrão obrigatório; recebedor não autorizado abre chamado |\n| `DIV-SL-08` | Dados pessoais no modelo de IA e nas fotos | O modelo não recebe dados do destinatário; guarda sem prazo, a rever pela LGPD (`Q-SL-16`) |\n| `DIV-SL-09` | Adoção e custo, com a meta de 400 entregas por dia | Serviços pagos por uso; entrada gradual (`Q-SL-14`) |",
           "ids": [
             "DIV-SL-05",
             "DIV-SL-06",
@@ -8935,15 +8952,12 @@
           "anchor": "3-perguntas-que-bloqueiam",
           "level": 2,
           "title": "3. Perguntas que bloqueiam",
-          "body": "As perguntas sem as quais uma parte do sistema não fecha:\n\n| Pergunta | O que bloqueia |\n|---|---|\n| `Q-SL-05` | A sugestão do agente de ocorrências: sem protocolo, ela fica genérica |\n| `Q-SL-07` | A regra formal do que volta ao galpão |\n| `Q-SL-08`, `Q-SL-09` | O valor da cobrança das lojas e do pagamento das terceirizadas |\n| `Q-SL-12` | O pedido pelo WhatsApp e o aviso proativo |\n| `Q-SL-02`, `Q-SL-03` | O que vai no despacho e a rotina do galpão |\n\nA lista completa está em\n[`docs/01-sealog/09-divergencias-e-lacunas.md`](../01-sealog/09-divergencias-e-lacunas.md) §3.",
+          "body": "As perguntas sem as quais uma parte do sistema não fecha:\n\n| Pergunta | O que bloqueia |\n|---|---|\n| `Q-SL-04` | Como a loja pede a alteração por código do produto, em lojas grandes |\n| `Q-SL-07` | O prazo de guarda do pacote no galpão |\n| `Q-SL-08`, `Q-SL-09` | O valor da cobrança das lojas e do pagamento das terceirizadas (fora da apresentação) |\n\nA lista completa está em\n[`docs/01-sealog/09-divergencias-e-lacunas.md`](../01-sealog/09-divergencias-e-lacunas.md) §3.",
           "ids": [
-            "Q-SL-05",
+            "Q-SL-04",
             "Q-SL-07",
             "Q-SL-08",
-            "Q-SL-09",
-            "Q-SL-12",
-            "Q-SL-02",
-            "Q-SL-03"
+            "Q-SL-09"
           ]
         }
       ]
@@ -9075,7 +9089,7 @@
           "anchor": "2-custos",
           "level": 2,
           "title": "2. Custos",
-          "body": "Patamar 1 (até cerca de 400 entregas por dia e duas terceirizadas), sem o agente de consulta de\nstatus, que ficou fora por enquanto (`DEC-SL-10`).\n\n| Item | Fornecedor e plano | O que inclui | Custo estimado | Quando muda |\n|---|---|---|---|---|\n| WhatsApp | Plataforma oficial da Meta | Menu, formulário, acompanhamento, avisos e a conversa do agente | **R$ 150 a R$ 450 por mês**, pela estimativa de 3.000 conversas a R$ 0,05 a R$ 0,15 cada | A Meta cobra por mensagem de modelo enviada pela empresa — os avisos — e não cobra a resposta dentro da janela de atendimento aberta pela loja; a conferir na tabela vigente. Quem paga: `Q-SL-12` |\n| Automação do agente | n8n Cloud | Assinatura da plataforma, sem servidor para manter | **R$ 120 a R$ 250 por mês** (20 a 40 euros) | Varia com o euro e com o limite de execuções do plano |\n| Modelo de linguagem do agente | OpenAI, GPT-4o | Cerca de 1.000 atendimentos de ocorrência por mês, cerca de 4.000 trocas de mensagem | **R$ 90 a R$ 120 por mês** (16 a 22 dólares) | Cresce com o número de ocorrências, não de entregas |\n| **Subtotal dos serviços** | | | **R$ 360 a R$ 820 por mês** | |\n| Banco, arquivos e backup | Supabase Pro | Banco de 8 GB, 100 GB de arquivos, 250 GB de tráfego, backup diário guardado por 7 dias, tempo real | **R$ 140 a R$ 165 por mês** (25 a 30 dólares) | Banco acima de 8 GB (0,125 dólar por GB), arquivos acima de 100 GB (0,021 dólar por GB), computação maior |\n| Servidor do back end | Render, serviço web Standard (1 CPU, 2 GB) | O FastAPI, o webhook, as tarefas e o tempo real | **R$ 140 por mês** (25 dólares) | Gatilhos de `escalabilidade`. O plano Starter (512 MB, 7 dólares) existe, mas a leitura de planilha pede memória: não serve para produção |\n| Homologação | Render, serviço web Starter | Cópia do back end para testar versões antes da produção | **R$ 40 por mês** (7 dólares) | Pode ser desligada fora dos ciclos de teste |\n| Painel e portal | Render, site estático, ou Vercel Pro | O código React, servido por CDN | **R$ 0** no site estático do Render; **R$ 110 por mês** (20 dólares) na Vercel | O plano gratuito da Vercel não permite uso comercial; o site estático dispensa o plano pago |\n| **Subtotal de infraestrutura** | | | **R$ 315 a R$ 450 por mês** | |\n| **Total mensal** | | | **R$ 675 a R$ 1.270** | Cerca de **R$ 0,06 a R$ 0,12 por entrega**, a 10.400 entregas por mês |\n| Monitoramento externo, domínio e cópia das fotos em segundo fornecedor | — | — | **Não estimado** | Planos gratuitos costumam bastar para o monitor; confirmar o uso comercial. A cópia custa centavos por GB |\n| Desenvolvimento | — | Agente de ocorrências: 10 a 14 dias úteis, com o mapeamento do protocolo | **Não estimado em reais** | O esforço relativo de cada item está no backlog |\n\n**As fotos não pesam no custo.** São cerca de 10.400 por mês. Comprimidas no envio para perto de\n500 KB, dão cerca de 5 GB por mês e levam uns 20 meses para encher os 100 GB do plano; sem\ncompressão, perto de 15 GB por mês e uns 7 meses. Depois disso, 100 GB a mais custam cerca de\n2 dólares por mês. O que decide a guarda é a LGPD (`Q-SL-16`), não o preço.\n\n**O que pesa.** Com cerca de 10.400 entregas por mês, a infraestrutura é quase **custo fixo**:\nquanto mais entregas, menor o custo por entrega. O WhatsApp continua sendo a maior parcela e a única\nque cresce com as entregas. A faixa dele parte de 3.000 conversas por mês; se cada entrega gerar um\naviso à loja, são cerca de 10.400 mensagens, mais de três vezes esse volume. A forma mais simples de\nsegurar a conta é avisar por loja, não por entrega, nos dias de muitas ocorrências (`RN-SL-044`). O\nmodelo de linguagem cresce com as ocorrências: quanto melhor o pedido na entrada e o padrão de\ncomprovante, menos ocorrência e menos custo.",
+          "body": "Patamar 1 (até cerca de 400 entregas por dia e duas terceirizadas), sem o agente de consulta de\nstatus, que ficou fora por enquanto (`DEC-SL-10`).\n\n| Item | Fornecedor e plano | O que inclui | Custo estimado | Quando muda |\n|---|---|---|---|---|\n| WhatsApp | Plataforma oficial da Meta | Menu, formulário, acompanhamento, avisos e a conversa do agente | **R$ 150 a R$ 450 por mês**, pela estimativa de 3.000 conversas a R$ 0,05 a R$ 0,15 cada | A Meta cobra por mensagem de modelo enviada pela empresa — os avisos — e não cobra a resposta dentro da janela de atendimento aberta pela loja; a conferir na tabela vigente. Quem paga: a SEALog (`Q-SL-12`) |\n| Automação do agente | n8n Cloud | Assinatura da plataforma, sem servidor para manter | **R$ 120 a R$ 250 por mês** (20 a 40 euros) | Varia com o euro e com o limite de execuções do plano |\n| Modelo de linguagem do agente | OpenAI, GPT-4o | Cerca de 1.000 atendimentos de ocorrência por mês, cerca de 4.000 trocas de mensagem | **R$ 90 a R$ 120 por mês** (16 a 22 dólares) | Cresce com o número de ocorrências, não de entregas |\n| **Subtotal dos serviços** | | | **R$ 360 a R$ 820 por mês** | |\n| Banco, arquivos e backup | Supabase Pro | Banco de 8 GB, 100 GB de arquivos, 250 GB de tráfego, backup diário guardado por 7 dias, tempo real | **R$ 140 a R$ 165 por mês** (25 a 30 dólares) | Banco acima de 8 GB (0,125 dólar por GB), arquivos acima de 100 GB (0,021 dólar por GB), computação maior |\n| Servidor do back end | Render, serviço web Standard (1 CPU, 2 GB) | O FastAPI, o webhook, as tarefas e o tempo real | **R$ 140 por mês** (25 dólares) | Gatilhos de `escalabilidade`. O plano Starter (512 MB, 7 dólares) existe, mas a leitura de planilha pede memória: não serve para produção |\n| Homologação | Render, serviço web Starter | Cópia do back end para testar versões antes da produção | **R$ 40 por mês** (7 dólares) | Pode ser desligada fora dos ciclos de teste |\n| Painel e portal | Render, site estático, ou Vercel Pro | O código React, servido por CDN | **R$ 0** no site estático do Render; **R$ 110 por mês** (20 dólares) na Vercel | O plano gratuito da Vercel não permite uso comercial; o site estático dispensa o plano pago |\n| **Subtotal de infraestrutura** | | | **R$ 315 a R$ 450 por mês** | |\n| **Total mensal** | | | **R$ 675 a R$ 1.270** | Cerca de **R$ 0,06 a R$ 0,12 por entrega**, a 10.400 entregas por mês |\n| Monitoramento externo, domínio e cópia das fotos em segundo fornecedor | — | — | **Não estimado** | Planos gratuitos costumam bastar para o monitor; confirmar o uso comercial. A cópia custa centavos por GB |\n| Desenvolvimento | — | Agente de ocorrências: 10 a 14 dias úteis, com o mapeamento do protocolo | **Não estimado em reais** | O esforço relativo de cada item está no backlog |\n\n**As fotos não pesam no custo.** São cerca de 10.400 por mês. Comprimidas no envio para perto de\n500 KB, dão cerca de 5 GB por mês e levam uns 20 meses para encher os 100 GB do plano; sem\ncompressão, perto de 15 GB por mês e uns 7 meses. Depois disso, 100 GB a mais custam cerca de\n2 dólares por mês. O que decide a guarda é a LGPD (`Q-SL-16`), não o preço.\n\n**O que pesa.** Com cerca de 10.400 entregas por mês, a infraestrutura é quase **custo fixo**:\nquanto mais entregas, menor o custo por entrega. O WhatsApp continua sendo a maior parcela e a única\nque cresce com as entregas. A faixa dele parte de 3.000 conversas por mês; se cada entrega gerar um\naviso à loja, são cerca de 10.400 mensagens, mais de três vezes esse volume. A forma mais simples de\nsegurar a conta é avisar por loja, não por entrega, nos dias de muitas ocorrências (`RN-SL-044`). O\nmodelo de linguagem cresce com as ocorrências: quanto melhor o pedido na entrada e o padrão de\ncomprovante, menos ocorrência e menos custo.",
           "ids": [
             "DEC-SL-10",
             "Q-SL-12",
@@ -9111,12 +9125,11 @@
           "anchor": "5-a-confirmar",
           "level": 2,
           "title": "5. A confirmar",
-          "body": "| Item | Proposta | Quem decide |\n|---|---|---|\n| Região dos dados | Opção A da seção 1 | Equipe e SEALog |\n| Hospedagem do painel | Site estático no Render, a não ser que o Next.js precise de página montada no servidor | Equipe de front end |\n| Login do painel e do portal | Módulo de acesso do back end (`RNF-SL-10`, `RNF-SL-11`); o Supabase Auth é uma opção | Equipe de back end |\n| Cópia das fotos | Segundo armazenamento de outro fornecedor, por tarefa agendada | Equipe de infraestrutura |\n| Prazo de guarda das fotos | `Q-SL-16` | SEALog |\n| Conta comercial do WhatsApp e quem paga | `Q-SL-12` | SEALog |",
+          "body": "| Item | Proposta | Quem decide |\n|---|---|---|\n| Região dos dados | Opção A da seção 1 | Equipe e SEALog |\n| Hospedagem do painel | Site estático no Render, a não ser que o Next.js precise de página montada no servidor | Equipe de front end |\n| Login do painel e do portal | Módulo de acesso do back end (`RNF-SL-10`, `RNF-SL-11`); o Supabase Auth é uma opção | Equipe de back end |\n| Cópia das fotos | Segundo armazenamento de outro fornecedor, por tarefa agendada | Equipe de infraestrutura |\n| Prazo de guarda das fotos | `Q-SL-16` | SEALog |",
           "ids": [
             "RNF-SL-10",
             "RNF-SL-11",
-            "Q-SL-16",
-            "Q-SL-12"
+            "Q-SL-16"
           ]
         }
       ]
@@ -9157,7 +9170,7 @@
           "anchor": "3-pontos-em-aberto",
           "level": 2,
           "title": "3. Pontos em aberto",
-          "body": "| Integração | Pergunta |\n|---|---|\n| `INT-001` | Conta comercial, modelos aprovados e quem paga as mensagens (`Q-SL-12`); risco em `DIV-SL-05` |\n| `INT-002` | Terceirizada que não adota a API (`DIV-SL-06`) |\n| `INT-004` | Protocolo de atendimento da SEALog (`Q-SL-05`); dados pessoais e modelo de IA (`DIV-SL-08`) |\n\n**Referências** — [`docs/01-sealog/07-integracoes.md`](../01-sealog/07-integracoes.md); Enunciado §2;\nEncontro 1; Plano do agente.",
+          "body": "| Integração | Pergunta |\n|---|---|\n| `INT-001` | Conta comercial já existe e a SEALog paga as mensagens (`Q-SL-12`); modelos aprovados pela Meta a confirmar; risco em `DIV-SL-05` |\n| `INT-002` | Terceirizada que não adota a API (`DIV-SL-06`) |\n| `INT-004` | Protocolo de atendimento da SEALog (`Q-SL-05`); dados pessoais e modelo de IA (`DIV-SL-08`) |\n\n**Referências** — [`docs/01-sealog/07-integracoes.md`](../01-sealog/07-integracoes.md); Enunciado §2;\nEncontro 1; Plano do agente.",
           "ids": [
             "INT-001",
             "Q-SL-12",
@@ -9406,7 +9419,7 @@
           "anchor": "1-8-o-que-mudou-na-lista-da-equipe",
           "level": 3,
           "title": "1.8 O que mudou na lista da equipe",
-          "body": "| Item da lista | O que aconteceu | Por quê |\n|---|---|---|\n| RF-01, RF-03 | Mantidos, como `RF-SL-05` e `RF-SL-06`. O cadastro da loja é feito pela equipe | A loja continua no WhatsApp e não acessa painel |\n| RF-02 Autenticação de clientes | Mudou: a loja é identificada pelo número de WhatsApp autorizado, sem senha (`RF-SL-05`). A senha ficou para a equipe e as terceirizadas (`RF-SL-24`) | Encontro 1 [08:38]: validação do número de origem |\n| RF-04 Sincronização de dados comerciais | Absorvido pelo `RF-SL-06`: com um banco único, não há o que sincronizar | Decisão da equipe de substituir a planilha por banco |\n| RF-05, RF-06 Cadastro e análise de motoristas | Saíram. No lugar, o cadastro de terceirizadas (`RF-SL-07`) | Encontro 1 [13:15], [17:36]: o motorista é da terceirizada |\n| RF-09 Notificação por e-mail | Mudou: o aviso vai pelo WhatsApp (`RF-SL-20`) | A loja já está no WhatsApp; e-mail não é o canal da operação |\n| RF-10 Forma de coleta | Mudou: quem coleta é a terceirizada (`RF-SL-11`); as janelas estão em `Q-SL-02` | Encontro 1 [15:19] |\n| RF-11 Identificação dos pacotes | Mantido, como código SEALog sem etiqueta impressa (`RF-SL-11`) | Decisão da equipe |\n| RF-12 Distribuição por motorista | Substituído pela distribuição por região à terceirizada (`RF-SL-10`) | O motorista é da terceirizada |\n| RF-13 Visualização pelo motorista | Substituído pelo despacho à terceirizada (`RF-SL-11`) | O SEALog não constrói nada para o motorista |\n| RF-14, RF-15 | Mantidos, agora vindos da terceirizada (`RF-SL-13` a `RF-SL-16`) | Encontro 1 [25:39], [40:16] |\n| RF-16, RF-17, RF-18, RF-19, RF-20 | Mantidos (`RF-SL-19`, `RF-SL-17`, `RF-SL-03`, `RF-SL-12`); o RF-20 avisa a terceirizada, não o motorista | — |\n| Novos | `RF-SL-02` (acompanhar pelo WhatsApp), `RF-SL-08` (regiões), `RF-SL-15` (planilha traduzida), `RF-SL-21` (afetados por loja), `RF-SL-22`, `RF-SL-23` (financeiro) | Os casos do enunciado e o Encontro 1 |",
+          "body": "| Item da lista | O que aconteceu | Por quê |\n|---|---|---|\n| RF-01, RF-03 | Mantidos, como `RF-SL-05` e `RF-SL-06`. O cadastro da loja é feito pela equipe | A loja continua no WhatsApp e não acessa painel |\n| RF-02 Autenticação de clientes | Mudou: a loja é identificada pelo número de WhatsApp autorizado, sem senha (`RF-SL-05`). A senha ficou para a equipe e as terceirizadas (`RF-SL-24`) | Encontro 1 [08:38]: validação do número de origem |\n| RF-04 Sincronização de dados comerciais | Absorvido pelo `RF-SL-06`: com um banco único, não há o que sincronizar | Decisão da equipe de substituir a planilha por banco |\n| RF-05, RF-06 Cadastro e análise de motoristas | Saíram. No lugar, o cadastro de terceirizadas (`RF-SL-07`) | Encontro 1 [13:15], [17:36]: o motorista é da terceirizada |\n| RF-09 Notificação por e-mail | Mudou: o aviso vai pelo WhatsApp (`RF-SL-20`) | A loja já está no WhatsApp; e-mail não é o canal da operação |\n| RF-10 Forma de coleta | Mudou: quem coleta é só a terceirizada (`RF-SL-11`); a loja não leva mais ao galpão (`Q-SL-02`) | Encontro 1 [15:19] |\n| RF-11 Identificação dos pacotes | Mantido, como código SEALog sem etiqueta impressa (`RF-SL-11`) | Decisão da equipe |\n| RF-12 Distribuição por motorista | Substituído pela distribuição por região à terceirizada (`RF-SL-10`) | O motorista é da terceirizada |\n| RF-13 Visualização pelo motorista | Substituído pelo despacho à terceirizada (`RF-SL-11`) | O SEALog não constrói nada para o motorista |\n| RF-14, RF-15 | Mantidos, agora vindos da terceirizada (`RF-SL-13` a `RF-SL-16`) | Encontro 1 [25:39], [40:16] |\n| RF-16, RF-17, RF-18, RF-19, RF-20 | Mantidos (`RF-SL-19`, `RF-SL-17`, `RF-SL-03`, `RF-SL-12`); o RF-20 avisa a terceirizada, não o motorista | — |\n| Novos | `RF-SL-02` (acompanhar pelo WhatsApp), `RF-SL-08` (regiões), `RF-SL-15` (planilha traduzida), `RF-SL-21` (afetados por loja), `RF-SL-22`, `RF-SL-23` (financeiro) | Os casos do enunciado e o Encontro 1 |",
           "ids": [
             "RF-SL-05",
             "RF-SL-06",
@@ -9580,7 +9593,7 @@
           "anchor": "6-quando-a-ordem-diverge-da-prioridade-da-historia",
           "level": 2,
           "title": "6. Quando a ordem diverge da prioridade da história",
-          "body": "Cada história de usuário tem uma prioridade (Alta ou Média) escrita por quem a descreveu. A\n**ordem do backlog** soma a ela o esforço e a dependência, e por isso as duas podem divergir. A\npágina do backlog marca cada divergência com o selo \"≠ ordem\".\n\n| História | Prioridade | Ordem no backlog | Por quê |\n|---|---|---|---|\n| `HU-SL-022`, `HU-SL-023` (fechamentos) | Média | Must na R3 | São a razão de ser da release financeira |\n| `HU-SL-017` (agente de ocorrências) | Alta | R2 | Depende do protocolo de atendimento, que a SEALog ainda vai escrever (`Q-SL-05`) |",
+          "body": "Cada história de usuário tem uma prioridade (Alta ou Média) escrita por quem a descreveu. A\n**ordem do backlog** soma a ela o esforço e a dependência, e por isso as duas podem divergir. A\npágina do backlog marca cada divergência com o selo \"≠ ordem\".\n\n| História | Prioridade | Ordem no backlog | Por quê |\n|---|---|---|---|\n| `HU-SL-022`, `HU-SL-023` (fechamentos) | Média | Must na R3 | São a razão de ser da release financeira |\n| `HU-SL-017` (agente de ocorrências) | Alta | R2 | Não depende de protocolo escrito: a SEALog não tem um por enquanto (`Q-SL-05`) |",
           "ids": [
             "HU-SL-022",
             "HU-SL-023",
@@ -9592,10 +9605,9 @@
           "anchor": "7-tecnicas-consideradas-e-nao-usadas",
           "level": 2,
           "title": "7. Técnicas consideradas e não usadas",
-          "body": "| Técnica | Por que não |\n|---|---|\n| **RICE e ICE** (alcance, impacto, confiança, esforço) | Pedem dados de alcance e de confiança que a SEALog ainda não tem; com poucas lojas e duas terceirizadas, o alcance é quase igual para todos os itens |\n| **Kano** (o que encanta e o que é obrigação) | Exige pesquisa com os clientes; pode entrar depois do piloto, para escolher o que vem na R4 |\n| **Custo do atraso (WSJF)** | Precisa de valor em reais por item; a SEALog não deu orçamento nem número de custo do problema atual |\n| **Ordem só pela prioridade da história** | Ignora dependência e esforço (`DEC-SL-20`) |\n\nQuando a SEALog passar os números que faltam (`Q-SL-02`, volume por dia), RICE e custo do atraso\nficam viáveis, e esta página passa a registrar a mudança.",
+          "body": "| Técnica | Por que não |\n|---|---|\n| **RICE e ICE** (alcance, impacto, confiança, esforço) | Pedem dados de alcance e de confiança que a SEALog ainda não tem; com poucas lojas e duas terceirizadas, o alcance é quase igual para todos os itens |\n| **Kano** (o que encanta e o que é obrigação) | Exige pesquisa com os clientes; pode entrar depois do piloto, para escolher o que vem na R4 |\n| **Custo do atraso (WSJF)** | Precisa de valor em reais por item; a SEALog não deu orçamento nem número de custo do problema atual |\n| **Ordem só pela prioridade da história** | Ignora dependência e esforço (`DEC-SL-20`) |\n\nQuando a SEALog passar os números que faltam (volume por dia), RICE e custo do atraso\nficam viáveis, e esta página passa a registrar a mudança.",
           "ids": [
-            "DEC-SL-20",
-            "Q-SL-02"
+            "DEC-SL-20"
           ]
         },
         {
@@ -10127,18 +10139,18 @@
       "system": "geral",
       "file": "backlog",
       "anchor": "r2-ocorrencias-e-comunicacao",
-      "title": "Protocolo de atendimento escrito com a SEALog",
-      "text": "**Ordem:** 25\n\n**Camada:** Negócio\n\n**MoSCoW:** Must\n\n**Release:** R2\n\n**Valor:** Alto\n\n**Esforço:** M\n\n**Por quê:** Sem protocolo, o agente não tem com o que comparar (`Q-SL-05`)",
+      "title": "Protocolo de atendimento escrito com a SEALog, se a SEALog quiser escrevê-lo",
+      "text": "**Ordem:** 25\n\n**Camada:** Negócio\n\n**MoSCoW:** Must\n\n**Release:** R2\n\n**Valor:** Alto\n\n**Esforço:** M\n\n**Por quê:** Sem protocolo escrito, o agente se apoia nos dados do pedido e do relato (`Q-SL-05`)",
       "via": "tabela",
       "fields": {
         "Ordem": "25",
         "Camada": "Negócio",
-        "Item": "Protocolo de atendimento escrito com a SEALog",
+        "Item": "Protocolo de atendimento escrito com a SEALog, se a SEALog quiser escrevê-lo",
         "MoSCoW": "Must",
         "Release": "R2",
         "Valor": "Alto",
         "Esforço": "M",
-        "Por quê": "Sem protocolo, o agente não tem com o que comparar (`Q-SL-05`)"
+        "Por quê": "Sem protocolo escrito, o agente se apoia nos dados do pedido e do relato (`Q-SL-05`)"
       },
       "severity": null,
       "hasOutcome": null,
@@ -11008,7 +11020,7 @@
       "file": "decisoes",
       "anchor": "DEC-SL-10",
       "title": "A IA é um agente de ocorrências que sugere; a decisão é humana",
-      "text": "| | |\n|---|---|\n| **Status** | Tomada |\n| **Data** | 29/10/2026 |\n| **Tema** | Produto |\n| **Contexto** | O planejamento da equipe previa IA no roteamento e numa recomendação a partir do motivo da devolução, com cuidado com dados sensíveis. O plano do agente detalhou dois agentes: um de consulta de status e um de ocorrências |\n| **Decisão** | Fica só o agente de ocorrências. A loja relata o problema pelo WhatsApp; o agente classifica o tipo, colhe o relato e as fotos, compara com o protocolo de atendimento da SEALog e abre um chamado no painel com uma ação sugerida. Uma pessoa aprova, muda ou recusa. O agente não recebe nome, telefone nem endereço |\n| **Alternativas descartadas** | Agente de consulta de status: o botão de acompanhar responde do banco, sem IA, e sem custo de modelo — fica fora por enquanto. IA decidindo sozinha: a decisão envolve dinheiro e relação com a loja. Roteamento por IA: substituído pela tabela de regiões (`DEC-SL-05`) |\n| **Consequências** | Depende de a SEALog escrever o protocolo de atendimento (`Q-SL-05`) e de definir quem aprova (`Q-SL-06`). Sem protocolo, o agente só classifica e resume |\n| **Referências** | `RN-SL-036` a `RN-SL-040`, `HU-SL-017`, `HU-SL-018`, `DIV-SL-04`, `DIV-SL-08`; Plano do agente |",
+      "text": "| | |\n|---|---|\n| **Status** | Tomada |\n| **Data** | 29/10/2026 |\n| **Tema** | Produto |\n| **Contexto** | O planejamento da equipe previa IA no roteamento e numa recomendação a partir do motivo da devolução, com cuidado com dados sensíveis. O plano do agente detalhou dois agentes: um de consulta de status e um de ocorrências |\n| **Decisão** | Fica só o agente de ocorrências. A loja relata o problema pelo WhatsApp; o agente classifica o tipo, colhe o relato e as fotos, compara com o protocolo de atendimento da SEALog e abre um chamado no painel com uma ação sugerida. Uma pessoa aprova, muda ou recusa. O agente não recebe nome, telefone nem endereço |\n| **Alternativas descartadas** | Agente de consulta de status: o botão de acompanhar responde do banco, sem IA, e sem custo de modelo — fica fora por enquanto. IA decidindo sozinha: a decisão envolve dinheiro e relação com a loja. Roteamento por IA: substituído pela tabela de regiões (`DEC-SL-05`) |\n| **Consequências** | Não há protocolo de atendimento escrito por enquanto (`Q-SL-05`): o agente se apoia nos dados do pedido e do relato, e o coordenador, que é quem aprova (`Q-SL-06`), trata cada chamado |\n| **Referências** | `RN-SL-036` a `RN-SL-040`, `HU-SL-017`, `HU-SL-018`, `DIV-SL-04`, `DIV-SL-08`; Plano do agente |",
       "via": "secao",
       "fields": {
         "Status": "Tomada",
@@ -11017,7 +11029,7 @@
         "Contexto": "O planejamento da equipe previa IA no roteamento e numa recomendação a partir do motivo da devolução, com cuidado com dados sensíveis. O plano do agente detalhou dois agentes: um de consulta de status e um de ocorrências",
         "Decisão": "Fica só o agente de ocorrências. A loja relata o problema pelo WhatsApp; o agente classifica o tipo, colhe o relato e as fotos, compara com o protocolo de atendimento da SEALog e abre um chamado no painel com uma ação sugerida. Uma pessoa aprova, muda ou recusa. O agente não recebe nome, telefone nem endereço",
         "Alternativas descartadas": "Agente de consulta de status: o botão de acompanhar responde do banco, sem IA, e sem custo de modelo — fica fora por enquanto. IA decidindo sozinha: a decisão envolve dinheiro e relação com a loja. Roteamento por IA: substituído pela tabela de regiões (`DEC-SL-05`)",
-        "Consequências": "Depende de a SEALog escrever o protocolo de atendimento (`Q-SL-05`) e de definir quem aprova (`Q-SL-06`). Sem protocolo, o agente só classifica e resume",
+        "Consequências": "Não há protocolo de atendimento escrito por enquanto (`Q-SL-05`): o agente se apoia nos dados do pedido e do relato, e o coordenador, que é quem aprova (`Q-SL-06`), trata cada chamado",
         "Referências": "`RN-SL-036` a `RN-SL-040`, `HU-SL-017`, `HU-SL-018`, `DIV-SL-04`, `DIV-SL-08`; Plano do agente"
       },
       "severity": null,
@@ -11041,7 +11053,7 @@
       "file": "decisoes",
       "anchor": "DEC-SL-11",
       "title": "Avisos pelo WhatsApp, não por e-mail",
-      "text": "| | |\n|---|---|\n| **Status** | Tomada |\n| **Data** | 29/10/2026 |\n| **Tema** | Produto |\n| **Contexto** | A lista da equipe previa notificação por e-mail (RF-09). No caso \"O buquê de sábado\", a floricultura soube do problema pela consumidora, uma hora e meia depois do aviso do motorista (Enunciado §8). O atendimento vai só até 12h no sábado (Enunciado §2) |\n| **Decisão** | Todo aviso à loja vai pela mesma conversa do WhatsApp em que ela pede: pedido recebido, problema na entrega, decisão e aviso em lote. O aviso sai sozinho, sem depender do horário do atendimento |\n| **Alternativas descartadas** | E-mail: a loja pequena não acompanha e-mail ao longo do dia. Plantão no atendimento: custo de pessoal e continua dependendo de alguém ver o grupo |\n| **Consequências** | Aviso iniciado pela empresa usa modelo de mensagem aprovado e tem custo por mensagem (`DEC-SL-15`). Se o destinatário também recebe aviso está em `Q-SL-15` |\n| **Referências** | `RN-SL-043` a `RN-SL-045`, `HU-SL-020`, `HU-SL-021`, `DIV-SL-02`, `DIV-SL-05` |",
+      "text": "| | |\n|---|---|\n| **Status** | Tomada |\n| **Data** | 29/10/2026 |\n| **Tema** | Produto |\n| **Contexto** | A lista da equipe previa notificação por e-mail (RF-09). No caso \"O buquê de sábado\", a floricultura soube do problema pela consumidora, uma hora e meia depois do aviso do motorista (Enunciado §8). O atendimento vai só até 12h no sábado (Enunciado §2) |\n| **Decisão** | Todo aviso à loja vai pela mesma conversa do WhatsApp em que ela pede: pedido recebido, problema na entrega, decisão e aviso em lote. O aviso sai sozinho, sem depender do horário do atendimento |\n| **Alternativas descartadas** | E-mail: a loja pequena não acompanha e-mail ao longo do dia. Plantão no atendimento: custo de pessoal e continua dependendo de alguém ver o grupo |\n| **Consequências** | Aviso iniciado pela empresa usa modelo de mensagem aprovado e tem custo por mensagem (`DEC-SL-15`). O destinatário recebe aviso só se algo der errado (`Q-SL-15`) |\n| **Referências** | `RN-SL-043` a `RN-SL-045`, `HU-SL-020`, `HU-SL-021`, `DIV-SL-02`, `DIV-SL-05` |",
       "via": "secao",
       "fields": {
         "Status": "Tomada",
@@ -11050,7 +11062,7 @@
         "Contexto": "A lista da equipe previa notificação por e-mail (RF-09). No caso \"O buquê de sábado\", a floricultura soube do problema pela consumidora, uma hora e meia depois do aviso do motorista (Enunciado §8). O atendimento vai só até 12h no sábado (Enunciado §2)",
         "Decisão": "Todo aviso à loja vai pela mesma conversa do WhatsApp em que ela pede: pedido recebido, problema na entrega, decisão e aviso em lote. O aviso sai sozinho, sem depender do horário do atendimento",
         "Alternativas descartadas": "E-mail: a loja pequena não acompanha e-mail ao longo do dia. Plantão no atendimento: custo de pessoal e continua dependendo de alguém ver o grupo",
-        "Consequências": "Aviso iniciado pela empresa usa modelo de mensagem aprovado e tem custo por mensagem (`DEC-SL-15`). Se o destinatário também recebe aviso está em `Q-SL-15`",
+        "Consequências": "Aviso iniciado pela empresa usa modelo de mensagem aprovado e tem custo por mensagem (`DEC-SL-15`). O destinatário recebe aviso só se algo der errado (`Q-SL-15`)",
         "Referências": "`RN-SL-043` a `RN-SL-045`, `HU-SL-020`, `HU-SL-021`, `DIV-SL-02`, `DIV-SL-05`"
       },
       "severity": null,
@@ -11155,7 +11167,7 @@
       "file": "decisoes",
       "anchor": "DEC-SL-15",
       "title": "WhatsApp pela plataforma oficial da Meta",
-      "text": "| | |\n|---|---|\n| **Status** | Proposta |\n| **Data** | 29/10/2026 |\n| **Tema** | Infraestrutura |\n| **Contexto** | O menu, o formulário e os avisos automáticos dependem de envio e recebimento programados no número da SEALog (`DEC-SL-02`, `DEC-SL-11`) |\n| **Decisão** | Usar a plataforma oficial de mensagens da Meta, com formulários do WhatsApp para o pedido e modelos de mensagem de utilidade aprovados para os avisos. O pedido de aprovação dos modelos começa na primeira release, porque o prazo é da Meta |\n| **Alternativas descartadas** | Automação não oficial do WhatsApp: risco de bloqueio do número. SMS ou e-mail: a loja não está lá |\n| **Consequências** | Custo por mensagem iniciada pela empresa; a resposta dentro da janela de atendimento aberta pela loja não é cobrada, a conferir na tabela vigente. Se a SEALog já tem conta comercial e quem paga está em `Q-SL-12` |\n| **Referências** | `INT-001`, `RN-SL-043`, `DIV-SL-05`, `Q-SL-12` |",
+      "text": "| | |\n|---|---|\n| **Status** | Proposta |\n| **Data** | 29/10/2026 |\n| **Tema** | Infraestrutura |\n| **Contexto** | O menu, o formulário e os avisos automáticos dependem de envio e recebimento programados no número da SEALog (`DEC-SL-02`, `DEC-SL-11`) |\n| **Decisão** | Usar a plataforma oficial de mensagens da Meta, com formulários do WhatsApp para o pedido e modelos de mensagem de utilidade aprovados para os avisos. O pedido de aprovação dos modelos começa na primeira release, porque o prazo é da Meta |\n| **Alternativas descartadas** | Automação não oficial do WhatsApp: risco de bloqueio do número. SMS ou e-mail: a loja não está lá |\n| **Consequências** | Custo por mensagem iniciada pela empresa; a resposta dentro da janela de atendimento aberta pela loja não é cobrada, a conferir na tabela vigente. A SEALog já tem conta comercial e paga as mensagens (`Q-SL-12`) |\n| **Referências** | `INT-001`, `RN-SL-043`, `DIV-SL-05`, `Q-SL-12` |",
       "via": "secao",
       "fields": {
         "Status": "Proposta",
@@ -11164,7 +11176,7 @@
         "Contexto": "O menu, o formulário e os avisos automáticos dependem de envio e recebimento programados no número da SEALog (`DEC-SL-02`, `DEC-SL-11`)",
         "Decisão": "Usar a plataforma oficial de mensagens da Meta, com formulários do WhatsApp para o pedido e modelos de mensagem de utilidade aprovados para os avisos. O pedido de aprovação dos modelos começa na primeira release, porque o prazo é da Meta",
         "Alternativas descartadas": "Automação não oficial do WhatsApp: risco de bloqueio do número. SMS ou e-mail: a loja não está lá",
-        "Consequências": "Custo por mensagem iniciada pela empresa; a resposta dentro da janela de atendimento aberta pela loja não é cobrada, a conferir na tabela vigente. Se a SEALog já tem conta comercial e quem paga está em `Q-SL-12`",
+        "Consequências": "Custo por mensagem iniciada pela empresa; a resposta dentro da janela de atendimento aberta pela loja não é cobrada, a conferir na tabela vigente. A SEALog já tem conta comercial e paga as mensagens (`Q-SL-12`)",
         "Referências": "`INT-001`, `RN-SL-043`, `DIV-SL-05`, `Q-SL-12`"
       },
       "severity": null,
@@ -11355,7 +11367,7 @@
       "file": "09-divergencias-e-lacunas",
       "anchor": "DIV-SL-01",
       "title": "A terceirização tira o motorista, a rota e a etiqueta do escopo",
-      "text": "> **Divergência `DIV-SL-01`:** o enunciado descreve motoristas próprios, rotas montadas pelo\n> coordenador e etiquetas escritas à mão (Enunciado §2). No Encontro 1, o cliente contou que\n> terceirizou as entregas para duas empresas, uma por região, e que o motorista e a comunicação com\n> ele ficam com a terceirizada (Encontro 1 [13:15], [17:36]).\n\n**Desfecho** — vale a reunião. O SEALog não tem aplicativo do motorista, montagem de rotas nem\netiqueta. No lugar entram o despacho pela tabela de regiões (`RN-SL-023`), o padrão único de\nretorno e comprovante (`RN-SL-019`, `RN-SL-030`) e o código SEALog como identificação do pacote\n(`RN-SL-027`). A coleta na loja passa a ser da terceirizada (`RN-SL-025`).",
+      "text": "> **Divergência `DIV-SL-01`:** o enunciado descreve motoristas próprios, rotas montadas pelo\n> coordenador e etiquetas escritas à mão (Enunciado §2). No Encontro 1, o cliente contou que\n> terceirizou as entregas para duas empresas, uma por região, e que o motorista e a comunicação com\n> ele ficam com a terceirizada (Encontro 1 [13:15], [17:36]).\n\n**Desfecho** — vale a reunião. O SEALog não tem aplicativo do motorista, montagem de rotas nem\netiqueta. No lugar entram o despacho pela tabela de regiões (`RN-SL-023`), o padrão único de\nretorno e comprovante (`RN-SL-019`, `RN-SL-030`) e o código SEALog como identificação do pacote\n(`RN-SL-027`). A coleta na loja passa a ser da terceirizada (`RN-SL-025`). O prazo de entrega ao\ncliente também é responsabilidade da terceirizada, pela resposta da SEALog a `Q-SL-12`.",
       "via": "secao",
       "fields": {},
       "severity": null,
@@ -11365,7 +11377,8 @@
         "RN-SL-019",
         "RN-SL-030",
         "RN-SL-027",
-        "RN-SL-025"
+        "RN-SL-025",
+        "Q-SL-12"
       ]
     },
     {
@@ -11375,7 +11388,7 @@
       "file": "09-divergencias-e-lacunas",
       "anchor": "DIV-SL-02",
       "title": "Itens da lista da equipe que mudaram",
-      "text": "> **Divergência `DIV-SL-02`:** a lista RF-01 a RF-20 do planejamento da equipe foi escrita antes da\n> terceirização. Parte dela pressupõe motorista próprio e conta com senha para a loja.\n\n**Desfecho** — a lista é a base, com estas mudanças, detalhadas em\n[`requisitos`](../00-visao-geral/requisitos.md):\n\n| Item da equipe | O que mudou |\n|---|---|\n| RF-02 Autenticação de clientes | A loja é identificada pelo número de WhatsApp autorizado, sem senha (`RN-SL-054`) |\n| RF-04 Sincronização de dados comerciais | Absorvido no RF-03: com banco único, não há o que sincronizar (`RN-SL-015`) |\n| RF-05, RF-06 Cadastro e análise de motoristas | Substituídos pelo cadastro de terceirizadas (`HU-SL-007`) |\n| RF-09 Notificação por e-mail | O aviso vai pelo WhatsApp, onde a loja já está (`RN-SL-043`) |\n| RF-10 Forma de coleta | A coleta é da terceirizada; se a loja ainda pode levar ao galpão está em `Q-SL-02` |\n| RF-12 Distribuição por motorista | Vira distribuição por terceirizada, pela região (`HU-SL-010`) |\n| RF-13 Visualização pelo motorista | Vira o despacho à terceirizada, pela API ou pelo portal (`HU-SL-011`) |\n| RF-14 Ocorrências do motorista | Vira o Não entregue da terceirizada, que abre chamado (`HU-SL-013`) |\n| RF-20 Avisar o motorista de alterações | Vira avisar a terceirizada (`HU-SL-012`) |\n| Decisão \"roteamento a partir de IA\" | Substituída pela regra fixa de região; a IA ficou no agente de ocorrências (`DEC-SL-05`, `DEC-SL-10`) |",
+      "text": "> **Divergência `DIV-SL-02`:** a lista RF-01 a RF-20 do planejamento da equipe foi escrita antes da\n> terceirização. Parte dela pressupõe motorista próprio e conta com senha para a loja.\n\n**Desfecho** — a lista é a base, com estas mudanças, detalhadas em\n[`requisitos`](../00-visao-geral/requisitos.md):\n\n| Item da equipe | O que mudou |\n|---|---|\n| RF-02 Autenticação de clientes | A loja é identificada pelo número de WhatsApp autorizado, sem senha (`RN-SL-054`) |\n| RF-04 Sincronização de dados comerciais | Absorvido no RF-03: com banco único, não há o que sincronizar (`RN-SL-015`) |\n| RF-05, RF-06 Cadastro e análise de motoristas | Substituídos pelo cadastro de terceirizadas (`HU-SL-007`) |\n| RF-09 Notificação por e-mail | O aviso vai pelo WhatsApp, onde a loja já está (`RN-SL-043`) |\n| RF-10 Forma de coleta | A coleta é só da terceirizada; a loja não leva mais ao galpão (resposta da SEALog a `Q-SL-02`) |\n| RF-12 Distribuição por motorista | Vira distribuição por terceirizada, pela região (`HU-SL-010`) |\n| RF-13 Visualização pelo motorista | Vira o despacho à terceirizada, pela API ou pelo portal (`HU-SL-011`) |\n| RF-14 Ocorrências do motorista | Vira o Não entregue da terceirizada, que abre chamado (`HU-SL-013`) |\n| RF-20 Avisar o motorista de alterações | Vira avisar a terceirizada (`HU-SL-012`) |\n| Decisão \"roteamento a partir de IA\" | Substituída pela regra fixa de região; a IA ficou no agente de ocorrências (`DEC-SL-05`, `DEC-SL-10`) |",
       "via": "secao",
       "fields": {},
       "severity": null,
@@ -11418,7 +11431,7 @@
       "file": "09-divergencias-e-lacunas",
       "anchor": "DIV-SL-04",
       "title": "O plano do agente foi adaptado à logística",
-      "text": "> **Divergência `DIV-SL-04`:** o plano do agente de ocorrências partiu de um modelo de loja virtual:\n> tipos como pedido errado e defeito, políticas como troca em 7 dias e cupom de frete, dados do\n> consumidor no conteúdo enviado. A SEALog não vende produto; transporta. O plano também previa um\n> agente de consulta de status.\n\n**Desfecho** — os tipos de chamado viraram atraso, não entregue, avaria, entregue no endereço\nerrado, recebedor não autorizado, sem retorno e outro (`06-modelo-de-dados.md` §3.4). As ações do\nprotocolo ficam para a SEALog definir (`Q-SL-05`), sem política inventada. O conteúdo enviado ao\nmodelo não leva dados pessoais do destinatário (`RN-SL-038`). O agente de consulta de status não\nexiste por enquanto: o acompanhamento é um botão do menu, sem IA. O mesmo vale para a coleta de CPF\nque ele faria.",
+      "text": "> **Divergência `DIV-SL-04`:** o plano do agente de ocorrências partiu de um modelo de loja virtual:\n> tipos como pedido errado e defeito, políticas como troca em 7 dias e cupom de frete, dados do\n> consumidor no conteúdo enviado. A SEALog não vende produto; transporta. O plano também previa um\n> agente de consulta de status.\n\n**Desfecho** — os tipos de chamado viraram atraso, não entregue, avaria, entregue no endereço\nerrado, recebedor não autorizado, sem retorno e outro (`06-modelo-de-dados.md` §3.4). Não há\nprotocolo escrito por enquanto (`Q-SL-05`): o coordenador trata cada chamado manualmente, com a\nsugestão do agente, sem política inventada. O conteúdo enviado ao modelo não leva dados pessoais do\ndestinatário (`RN-SL-038`). O agente de consulta de status não existe por enquanto: o acompanhamento\né um botão do menu, sem IA. O mesmo vale para a coleta de CPF que ele faria.",
       "via": "secao",
       "fields": {},
       "severity": null,
@@ -11435,7 +11448,7 @@
       "file": "09-divergencias-e-lacunas",
       "anchor": "DIV-SL-05",
       "title": "Conta e custo do WhatsApp",
-      "text": "> **Risco:** o pedido, o acompanhamento e todos os avisos dependem da plataforma oficial do\n> WhatsApp (`INT-001`), que exige conta comercial, modelos de mensagem aprovados pela Meta e custo\n> por mensagem (`Q-SL-12`). Sem ela, o aviso proativo — a resposta ao caso \"O buquê de sábado\" —\n> volta a depender de uma pessoa, e uma pessoa só trabalha no horário do atendimento.\n\nMitigação: pedir a conta e a aprovação dos modelos antes de tudo, como habilitador do backlog\n(`BL-SL-05`). Enquanto não sai, o painel de chamados mostra os avisos a enviar, com o texto pronto.",
+      "text": "> **Risco:** o pedido, o acompanhamento e todos os avisos dependem da plataforma oficial do\n> WhatsApp (`INT-001`), que exige conta comercial, modelos de mensagem aprovados pela Meta e custo\n> por mensagem. A conta comercial já existe (`Q-SL-12`). Sem a aprovação dos modelos, o aviso\n> proativo — a resposta ao caso \"O buquê de sábado\" — volta a depender de uma pessoa, e uma pessoa só\n> trabalha no horário do atendimento.\n\nMitigação: confirmar que os modelos de mensagem estão aprovados antes de tudo, como habilitador do\nbacklog (`BL-SL-05`). Enquanto não sai, o painel de chamados mostra os avisos a enviar, com o texto\npronto.",
       "via": "secao",
       "fields": {},
       "severity": null,
@@ -11453,7 +11466,7 @@
       "file": "09-divergencias-e-lacunas",
       "anchor": "DIV-SL-06",
       "title": "A terceirizada não adotar a integração",
-      "text": "> **Risco:** as terceirizadas \"não têm tanta habilidade com tecnologia\" (Encontro 1 [23:17]). Se o\n> retorno não chegar, o SEALog volta a não saber onde está a entrega.\n\nMitigação na própria solução: três caminhos com o mesmo padrão — API, portal simples e planilha\ntraduzida (`RN-SL-029`); entrega sem retorno sinalizada (`RN-SL-034`); e o pagamento só pelas\nentregas com comprovante aceito (`RN-SL-048`), que dá à terceirizada motivo para informar.",
+      "text": "> **Risco:** as terceirizadas \"não têm tanta habilidade com tecnologia\" (Encontro 1 [23:17]). Se o\n> retorno não chegar, o SEALog volta a não saber onde está a entrega.\n\nMitigação na própria solução: três caminhos com o mesmo padrão — API, portal simples e planilha\ntraduzida (`RN-SL-029`); entrega sem retorno sinalizada depois do prazo estimado pela terceirizada\n(`RN-SL-034`); e o pagamento só pelas entregas com comprovante aceito (`RN-SL-048`), que dá à\nterceirizada motivo para informar.",
       "via": "secao",
       "fields": {},
       "severity": null,
@@ -11471,7 +11484,7 @@
       "file": "09-divergencias-e-lacunas",
       "anchor": "DIV-SL-07",
       "title": "\"A parceira diz que entregou e o destinatário diz que não\"",
-      "text": "> **Risco:** é a preocupação central do cliente depois da terceirização (Encontro 1 [26:53],\n> [38:44]). Hoje cada terceirizada tem seu padrão, e a foto, quando vem, é tirada \"do jeito que o\n> motorista quiser\" (Encontro 1 [43:19]).\n\nMitigação: o comprovante padrão é obrigatório para o Entregue valer (`RN-SL-030`); o recebedor que\nnão é o destinatário nem pessoa autorizada abre chamado (`RN-SL-031`); a loja relata pelo WhatsApp\ne o chamado já traz o comprovante (`HU-SL-017`). Se a foto precisa de requisito mínimo — mostrar o\npacote, a porta, o número — fica para a SEALog (`Q-SL-11`).",
+      "text": "> **Risco:** é a preocupação central do cliente depois da terceirização (Encontro 1 [26:53],\n> [38:44]). Hoje cada terceirizada tem seu padrão, e a foto, quando vem, é tirada \"do jeito que o\n> motorista quiser\" (Encontro 1 [43:19]).\n\nMitigação: o comprovante padrão é obrigatório para o Entregue valer (`RN-SL-030`); o recebedor que\nnão é o destinatário nem pessoa autorizada abre chamado (`RN-SL-031`); a loja relata pelo WhatsApp\ne o chamado já traz o comprovante (`HU-SL-017`). Os motivos de não entrega e a exigência de foto\nficam com a terceirizada (resposta da SEALog a `Q-SL-11`).",
       "via": "secao",
       "fields": {},
       "severity": null,
@@ -11490,7 +11503,7 @@
       "file": "09-divergencias-e-lacunas",
       "anchor": "DIV-SL-08",
       "title": "Dados pessoais no modelo de IA e nas fotos",
-      "text": "> **Segurança:** o agente de ocorrências usa um modelo de linguagem de terceiro, e as fotos do\n> comprovante podem mostrar rosto, documento ou o interior de uma casa. A equipe decidiu ter\n> cuidado com dados sensíveis na IA (Planejamento da equipe).\n\nO modelo recebe só o código, o tipo, o relato e as fotos que a própria loja mandou (`RN-SL-038`).\nAs fotos ficam no armazenamento do SEALog, com acesso por perfil. O prazo de guarda é da SEALog\n(`Q-SL-16`), seguindo a LGPD (Lei 13.709/2018).",
+      "text": "> **Segurança:** o agente de ocorrências usa um modelo de linguagem de terceiro, e as fotos do\n> comprovante podem mostrar rosto, documento ou o interior de uma casa. A equipe decidiu ter\n> cuidado com dados sensíveis na IA (Planejamento da equipe).\n\nO modelo recebe só o código, o tipo, o relato e as fotos que a própria loja mandou (`RN-SL-038`).\nAs fotos ficam no armazenamento do SEALog, com acesso por perfil.\n\n> **Risco aberto:** a SEALog respondeu que as fotos e os dados do destinatário ficam guardados sem\n> prazo (`Q-SL-16`). A LGPD (Lei 13.709/2018) pede finalidade e prazo definidos para esses dados.\n> A resposta precisa ser revista antes de qualquer uso real.",
       "via": "secao",
       "fields": {},
       "severity": null,
@@ -11507,7 +11520,7 @@
       "file": "09-divergencias-e-lacunas",
       "anchor": "DIV-SL-09",
       "title": "Adoção e custo",
-      "text": "> **Risco:** a empresa é pequena, ainda usa planilha e WhatsApp, e o custo pesou na decisão de\n> terceirizar (Encontro 1 [29:03], [30:33]). Ao mesmo tempo, a meta é chegar a cerca de 400\n> entregas por dia no mês que vem, o que \"do jeito que está não vai ser possível\" (Encontro 1\n> [23:40]).\n\nA solução usa serviços pagos por uso e não pede nada novo à loja. A entrada é gradual\n([`adocao-gradual`](../00-visao-geral/adocao-gradual.md)). Quanto tempo a planilha convive com o\nsistema está em `Q-SL-14`.",
+      "text": "> **Risco:** a empresa é pequena, ainda usa planilha e WhatsApp, e o custo pesou na decisão de\n> terceirizar (Encontro 1 [29:03], [30:33]). Ao mesmo tempo, a meta é chegar a cerca de 400\n> entregas por dia no mês que vem, o que \"do jeito que está não vai ser possível\" (Encontro 1\n> [23:40]).\n\nA solução usa serviços pagos por uso e não pede nada novo à loja. A entrada é gradual\n([`adocao-gradual`](../00-visao-geral/adocao-gradual.md)): a planilha sai aos poucos, à medida que\ncada terceirizada é formalizada e passa a enviar os dados direto para o banco e o painel (resposta\nda SEALog a `Q-SL-14`). Quanto tempo a planilha convive com o sistema segue em aberto em `Q-SL-14`.",
       "via": "secao",
       "fields": {},
       "severity": null,
@@ -11759,7 +11772,7 @@
       "file": "07-integracoes",
       "anchor": "INT-001",
       "title": "WhatsApp",
-      "text": "| | |\n|---|---|\n| **Sistema externo** | Plataforma oficial de mensagens do WhatsApp (Meta Cloud API), no número que a SEALog já usa, com formulários do WhatsApp (WhatsApp Flows) que devolvem os campos estruturados |\n| **Direção** | Entrada: menu, formulário de pedido, acompanhamento, edição, relato. Saída: avisos à loja |\n| **HUs dependentes** | `HU-SL-001` a `HU-SL-005`, `HU-SL-017`, `HU-SL-018`, `HU-SL-020`, `HU-SL-021` |\n| **Autenticação** | Credencial da conta comercial da SEALog na Meta; o número da loja é conferido contra o cadastro (`RN-SL-003`) |\n| **Mensagens** | `MSG-SL-001` a `MSG-SL-011`, `MSG-SL-013`, `MSG-SL-022` a `MSG-SL-025` |\n\nA loja continua no mesmo número de WhatsApp (Enunciado §2; Encontro 1 [07:35]). A mensagem dela\nabre o menu de três opções (`RN-SL-004`); o novo pedido abre um formulário que não envia sem os\ndados obrigatórios (`RN-SL-006`). Os avisos que a SEALog manda por iniciativa própria — pedido\nrecebido, problema na entrega, decisão, lote — usam modelos de mensagem aprovados pela Meta.\n\n| Situação | Comportamento |\n|---|---|\n| Número não autorizado | `MSG-SL-002`; nada é registrado |\n| Envio aceito | Aviso registrado como Enviado; depois Entregue e Lido, quando a plataforma informa (`RN-SL-045`) |\n| Envio recusado ou número sem WhatsApp | Aviso registrado como Falhou e levado ao painel de chamados (`MSG-SL-027`) |\n| Plataforma fora do ar | Os avisos esperam e são reenviados; os que falharem vão ao painel |\n\n> **Pergunta `Q-SL-12`:** a SEALog já tem conta comercial na plataforma oficial? Quem paga as\n> mensagens? Os modelos de aviso precisam de aprovação da Meta antes do uso.\n\n**Referências** — Enunciado §2; Encontro 1 [07:35], [08:38], [14:33]; `DEC-SL-15`; `DIV-SL-05`.\n\n---",
+      "text": "| | |\n|---|---|\n| **Sistema externo** | Plataforma oficial de mensagens do WhatsApp (Meta Cloud API), no número que a SEALog já usa, com formulários do WhatsApp (WhatsApp Flows) que devolvem os campos estruturados |\n| **Direção** | Entrada: menu, formulário de pedido, acompanhamento, edição, relato. Saída: avisos à loja |\n| **HUs dependentes** | `HU-SL-001` a `HU-SL-005`, `HU-SL-017`, `HU-SL-018`, `HU-SL-020`, `HU-SL-021` |\n| **Autenticação** | Credencial da conta comercial da SEALog na Meta; o número da loja é conferido contra o cadastro (`RN-SL-003`) |\n| **Mensagens** | `MSG-SL-001` a `MSG-SL-011`, `MSG-SL-013`, `MSG-SL-022` a `MSG-SL-025` |\n\nA loja continua no mesmo número de WhatsApp (Enunciado §2; Encontro 1 [07:35]). A mensagem dela\nabre o menu de três opções (`RN-SL-004`); o novo pedido abre um formulário que não envia sem os\ndados obrigatórios (`RN-SL-006`). Os avisos que a SEALog manda por iniciativa própria — pedido\nrecebido, problema na entrega, decisão, lote — usam modelos de mensagem aprovados pela Meta.\n\n| Situação | Comportamento |\n|---|---|\n| Número não autorizado | `MSG-SL-002`; nada é registrado |\n| Envio aceito | Aviso registrado como Enviado; depois Entregue e Lido, quando a plataforma informa (`RN-SL-045`) |\n| Envio recusado ou número sem WhatsApp | Aviso registrado como Falhou e levado ao painel de chamados (`MSG-SL-027`) |\n| Plataforma fora do ar | Os avisos esperam e são reenviados; os que falharem vão ao painel |\n\n> **Resposta `Q-SL-12`:** a SEALog já tem conta comercial na plataforma oficial e paga as\n> mensagens. Os modelos de aviso precisam de aprovação da Meta antes do uso.\n\n**Referências** — Enunciado §2; Encontro 1 [07:35], [08:38], [14:33]; `DEC-SL-15`; `DIV-SL-05`.\n\n---",
       "via": "secao",
       "fields": {
         "Sistema externo": "Plataforma oficial de mensagens do WhatsApp (Meta Cloud API), no número que a SEALog já usa, com formulários do WhatsApp (WhatsApp Flows) que devolvem os campos estruturados",
@@ -11872,7 +11885,7 @@
       "file": "07-integracoes",
       "anchor": "INT-004",
       "title": "Agente de ocorrências",
-      "text": "| | |\n|---|---|\n| **Sistema externo** | Fluxo no n8n Cloud com um modelo de linguagem (GPT-4o, da OpenAI), ligado ao mesmo número de WhatsApp |\n| **Direção** | Entrada: o agente abre o chamado no SEALog por `POST /api/v1/bot/incidents` |\n| **HUs dependentes** | `HU-SL-017`, `HU-SL-018` |\n| **Autenticação** | Token fixo no cabeçalho de autorização (`Authorization: Bearer`), aceito só nessa rota; CORS restrito; limite de chamadas |\n| **Mensagens** | `MSG-SL-025`, `MSG-SL-026` |\n\nO agente começa quando a loja toca em \"Relatar problema\" no acompanhamento do pedido\n(`RN-SL-004`). Ele classifica o tipo, colhe descrição e foto, compara com o protocolo de atendimento\nda SEALog, que vai nas instruções do agente, e envia o chamado ao SEALog. O SEALog grava o chamado\ne avisa o painel em tempo real. O agente não decide (`RN-SL-037`). O Não entregue que chega pela\nAPI da terceirizada também é mandado ao agente, só para ganhar a sugestão (`RN-SL-039`).\n\nConteúdo enviado ao SEALog, adaptado do plano do agente (`DIV-SL-04`):\n\n| Campo | Conteúdo |\n|---|---|\n| `order_id` | Código SEALog do pedido |\n| `customer_phone` | Número da loja que relatou |\n| `issue_type` | Um tipo do domínio de chamado (`06-modelo-de-dados.md` §3.4) |\n| `description` | Relato colhido pelo agente |\n| `chat_summary` | Resumo da conversa |\n| `suggested_action` | Ação sugerida pelo protocolo |\n| `attachments` | Endereços das fotos enviadas pela loja |\n\nDiferente do plano original, o conteúdo **não leva nome, telefone nem e-mail do destinatário**: o\nmodelo recebe só o código, o tipo, o relato e as fotos, e o SEALog junta os dados de contato ao\ngravar (`RN-SL-038`).\n\n| Situação | Comportamento |\n|---|---|\n| Código do pedido de outra loja ou inexistente | O agente não abre chamado e responde `MSG-SL-009` |\n| SEALog fora do ar | O n8n tenta de novo; a loja recebe `MSG-SL-025` só depois que o chamado foi gravado |\n| Token inválido | Chamado recusado; o erro aparece no monitoramento |\n\n> **Pergunta `Q-SL-05`:** o protocolo de atendimento — o que fazer em cada tipo de ocorrência — é\n> da SEALog. Sem ele, o agente classifica e resume, mas a sugestão fica genérica.\n\n**Referências** — Plano do agente; Planejamento da equipe (cuidado com dados sensíveis);\n`DEC-SL-10`, `DEC-SL-14`; `DIV-SL-04`, `DIV-SL-08`.",
+      "text": "| | |\n|---|---|\n| **Sistema externo** | Fluxo no n8n Cloud com um modelo de linguagem (GPT-4o, da OpenAI), ligado ao mesmo número de WhatsApp |\n| **Direção** | Entrada: o agente abre o chamado no SEALog por `POST /api/v1/bot/incidents` |\n| **HUs dependentes** | `HU-SL-017`, `HU-SL-018` |\n| **Autenticação** | Token fixo no cabeçalho de autorização (`Authorization: Bearer`), aceito só nessa rota; CORS restrito; limite de chamadas |\n| **Mensagens** | `MSG-SL-025`, `MSG-SL-026` |\n\nO agente começa quando a loja toca em \"Relatar problema\" no acompanhamento do pedido\n(`RN-SL-004`). Ele classifica o tipo, colhe descrição e foto, compara com o protocolo de atendimento\nda SEALog, que vai nas instruções do agente, e envia o chamado ao SEALog. O SEALog grava o chamado\ne avisa o painel em tempo real. O agente não decide (`RN-SL-037`). O Não entregue que chega pela\nAPI da terceirizada também é mandado ao agente, só para ganhar a sugestão (`RN-SL-039`).\n\nConteúdo enviado ao SEALog, adaptado do plano do agente (`DIV-SL-04`):\n\n| Campo | Conteúdo |\n|---|---|\n| `order_id` | Código SEALog do pedido |\n| `customer_phone` | Número da loja que relatou |\n| `issue_type` | Um tipo do domínio de chamado (`06-modelo-de-dados.md` §3.4) |\n| `description` | Relato colhido pelo agente |\n| `chat_summary` | Resumo da conversa |\n| `suggested_action` | Ação sugerida pelo protocolo |\n| `attachments` | Endereços das fotos enviadas pela loja |\n\nDiferente do plano original, o conteúdo **não leva nome, telefone nem e-mail do destinatário**: o\nmodelo recebe só o código, o tipo, o relato e as fotos, e o SEALog junta os dados de contato ao\ngravar (`RN-SL-038`).\n\n| Situação | Comportamento |\n|---|---|\n| Código do pedido de outra loja ou inexistente | O agente não abre chamado e responde `MSG-SL-009` |\n| SEALog fora do ar | O n8n tenta de novo; a loja recebe `MSG-SL-025` só depois que o chamado foi gravado |\n| Token inválido | Chamado recusado; o erro aparece no monitoramento |\n\n> **Resposta `Q-SL-05`:** não há protocolo de atendimento por enquanto. O agente sugere com base\n> nos dados do pedido, e o coordenador trata cada chamado manualmente.\n\n**Referências** — Plano do agente; Planejamento da equipe (cuidado com dados sensíveis);\n`DEC-SL-10`, `DEC-SL-14`; `DIV-SL-04`, `DIV-SL-08`.",
       "via": "secao",
       "fields": {
         "Sistema externo": "Fluxo no n8n Cloud com um modelo de linguagem (GPT-4o, da OpenAI), ligado ao mesmo número de WhatsApp",
@@ -12696,13 +12709,13 @@
       "kind": "Q",
       "system": "sl",
       "file": "09-divergencias-e-lacunas",
-      "anchor": "3-perguntas-a-sealog",
+      "anchor": "3-2-respondidas-em-29-10-2026",
       "title": "A partir de que horário o pedido passa para o dia útil seguinte?",
-      "text": "**Por que importa:** O prazo padrão é o dia útil seguinte (Enunciado §2), mas sem horário de corte não se sabe a data prevista do pedido feito à noite\n\n**Onde afeta:** `RN-SL-009`",
+      "text": "**Resposta:** Corte às 18h: pedido depois disso conta como do dia útil seguinte\n\n**Onde afeta:** `RN-SL-009`",
       "via": "tabela",
       "fields": {
         "Pergunta": "A partir de que horário o pedido passa para o dia útil seguinte?",
-        "Por que importa": "O prazo padrão é o dia útil seguinte (Enunciado §2), mas sem horário de corte não se sabe a data prevista do pedido feito à noite",
+        "Resposta": "Corte às 18h: pedido depois disso conta como do dia útil seguinte",
         "Onde afeta": "`RN-SL-009`"
       },
       "severity": null,
@@ -12716,13 +12729,13 @@
       "kind": "Q",
       "system": "sl",
       "file": "09-divergencias-e-lacunas",
-      "anchor": "3-perguntas-a-sealog",
-      "title": "A coleta entre 14h e 18h vale para a terceirizada? A loja ainda pode levar o volume ao galpão da SEALog, ou à terceirizada?",
-      "text": "**Por que importa:** Define o que vai no despacho e a lista da equipe (RF-10)\n\n**Onde afeta:** `RN-SL-025`",
+      "anchor": "3-2-respondidas-em-29-10-2026",
+      "title": "A coleta entre 14h e 18h vale para a terceirizada? A loja ainda pode levar o volume ao galpão?",
+      "text": "**Resposta:** Só a terceirizada coleta; a loja não leva ao galpão\n\n**Onde afeta:** `RN-SL-025`",
       "via": "tabela",
       "fields": {
-        "Pergunta": "A coleta entre 14h e 18h vale para a terceirizada? A loja ainda pode levar o volume ao galpão da SEALog, ou à terceirizada?",
-        "Por que importa": "Define o que vai no despacho e a lista da equipe (RF-10)",
+        "Pergunta": "A coleta entre 14h e 18h vale para a terceirizada? A loja ainda pode levar o volume ao galpão?",
+        "Resposta": "Só a terceirizada coleta; a loja não leva ao galpão",
         "Onde afeta": "`RN-SL-025`"
       },
       "severity": null,
@@ -12736,13 +12749,13 @@
       "kind": "Q",
       "system": "sl",
       "file": "09-divergencias-e-lacunas",
-      "anchor": "3-perguntas-a-sealog",
-      "title": "A volta ao galpão entre 17h e 18h vale para a terceirizada? Em quanto tempo ela devolve o pacote não entregue?",
-      "text": "**Por que importa:** Define a rotina do galpão e quando a decisão pode ser tomada\n\n**Onde afeta:** `RN-SL-041`",
+      "anchor": "3-2-respondidas-em-29-10-2026",
+      "title": "Quando a terceirizada devolve o pacote não entregue ao galpão?",
+      "text": "**Resposta:** No dia útil seguinte\n\n**Onde afeta:** `RN-SL-041`",
       "via": "tabela",
       "fields": {
-        "Pergunta": "A volta ao galpão entre 17h e 18h vale para a terceirizada? Em quanto tempo ela devolve o pacote não entregue?",
-        "Por que importa": "Define a rotina do galpão e quando a decisão pode ser tomada",
+        "Pergunta": "Quando a terceirizada devolve o pacote não entregue ao galpão?",
+        "Resposta": "No dia útil seguinte",
         "Onde afeta": "`RN-SL-041`"
       },
       "severity": null,
@@ -12756,13 +12769,13 @@
       "kind": "Q",
       "system": "sl",
       "file": "09-divergencias-e-lacunas",
-      "anchor": "3-perguntas-a-sealog",
-      "title": "Até quando a loja pode editar ou cancelar o pedido pelo WhatsApp? A proposta é até a coleta",
-      "text": "**Por que importa:** Depois da coleta, a mudança passa pela terceirizada\n\n**Onde afeta:** `RN-SL-011`",
+      "anchor": "3-1-em-aberto",
+      "title": "Pedir a alteração por código do produto ou pela lista de todos os itens editáveis? A lista da proposta é a dos itens que não saíram para entrega.",
+      "text": "**Por que importa:** Define a tela de edição; a opção por código evita listas enormes em lojas grandes\n\n**Onde afeta:** `RN-SL-011`",
       "via": "tabela",
       "fields": {
-        "Pergunta": "Até quando a loja pode editar ou cancelar o pedido pelo WhatsApp? A proposta é até a coleta",
-        "Por que importa": "Depois da coleta, a mudança passa pela terceirizada",
+        "Pergunta": "Pedir a alteração por código do produto ou pela lista de todos os itens editáveis? A lista da proposta é a dos itens que não saíram para entrega.",
+        "Por que importa": "Define a tela de edição; a opção por código evita listas enormes em lojas grandes",
         "Onde afeta": "`RN-SL-011`"
       },
       "severity": null,
@@ -12776,13 +12789,13 @@
       "kind": "Q",
       "system": "sl",
       "file": "09-divergencias-e-lacunas",
-      "anchor": "3-perguntas-a-sealog",
-      "title": "Qual é o protocolo de atendimento: o que a SEALog faz em cada tipo de ocorrência (reentrega, desconto, cobrança da terceirizada)?",
-      "text": "**Por que importa:** É a base da sugestão do agente\n\n**Onde afeta:** `RN-SL-037`; `INT-004`",
+      "anchor": "3-2-respondidas-em-29-10-2026",
+      "title": "Qual é o protocolo de atendimento para cada tipo de ocorrência?",
+      "text": "**Resposta:** Não há protocolo por enquanto; o coordenador trata cada chamado manualmente, com a sugestão do agente\n\n**Onde afeta:** `RN-SL-037`; `INT-004`",
       "via": "tabela",
       "fields": {
-        "Pergunta": "Qual é o protocolo de atendimento: o que a SEALog faz em cada tipo de ocorrência (reentrega, desconto, cobrança da terceirizada)?",
-        "Por que importa": "É a base da sugestão do agente",
+        "Pergunta": "Qual é o protocolo de atendimento para cada tipo de ocorrência?",
+        "Resposta": "Não há protocolo por enquanto; o coordenador trata cada chamado manualmente, com a sugestão do agente",
         "Onde afeta": "`RN-SL-037`; `INT-004`"
       },
       "severity": null,
@@ -12797,13 +12810,13 @@
       "kind": "Q",
       "system": "sl",
       "file": "09-divergencias-e-lacunas",
-      "anchor": "3-perguntas-a-sealog",
+      "anchor": "3-2-respondidas-em-29-10-2026",
       "title": "Quem aprova o chamado: o atendente ou o coordenador?",
-      "text": "**Por que importa:** Define o perfil que trata o painel de chamados\n\n**Onde afeta:** `RN-SL-040`",
+      "text": "**Resposta:** O coordenador, que é o administrador\n\n**Onde afeta:** `RN-SL-040`",
       "via": "tabela",
       "fields": {
         "Pergunta": "Quem aprova o chamado: o atendente ou o coordenador?",
-        "Por que importa": "Define o perfil que trata o painel de chamados",
+        "Resposta": "O coordenador, que é o administrador",
         "Onde afeta": "`RN-SL-040`"
       },
       "severity": null,
@@ -12817,13 +12830,13 @@
       "kind": "Q",
       "system": "sl",
       "file": "09-divergencias-e-lacunas",
-      "anchor": "3-perguntas-a-sealog",
-      "title": "Quantas tentativas uma entrega pode ter? Por quanto tempo o pacote fica guardado no galpão? O que acontece depois?",
-      "text": "**Por que importa:** É a \"regra formal\" que hoje não existe (Enunciado §2)\n\n**Onde afeta:** `RN-SL-042`",
+      "anchor": "3-1-em-aberto",
+      "title": "Por quanto tempo o pacote fica guardado no galpão, e o que acontece depois do prazo?",
+      "text": "**Por que importa:** Sem prazo de guarda, o pacote não tem fim definido no galpão\n\n**Onde afeta:** `RN-SL-042`",
       "via": "tabela",
       "fields": {
-        "Pergunta": "Quantas tentativas uma entrega pode ter? Por quanto tempo o pacote fica guardado no galpão? O que acontece depois?",
-        "Por que importa": "É a \"regra formal\" que hoje não existe (Enunciado §2)",
+        "Pergunta": "Por quanto tempo o pacote fica guardado no galpão, e o que acontece depois do prazo?",
+        "Por que importa": "Sem prazo de guarda, o pacote não tem fim definido no galpão",
         "Onde afeta": "`RN-SL-042`"
       },
       "severity": null,
@@ -12837,13 +12850,13 @@
       "kind": "Q",
       "system": "sl",
       "file": "09-divergencias-e-lacunas",
-      "anchor": "3-perguntas-a-sealog",
-      "title": "Qual é a tabela de preços das lojas? Tentativa sem sucesso e devolução são cobradas?",
-      "text": "**Por que importa:** Sem ela a cobrança não tem valor\n\n**Onde afeta:** `RN-SL-047`",
+      "anchor": "3-1-em-aberto",
+      "title": "Qual é a tabela de preços das lojas?",
+      "text": "**Por que importa:** Fora da apresentação: a SEALog não tem a tabela agora\n\n**Onde afeta:** `RN-SL-047`",
       "via": "tabela",
       "fields": {
-        "Pergunta": "Qual é a tabela de preços das lojas? Tentativa sem sucesso e devolução são cobradas?",
-        "Por que importa": "Sem ela a cobrança não tem valor",
+        "Pergunta": "Qual é a tabela de preços das lojas?",
+        "Por que importa": "Fora da apresentação: a SEALog não tem a tabela agora",
         "Onde afeta": "`RN-SL-047`"
       },
       "severity": null,
@@ -12857,18 +12870,19 @@
       "kind": "Q",
       "system": "sl",
       "file": "09-divergencias-e-lacunas",
-      "anchor": "3-perguntas-a-sealog",
-      "title": "Quanto a SEALog paga à terceirizada por entrega? Paga tentativa e devolução? Há desconto por entrega sem comprovante?",
-      "text": "**Por que importa:** Sem ela o pagamento não tem valor\n\n**Onde afeta:** `RN-SL-048`",
+      "anchor": "3-1-em-aberto",
+      "title": "Quanto a SEALog paga à terceirizada por entrega? Paga tentativa e devolução?",
+      "text": "**Por que importa:** Fora da apresentação: o valor é por contrato, cadastrado em `HU-SL-007`\n\n**Onde afeta:** `RN-SL-048`",
       "via": "tabela",
       "fields": {
-        "Pergunta": "Quanto a SEALog paga à terceirizada por entrega? Paga tentativa e devolução? Há desconto por entrega sem comprovante?",
-        "Por que importa": "Sem ela o pagamento não tem valor",
+        "Pergunta": "Quanto a SEALog paga à terceirizada por entrega? Paga tentativa e devolução?",
+        "Por que importa": "Fora da apresentação: o valor é por contrato, cadastrado em `HU-SL-007`",
         "Onde afeta": "`RN-SL-048`"
       },
       "severity": null,
       "hasOutcome": false,
       "cites": [
+        "HU-SL-007",
         "RN-SL-048"
       ]
     },
@@ -12877,12 +12891,12 @@
       "kind": "Q",
       "system": "sl",
       "file": "09-divergencias-e-lacunas",
-      "anchor": "3-perguntas-a-sealog",
-      "title": "Os perfis da equipe são atendente, coordenador e financeiro? Quem era analista vira atendente? Quem cadastra os usuários?",
+      "anchor": "3-1-em-aberto",
+      "title": "Os perfis atendente e financeiro são confirmados?",
       "text": "**Por que importa:** Define a matriz de permissões\n\n**Onde afeta:** `RN-SL-051`; `01-atores-e-permissoes.md`",
       "via": "tabela",
       "fields": {
-        "Pergunta": "Os perfis da equipe são atendente, coordenador e financeiro? Quem era analista vira atendente? Quem cadastra os usuários?",
+        "Pergunta": "Os perfis atendente e financeiro são confirmados?",
         "Por que importa": "Define a matriz de permissões",
         "Onde afeta": "`RN-SL-051`; `01-atores-e-permissoes.md`"
       },
@@ -12897,13 +12911,13 @@
       "kind": "Q",
       "system": "sl",
       "file": "09-divergencias-e-lacunas",
-      "anchor": "3-perguntas-a-sealog",
-      "title": "Que motivos de não entrega as terceirizadas já usam? A foto do comprovante precisa mostrar algo específico?",
-      "text": "**Por que importa:** A lista e o padrão valem para todas as terceirizadas\n\n**Onde afeta:** `06-modelo-de-dados.md` §3.3; `RN-SL-030`",
+      "anchor": "3-2-respondidas-em-29-10-2026",
+      "title": "Que motivos de não entrega e que foto de comprovante valem como padrão?",
+      "text": "**Resposta:** Não é da SEALog: fica com a terceirizada\n\n**Onde afeta:** `06-modelo-de-dados.md` §3.3; `RN-SL-030`",
       "via": "tabela",
       "fields": {
-        "Pergunta": "Que motivos de não entrega as terceirizadas já usam? A foto do comprovante precisa mostrar algo específico?",
-        "Por que importa": "A lista e o padrão valem para todas as terceirizadas",
+        "Pergunta": "Que motivos de não entrega e que foto de comprovante valem como padrão?",
+        "Resposta": "Não é da SEALog: fica com a terceirizada",
         "Onde afeta": "`06-modelo-de-dados.md` §3.3; `RN-SL-030`"
       },
       "severity": null,
@@ -12917,13 +12931,13 @@
       "kind": "Q",
       "system": "sl",
       "file": "09-divergencias-e-lacunas",
-      "anchor": "3-perguntas-a-sealog",
+      "anchor": "3-2-respondidas-em-29-10-2026",
       "title": "A SEALog tem conta comercial na plataforma oficial do WhatsApp? Quem paga as mensagens?",
-      "text": "**Por que importa:** O pedido e o aviso proativo dependem dela\n\n**Onde afeta:** `INT-001`; `DIV-SL-05`",
+      "text": "**Resposta:** A conta já existe; a SEALog paga as mensagens. O prazo de entrega ao cliente é da terceirizada\n\n**Onde afeta:** `INT-001`; `DIV-SL-05`",
       "via": "tabela",
       "fields": {
         "Pergunta": "A SEALog tem conta comercial na plataforma oficial do WhatsApp? Quem paga as mensagens?",
-        "Por que importa": "O pedido e o aviso proativo dependem dela",
+        "Resposta": "A conta já existe; a SEALog paga as mensagens. O prazo de entrega ao cliente é da terceirizada",
         "Onde afeta": "`INT-001`; `DIV-SL-05`"
       },
       "severity": null,
@@ -12938,13 +12952,13 @@
       "kind": "Q",
       "system": "sl",
       "file": "09-divergencias-e-lacunas",
-      "anchor": "3-perguntas-a-sealog",
-      "title": "Depois de quanto tempo sem retorno da terceirizada uma entrega deve ser sinalizada?",
-      "text": "**Por que importa:** Define o alerta de entrega parada\n\n**Onde afeta:** `RN-SL-034`",
+      "anchor": "3-2-respondidas-em-29-10-2026",
+      "title": "Depois de quanto tempo sem retorno a entrega deve ser sinalizada?",
+      "text": "**Resposta:** Não há alerta enquanto a entrega estiver dentro do prazo estimado pela terceirizada; passou do prazo, fica sinalizada\n\n**Onde afeta:** `RN-SL-034`",
       "via": "tabela",
       "fields": {
-        "Pergunta": "Depois de quanto tempo sem retorno da terceirizada uma entrega deve ser sinalizada?",
-        "Por que importa": "Define o alerta de entrega parada",
+        "Pergunta": "Depois de quanto tempo sem retorno a entrega deve ser sinalizada?",
+        "Resposta": "Não há alerta enquanto a entrega estiver dentro do prazo estimado pela terceirizada; passou do prazo, fica sinalizada",
         "Onde afeta": "`RN-SL-034`"
       },
       "severity": null,
@@ -12958,12 +12972,12 @@
       "kind": "Q",
       "system": "sl",
       "file": "09-divergencias-e-lacunas",
-      "anchor": "3-perguntas-a-sealog",
-      "title": "Como será a transição: por quanto tempo planilha e sistema convivem, e com qual terceirizada se começa?",
+      "anchor": "3-1-em-aberto",
+      "title": "Por quanto tempo planilha e sistema convivem, e com qual terceirizada se começa?",
       "text": "**Por que importa:** Adoção é risco\n\n**Onde afeta:** `DIV-SL-09`",
       "via": "tabela",
       "fields": {
-        "Pergunta": "Como será a transição: por quanto tempo planilha e sistema convivem, e com qual terceirizada se começa?",
+        "Pergunta": "Por quanto tempo planilha e sistema convivem, e com qual terceirizada se começa?",
         "Por que importa": "Adoção é risco",
         "Onde afeta": "`DIV-SL-09`"
       },
@@ -12978,13 +12992,13 @@
       "kind": "Q",
       "system": "sl",
       "file": "09-divergencias-e-lacunas",
-      "anchor": "3-perguntas-a-sealog",
+      "anchor": "3-2-respondidas-em-29-10-2026",
       "title": "O destinatário recebe algum aviso da SEALog, ou só a loja?",
-      "text": "**Por que importa:** Hoje o consumidor fala com a loja (Enunciado §2)\n\n**Onde afeta:** `00-visao-geral.md` §3",
+      "text": "**Resposta:** Só se algo der errado\n\n**Onde afeta:** `00-visao-geral.md` §3",
       "via": "tabela",
       "fields": {
         "Pergunta": "O destinatário recebe algum aviso da SEALog, ou só a loja?",
-        "Por que importa": "Hoje o consumidor fala com a loja (Enunciado §2)",
+        "Resposta": "Só se algo der errado",
         "Onde afeta": "`00-visao-geral.md` §3"
       },
       "severity": null,
@@ -12996,12 +13010,12 @@
       "kind": "Q",
       "system": "sl",
       "file": "09-divergencias-e-lacunas",
-      "anchor": "3-perguntas-a-sealog",
-      "title": "Por quanto tempo as fotos do comprovante e os dados do destinatário devem ser guardados?",
+      "anchor": "3-1-em-aberto",
+      "title": "Por quanto tempo as fotos do comprovante e os dados do destinatário devem ser guardados? A resposta \"pra sempre\" precisa ser revista pela LGPD.",
       "text": "**Por que importa:** Exigência da LGPD e custo de armazenamento\n\n**Onde afeta:** `DIV-SL-08`",
       "via": "tabela",
       "fields": {
-        "Pergunta": "Por quanto tempo as fotos do comprovante e os dados do destinatário devem ser guardados?",
+        "Pergunta": "Por quanto tempo as fotos do comprovante e os dados do destinatário devem ser guardados? A resposta \"pra sempre\" precisa ser revista pela LGPD.",
         "Por que importa": "Exigência da LGPD e custo de armazenamento",
         "Onde afeta": "`DIV-SL-08`"
       },
@@ -13016,12 +13030,12 @@
       "kind": "Q",
       "system": "sl",
       "file": "09-divergencias-e-lacunas",
-      "anchor": "3-perguntas-a-sealog",
-      "title": "Por quanto tempo a entrada fica bloqueada depois de cinco tentativas? Quem desbloqueia?",
+      "anchor": "3-1-em-aberto",
+      "title": "Quanto tempo a entrada da equipe fica bloqueada depois de cinco tentativas erradas, e quem desbloqueia? A pergunta anterior não ficou clara.",
       "text": "**Por que importa:** Ponto a detalhar da lista da equipe (RNF-01)\n\n**Onde afeta:** `RN-SL-052`",
       "via": "tabela",
       "fields": {
-        "Pergunta": "Por quanto tempo a entrada fica bloqueada depois de cinco tentativas? Quem desbloqueia?",
+        "Pergunta": "Quanto tempo a entrada da equipe fica bloqueada depois de cinco tentativas erradas, e quem desbloqueia? A pergunta anterior não ficou clara.",
         "Por que importa": "Ponto a detalhar da lista da equipe (RNF-01)",
         "Onde afeta": "`RN-SL-052`"
       },

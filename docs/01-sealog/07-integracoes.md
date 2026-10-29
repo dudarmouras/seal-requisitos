@@ -39,8 +39,8 @@ recebido, problema na entrega, decisão, lote — usam modelos de mensagem aprov
 | Envio recusado ou número sem WhatsApp | Aviso registrado como Falhou e levado ao painel de chamados (`MSG-SL-027`) |
 | Plataforma fora do ar | Os avisos esperam e são reenviados; os que falharem vão ao painel |
 
-> **Pergunta `Q-SL-12`:** a SEALog já tem conta comercial na plataforma oficial? Quem paga as
-> mensagens? Os modelos de aviso precisam de aprovação da Meta antes do uso.
+> **Resposta `Q-SL-12`:** a SEALog já tem conta comercial na plataforma oficial e paga as
+> mensagens. Os modelos de aviso precisam de aprovação da Meta antes do uso.
 
 **Referências** — Enunciado §2; Encontro 1 [07:35], [08:38], [14:33]; `DEC-SL-15`; `DIV-SL-05`.
 
@@ -143,8 +143,8 @@ gravar (`RN-SL-038`).
 | SEALog fora do ar | O n8n tenta de novo; a loja recebe `MSG-SL-025` só depois que o chamado foi gravado |
 | Token inválido | Chamado recusado; o erro aparece no monitoramento |
 
-> **Pergunta `Q-SL-05`:** o protocolo de atendimento — o que fazer em cada tipo de ocorrência — é
-> da SEALog. Sem ele, o agente classifica e resume, mas a sugestão fica genérica.
+> **Resposta `Q-SL-05`:** não há protocolo de atendimento por enquanto. O agente sugere com base
+> nos dados do pedido, e o coordenador trata cada chamado manualmente.
 
 **Referências** — Plano do agente; Planejamento da equipe (cuidado com dados sensíveis);
 `DEC-SL-10`, `DEC-SL-14`; `DIV-SL-04`, `DIV-SL-08`.

@@ -86,7 +86,7 @@ a origem não traz, ela é **meta proposta** da equipe e vale até a SEALog conf
 | RF-04 Sincronização de dados comerciais | Absorvido pelo `RF-SL-06`: com um banco único, não há o que sincronizar | Decisão da equipe de substituir a planilha por banco |
 | RF-05, RF-06 Cadastro e análise de motoristas | Saíram. No lugar, o cadastro de terceirizadas (`RF-SL-07`) | Encontro 1 [13:15], [17:36]: o motorista é da terceirizada |
 | RF-09 Notificação por e-mail | Mudou: o aviso vai pelo WhatsApp (`RF-SL-20`) | A loja já está no WhatsApp; e-mail não é o canal da operação |
-| RF-10 Forma de coleta | Mudou: quem coleta é a terceirizada (`RF-SL-11`); as janelas estão em `Q-SL-02` | Encontro 1 [15:19] |
+| RF-10 Forma de coleta | Mudou: quem coleta é só a terceirizada (`RF-SL-11`); a loja não leva mais ao galpão (`Q-SL-02`) | Encontro 1 [15:19] |
 | RF-11 Identificação dos pacotes | Mantido, como código SEALog sem etiqueta impressa (`RF-SL-11`) | Decisão da equipe |
 | RF-12 Distribuição por motorista | Substituído pela distribuição por região à terceirizada (`RF-SL-10`) | O motorista é da terceirizada |
 | RF-13 Visualização pelo motorista | Substituído pelo despacho à terceirizada (`RF-SL-11`) | O SEALog não constrói nada para o motorista |

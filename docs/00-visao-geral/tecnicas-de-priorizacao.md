@@ -93,7 +93,7 @@ página do backlog marca cada divergência com o selo "≠ ordem".
 | História | Prioridade | Ordem no backlog | Por quê |
 |---|---|---|---|
 | `HU-SL-022`, `HU-SL-023` (fechamentos) | Média | Must na R3 | São a razão de ser da release financeira |
-| `HU-SL-017` (agente de ocorrências) | Alta | R2 | Depende do protocolo de atendimento, que a SEALog ainda vai escrever (`Q-SL-05`) |
+| `HU-SL-017` (agente de ocorrências) | Alta | R2 | Não depende de protocolo escrito: a SEALog não tem um por enquanto (`Q-SL-05`) |
 
 ## 7. Técnicas consideradas e não usadas
 
@@ -104,7 +104,7 @@ página do backlog marca cada divergência com o selo "≠ ordem".
 | **Custo do atraso (WSJF)** | Precisa de valor em reais por item; a SEALog não deu orçamento nem número de custo do problema atual |
 | **Ordem só pela prioridade da história** | Ignora dependência e esforço (`DEC-SL-20`) |
 
-Quando a SEALog passar os números que faltam (`Q-SL-02`, volume por dia), RICE e custo do atraso
+Quando a SEALog passar os números que faltam (volume por dia), RICE e custo do atraso
 ficam viáveis, e esta página passa a registrar a mudança.
 
 ## 8. Quando a equipe revisa
