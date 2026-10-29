@@ -10,6 +10,8 @@ const MOSCOW = ["Must", "Should", "Could", "Won't"] as const;
 const VALORES = ["Alto", "Médio", "Baixo"];
 const ESFORCOS = ["P", "M", "G"];
 const FORA = "Fora";
+const NIVEIS: Record<string, string> = { Must: "Essencial", Should: "Importante", Could: "Desejável", "Won't": "Fora desta versão" };
+const nivelDe = (m: string | undefined) => (m && NIVEIS[m]) || "Sem classe";
 
 const releaseDe = (b: Artifact) => b.fields["Release"]?.match(/R\d+/)?.[0] ?? FORA;
 const classeMoscow = (m: string | undefined) => "moscow moscow-" + (m ?? "").toLowerCase().replace(/[^a-z]/g, "");
@@ -30,6 +32,7 @@ export default function BacklogPage() {
   const { artifacts, documentByKey, hus, huById } = useData();
   const [moscow, setMoscow] = useState<string | null>(null);
   const [camada, setCamada] = useState<string | null>(null);
+  const [visao, setVisao] = useState<"release" | "prioridade">("release");
 
   // A ordem de entrega vem da coluna `Ordem`; os ids não seguem a ordem, porque são estáveis.
   const itens = useMemo(
@@ -41,6 +44,7 @@ export default function BacklogPage() {
   );
   const camadas = useMemo(() => [...new Set(itens.map((b) => b.fields["Camada"]).filter(Boolean))] as string[], [itens]);
   const releases = tabelaDaSecao(documentByKey.get("geral/backlog"), "Releases");
+  const processo = tabelaDaSecao(documentByKey.get("geral/backlog"), "Processo de desenvolvimento");
 
   const noBacklog = useMemo(() => new Set(itens.flatMap((b) => idsDoTexto(b.fields["HUs"]))), [itens]);
   const foraDoBacklog = hus.filter((h) => !noBacklog.has(h.docId));
@@ -49,11 +53,22 @@ export default function BacklogPage() {
   const visiveis = itens.filter(
     (b) => (!moscow || b.fields["MoSCoW"] === moscow) && (!camada || b.fields["Camada"] === camada)
   );
-  const grupos = [...new Set(itens.map(releaseDe))].map((r) => ({
-    codigo: r,
-    meta: releases.find((x) => (r === FORA ? /fora/i.test(x["Release"] ?? "") : (x["Release"] ?? "").includes(r))),
-    itens: visiveis.filter((b) => releaseDe(b) === r),
-  }));
+  const ordemValor = (b: Artifact) => VALORES.indexOf(b.fields["Valor"] ?? "");
+  const grupos =
+    visao === "release"
+      ? [...new Set(itens.map(releaseDe))].map((r) => ({
+          codigo: r,
+          meta: releases.find((x) => (r === FORA ? /fora/i.test(x["Release"] ?? "") : (x["Release"] ?? "").includes(r))),
+          titulo: undefined as string | undefined,
+          itens: visiveis.filter((b) => releaseDe(b) === r),
+        }))
+      : MOSCOW.map((m) => ({
+          codigo: m as string,
+          meta: undefined,
+          titulo: `${NIVEIS[m]} (${m})`,
+          // Dentro do nível: mais valor primeiro, e a ordem de entrega desempata.
+          itens: visiveis.filter((b) => b.fields["MoSCoW"] === m).sort((a, b) => ordemValor(a) - ordemValor(b)),
+        }));
 
   return (
     <div className="page produto-page">
@@ -71,7 +86,7 @@ export default function BacklogPage() {
         {MOSCOW.map((m) => (
           <div key={m} className="stat-card">
             <div className="n">{itens.filter((b) => b.fields["MoSCoW"] === m).length}</div>
-            <div className="l">{m}</div>
+            <div className="l">{NIVEIS[m]}</div>
           </div>
         ))}
         <div className="stat-card">
@@ -115,12 +130,19 @@ export default function BacklogPage() {
       </p>
 
       <div className="catalog-filters">
+        <button type="button" className={"board-tab" + (visao === "release" ? " active" : "")} onClick={() => setVisao("release")}>
+          Por release
+        </button>
+        <button type="button" className={"board-tab" + (visao === "prioridade" ? " active" : "")} onClick={() => setVisao("prioridade")}>
+          Por prioridade
+        </button>
+        <span className="filtro-sep" />
         <button type="button" className={"board-tab" + (!moscow ? " active" : "")} onClick={() => setMoscow(null)}>
           Todos
         </button>
         {MOSCOW.map((m) => (
           <button key={m} type="button" className={"board-tab" + (moscow === m ? " active" : "")} onClick={() => setMoscow(m)}>
-            {m}
+            {NIVEIS[m]}
           </button>
         ))}
         {camadas.length > 0 && <span className="filtro-sep" />}
@@ -137,7 +159,8 @@ export default function BacklogPage() {
           <section key={g.codigo} className="release">
             <div className="release-head">
               <h2>
-                <MdInline text={g.meta?.["Release"] ?? (g.codigo === FORA ? "Fora desta versão" : g.codigo)} />
+                <MdInline text={g.titulo ?? g.meta?.["Release"] ?? (g.codigo === FORA ? "Fora desta versão" : g.codigo)} />
+                {visao === "prioridade" && <span className="title-count">{g.itens.length}</span>}
               </h2>
               {g.meta?.["Objetivo"] && (
                 <p>
@@ -204,7 +227,10 @@ export default function BacklogPage() {
                       </div>
                     </div>
                     <div className="bl-meta">
-                      <span className={classeMoscow(b.fields["MoSCoW"])}>{b.fields["MoSCoW"] ?? "—"}</span>
+                      <span className={classeMoscow(b.fields["MoSCoW"])} title={b.fields["MoSCoW"]}>
+                        {nivelDe(b.fields["MoSCoW"])}
+                      </span>
+                      {visao === "prioridade" && <span className="bl-va">{b.fields["Release"] ?? "—"}</span>}
                       <span className="bl-va">
                         Valor <strong>{b.fields["Valor"] ?? "—"}</strong>
                       </span>
@@ -218,6 +244,38 @@ export default function BacklogPage() {
             </ol>
           </section>
         ))}
+
+      {processo.length > 0 && (
+        <section className="release">
+          <div className="release-head">
+            <h2>Processo de desenvolvimento</h2>
+            <p>Todo item percorre estas etapas, do backlog ao uso real.</p>
+          </div>
+          <ol className="bl-list">
+            {processo.map((e, i) => (
+              <li key={i} className="bl-row">
+                <span className="bl-ordem">{i + 1}</span>
+                <div className="bl-main">
+                  <div className="bl-titulo">
+                    <MdInline text={(e["Etapa"] ?? "").replace(/^\**\d+\.\s*/, "").replace(/\*\*$/, "")} />
+                  </div>
+                  <p className="bl-porque">
+                    <MdInline text={e["O que acontece"] ?? ""} />
+                  </p>
+                </div>
+                <div className="bl-meta">
+                  <span className="bl-va">
+                    Quem <strong>{e["Quem"] ?? "—"}</strong>
+                  </span>
+                  <span className="bl-va">
+                    Sai quando <MdInline text={e["Sai quando"] ?? "—"} />
+                  </span>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
     </div>
   );
 }

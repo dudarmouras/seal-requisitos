@@ -18,7 +18,7 @@ ordem combina quatro critérios (`DEC-SL-20`):
 
 | Critério | Pergunta | Valores |
 |---|---|---|
-| **MoSCoW** | A release funciona sem isto? | **Must** — sem ele a release não resolve o caso a que se propõe · **Should** — importante, mas há contorno · **Could** — desejável se sobrar tempo · **Won't** — fora desta versão, de propósito |
+| **MoSCoW** | A release funciona sem isto? | **Must (essencial)** — sem ele a release não resolve o caso a que se propõe · **Should (importante)** — há contorno, mas a equipe sente falta · **Could (desejável)** — entra se sobrar tempo · **Won't (fora)** — fora desta versão, de propósito |
 | **Valor** | Quanto isto muda a vida do cliente? | **Alto** — resolve um dos casos do enunciado ou a causa comum · **Médio** — tira trabalho manual · **Baixo** — conforto |
 | **Esforço** | Quanto custa construir? | **P** — dias · **M** — uma a duas semanas · **G** — mais de duas semanas, ou depende de terceiro |
 | **Dependência** | O que precisa existir antes? | Os itens da coluna `Depende de` |
@@ -109,7 +109,28 @@ dia a dia. Cada uma corresponde a uma fase da adoção gradual.
 | `BL-SL-31` | 40 | — | Agente de consulta de status | — | Won't | — | Baixo | M | — | O botão de acompanhar responde do banco, sem custo de modelo (`DEC-SL-10`) |
 | `BL-SL-32` | 41 | — | Emissão de nota fiscal e cobrança bancária | — | Won't | — | Médio | G | — | A origem só cita o cálculo da cobrança |
 
-## 4. Cobertura
+## 4. Processo de desenvolvimento
+
+Todo item percorre as mesmas etapas, da fila ao uso real. A ordem de entrada na fila é a do backlog:
+primeiro os essenciais da release, depois os importantes e, por último, os desejáveis. Um item só
+entra em desenvolvimento quando o que ele depende já está pronto. A duração de cada etapa e o ritmo
+das entregas ficam com a equipe (proposta, ainda sem número).
+
+| Etapa | O que acontece | Quem | Sai quando |
+|---|---|---|---|
+| **1. No backlog** | O item tem id, camada, classe, valor, esforço e dependências | Equipe de requisitos | A equipe o confirma na sessão de priorização |
+| **2. Pronto para começar** | As dependências estão prontas, os critérios de aceitação da história estão claros e as perguntas à SEALog que o bloqueiam foram respondidas | Equipe de requisitos e desenvolvimento | Nenhum `Q-SL-*` aberto bloqueia o item |
+| **3. Em desenvolvimento** | Construção do item, com as regras do catálogo e os fluxos desenhados | Desenvolvimento | O item cumpre os critérios de aceitação da história |
+| **4. Em revisão** | Outra pessoa da equipe confere o item contra a história, as regras e os critérios | Equipe | Revisão sem pendência |
+| **5. Em homologação** | A SEALog experimenta o item num ambiente de teste, sem pedido real | SEALog e equipe | A SEALog aprova |
+| **6. No piloto** | O item roda com poucas lojas e uma terceirizada, conforme a fase da adoção | SEALog | Os critérios de avanço da fase são atingidos (`DEC-SL-16`) |
+| **7. Entregue** | O item está em uso por todas as lojas da release | SEALog | — |
+
+Um item que volta de uma etapa para a anterior (por exemplo, reprovado na homologação) mantém a
+posição que tinha no backlog. Os habilitadores, sem história, passam pelas mesmas etapas; a
+revisão deles confere a dependência que destravam.
+
+## 5. Cobertura
 
 As 24 histórias estão no backlog, cada uma em um item. A página do backlog no aplicativo confere
 isso a cada carga e mostra a história que ficar de fora, e mostra também onde a ordem diverge da
