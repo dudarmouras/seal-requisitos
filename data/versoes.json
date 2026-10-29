@@ -1,0 +1,5 @@
+{
+  "_leia": "Versão de cada HU. Mantido pela agente Versionadora a cada PR mergeada em main: mudança que só cumpre o requisito original (escopo base) não muda a versão; mudança de comportamento sobe a versão maior (1.0 -> 2.0) com data e escopo pedido-cliente ou correcao-bug. A data é a do merge. Ver docs/_convencoes/VERSIONAMENTO.md.",
+  "ultimaPr": 0,
+  "hus": {}
+}

@@ -1,0 +1,33 @@
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Editores
+.vscode/
+.idea/
+*.swp
+*~
+
+# Segredos — nunca versionar
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.*
+
+# Dependências e build (para quando o aplicativo de requisitos for criado aqui)
+node_modules/
+.next/
+dist/
+build/
+*.tsbuildinfo
+
+# Documentos de origem — permanecem fora do versionamento
+# O inventário com hash está em fontes/README.md
+fontes/originais/
+*.zip
+*.docx
+
+# Snapshot somente leitura da implementação (origin/main) — ver fontes/README.md
+.implementacao/
