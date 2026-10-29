@@ -223,7 +223,7 @@ function Codigo({ lang, code, id }: { lang: string; code: string; id: string }) 
   if (lang === "mermaid") {
     const board = { docId: id, mermaid: code } as Board;
     return (
-      <div className="md-mermaid">
+      <div className="md-mermaid mermaid-md">
         <MermaidBoard board={board} />
       </div>
     );

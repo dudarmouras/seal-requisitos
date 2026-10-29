@@ -239,7 +239,7 @@ independentes dela.
 | **Contexto** | O cliente já está no WhatsApp, e o aviso precisa sair sem atendente (`DEC-SL-07`) |
 | **Decisão** | Enviar os avisos pela plataforma oficial de mensagens da Meta, com modelos de mensagem de utilidade aprovados. O pedido de aprovação começa na R1, porque o prazo é da Meta |
 | **Alternativas descartadas** | Automação não oficial do WhatsApp: risco de bloqueio do número. SMS: o cliente não está lá. E-mail: não é o canal da operação |
-| **Consequências** | Custo por mensagem enviada fora da janela de atendimento, a maior parcela do custo variável (`infraestrutura-e-custos`) |
+| **Consequências** | Custo por mensagem enviada, inclusive dentro da conversa aberta pelo cliente desde 01/10/2026; é a maior parcela do custo variável (`infraestrutura-e-custos`) |
 | **Referências** | `RN-SL-040`, `RN-SL-043`, `HU-SL-020`, `BL-SL-17`, `DIV-SL-03`, `Q-SL-12` |
 
 ### DEC-SL-15 — Banco relacional gerenciado e armazenamento de fotos em nuvem

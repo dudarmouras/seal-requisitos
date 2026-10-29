@@ -7123,7 +7123,7 @@
           "anchor": "3-componentes",
           "level": 2,
           "title": "3. Componentes",
-          "body": "```mermaid\nflowchart TB\n  subgraph Entradas[\"Portas de entrada — um código só\"]\n    Publico[\"Páginas públicas<br/>/pedido/código · /rastreio/código\"]\n    Web[\"Tela da equipe\"]\n    App[\"Aplicativo do motorista<br/>fila local de registros\"]\n  end\n\n  subgraph Nucleo[\"Núcleo da aplicação\"]\n    API[\"API<br/>regras de negócio e permissões\"]\n    Mod1[\"Entrada de pedidos\"]\n    Mod2[\"Registro e planejamento\"]\n    Mod3[\"Execução do motorista\"]\n    Mod4[\"Consulta de status\"]\n    Mod5[\"Exceções e decisões\"]\n    Mod6[\"Financeiro\"]\n    Mod7[\"Acesso\"]\n    Jobs[\"Tarefas em segundo plano<br/>avisos, importação, exportação\"]\n  end\n\n  subgraph Dados[\"Dados gerenciados\"]\n    DB[(\"Banco relacional<br/>entregas, rotas, histórico\")]\n    Arquivos[(\"Armazenamento de arquivos<br/>fotos, etiquetas, planilhas\")]\n    Auth[\"Autenticação da equipe\"]\n  end\n\n  WhatsApp[\"WhatsApp Business\"]\n\n  Publico --> API\n  Web --> API\n  App --> API\n  API --- Mod1 & Mod2 & Mod3 & Mod4 & Mod5 & Mod6 & Mod7\n  API --> DB\n  API --> Arquivos\n  API --> Auth\n  API --> Jobs\n  Jobs --> DB\n  Jobs --> WhatsApp\n```\n\n| Componente | Responsabilidade | Requisitos que atende |\n|---|---|---|\n| Páginas públicas | Formulário de pedido e de complemento, e rastreio. Acessadas por link com código impossível de adivinhar, sem login | `RF-SL-02`, `RF-SL-04`, `RF-SL-18`, `RNF-SL-01`, `RNF-SL-07` |\n| Tela da equipe | Lista de entregas, pendências, etiquetas, galpão, rotas, painel de exceções, fechamento, exportação | `RF-SL-01`, `RF-SL-07` a `RF-SL-12`, `RF-SL-19` a `RF-SL-26` |\n| Aplicativo do motorista | Roteiro do dia, leitura da etiqueta pela câmera, foto, ocorrência; guarda tudo no aparelho e envia quando há sinal | `RF-SL-13` a `RF-SL-17`, `RNF-SL-02`, `RNF-SL-03`, `RNF-SL-11` |\n| API | Única porta para o banco. Aplica o ciclo de status, as permissões por perfil e o histórico de alterações | `RNF-SL-08`, `RNF-SL-09`, `RNF-SL-13` |\n| Módulos de negócio | Os sete módulos da documentação, separados por dentro da mesma aplicação, cada um dono das suas tabelas | Inventário de módulos do `00` do SEALog |\n| Tarefas em segundo plano | Envio dos avisos com nova tentativa, importação de planilha, geração de exportações e de etiquetas | `RF-SL-03`, `RF-SL-22`, `RF-SL-23`, `RF-SL-25`, `RNF-SL-19` |\n| Banco relacional | O registro único: clientes, entregas, volumes, rotas, paradas, ocorrências, avisos, fechamentos, histórico | `DEC-SL-01`, `DEC-SL-15` |\n| Armazenamento de arquivos | Fotos de comprovante, comprimidas no celular; planilhas importadas e exportadas | `RF-SL-15`, `RNF-SL-17` |\n| Autenticação | Usuário e senha da equipe, sessão longa do motorista durante o dia | `RF-SL-26`, `RNF-SL-08` |",
+          "body": "```mermaid\nflowchart TB\n  subgraph Entradas[\"Portas de entrada — um código só\"]\n    Publico[\"Páginas públicas<br/>pedido e rastreio por link\"]\n    Web[\"Tela da equipe\"]\n    App[\"Aplicativo do motorista<br/>fila local de registros\"]\n  end\n\n  subgraph Nucleo[\"Núcleo da aplicação\"]\n    API[\"API e os sete módulos de negócio<br/>regras, permissões, histórico\"]\n    Jobs[\"Tarefas em segundo plano<br/>avisos, importação, exportação\"]\n  end\n\n  subgraph Dados[\"Dados gerenciados\"]\n    DB[(\"Banco relacional<br/>entregas, rotas, histórico\")]\n    Arquivos[(\"Arquivos<br/>fotos, etiquetas, planilhas\")]\n    Auth[\"Autenticação da equipe\"]\n  end\n\n  WhatsApp[\"WhatsApp Business\"]\n\n  Publico --> API\n  Web --> API\n  App --> API\n  API --> Jobs\n  API --> DB\n  API --> Arquivos\n  API --> Auth\n  Jobs --> WhatsApp\n```\n\n| Componente | Responsabilidade | Requisitos que atende |\n|---|---|---|\n| Páginas públicas | Formulário de pedido e de complemento, e rastreio. Acessadas por link com código impossível de adivinhar, sem login | `RF-SL-02`, `RF-SL-04`, `RF-SL-18`, `RNF-SL-01`, `RNF-SL-07` |\n| Tela da equipe | Lista de entregas, pendências, etiquetas, galpão, rotas, painel de exceções, fechamento, exportação | `RF-SL-01`, `RF-SL-07` a `RF-SL-12`, `RF-SL-19` a `RF-SL-26` |\n| Aplicativo do motorista | Roteiro do dia, leitura da etiqueta pela câmera, foto, ocorrência; guarda tudo no aparelho e envia quando há sinal | `RF-SL-13` a `RF-SL-17`, `RNF-SL-02`, `RNF-SL-03`, `RNF-SL-11` |\n| API | Única porta para o banco. Aplica o ciclo de status, as permissões por perfil e o histórico de alterações | `RNF-SL-08`, `RNF-SL-09`, `RNF-SL-13` |\n| Módulos de negócio | Os sete módulos da documentação, separados por dentro da mesma aplicação, cada um dono das suas tabelas | Inventário de módulos do `00` do SEALog |\n| Tarefas em segundo plano | Envio dos avisos com nova tentativa, importação de planilha, geração de exportações e de etiquetas | `RF-SL-03`, `RF-SL-22`, `RF-SL-23`, `RF-SL-25`, `RNF-SL-19` |\n| Banco relacional | O registro único: clientes, entregas, volumes, rotas, paradas, ocorrências, avisos, fechamentos, histórico | `DEC-SL-01`, `DEC-SL-15` |\n| Armazenamento de arquivos | Fotos de comprovante, comprimidas no celular; planilhas importadas e exportadas | `RF-SL-15`, `RNF-SL-17` |\n| Autenticação | Usuário e senha da equipe, sessão longa do motorista durante o dia | `RF-SL-26`, `RNF-SL-08` |",
           "ids": [
             "RF-SL-02",
             "RF-SL-04",
@@ -7642,7 +7642,7 @@
           "anchor": "DEC-SL-14",
           "level": 3,
           "title": "DEC-SL-14 — Avisos pela plataforma oficial do WhatsApp Business",
-          "body": "| | |\n|---|---|\n| **Status** | Proposta |\n| **Data** | 29/10/2026 |\n| **Tema** | Infraestrutura |\n| **Contexto** | O cliente já está no WhatsApp, e o aviso precisa sair sem atendente (`DEC-SL-07`) |\n| **Decisão** | Enviar os avisos pela plataforma oficial de mensagens da Meta, com modelos de mensagem de utilidade aprovados. O pedido de aprovação começa na R1, porque o prazo é da Meta |\n| **Alternativas descartadas** | Automação não oficial do WhatsApp: risco de bloqueio do número. SMS: o cliente não está lá. E-mail: não é o canal da operação |\n| **Consequências** | Custo por mensagem enviada fora da janela de atendimento, a maior parcela do custo variável (`infraestrutura-e-custos`) |\n| **Referências** | `RN-SL-040`, `RN-SL-043`, `HU-SL-020`, `BL-SL-17`, `DIV-SL-03`, `Q-SL-12` |",
+          "body": "| | |\n|---|---|\n| **Status** | Proposta |\n| **Data** | 29/10/2026 |\n| **Tema** | Infraestrutura |\n| **Contexto** | O cliente já está no WhatsApp, e o aviso precisa sair sem atendente (`DEC-SL-07`) |\n| **Decisão** | Enviar os avisos pela plataforma oficial de mensagens da Meta, com modelos de mensagem de utilidade aprovados. O pedido de aprovação começa na R1, porque o prazo é da Meta |\n| **Alternativas descartadas** | Automação não oficial do WhatsApp: risco de bloqueio do número. SMS: o cliente não está lá. E-mail: não é o canal da operação |\n| **Consequências** | Custo por mensagem enviada, inclusive dentro da conversa aberta pelo cliente desde 01/10/2026; é a maior parcela do custo variável (`infraestrutura-e-custos`) |\n| **Referências** | `RN-SL-040`, `RN-SL-043`, `HU-SL-020`, `BL-SL-17`, `DIV-SL-03`, `Q-SL-12` |",
           "ids": [
             "DEC-SL-14",
             "DEC-SL-07",
@@ -7767,7 +7767,7 @@
           "anchor": "1-patamares",
           "level": 2,
           "title": "1. Patamares",
-          "body": "| | Patamar 1 | Patamar 2 | Patamar 3 |\n|---|---|---|---|\n| **Operação** | Até cerca de 300 entregas por dia e 25 motoristas — a SEALog de hoje | Até cerca de 2.000 entregas por dia e 100 motoristas | Mais de 2.000 entregas por dia, ou mais de um galpão ou cidade |\n| **Aplicação** | Uma aplicação, com os sete módulos por dentro | A mesma, com as tarefas em segundo plano num processo próprio | O envio de avisos e o rastreio público separados em serviços próprios |\n| **Banco** | Uma instância, a menor | Instância maior e cópia só de leitura para buscas, rastreio e exportações | Dados separados por galpão; histórico antigo arquivado |\n| **Fotos** | Armazenamento padrão | Fotos de mais de 6 meses movidas para armazenamento mais barato | Regra de guarda aplicada automaticamente, conforme o prazo combinado na LGPD (`RNF-SL-10`) |\n| **Rastreio público** | Servido pela aplicação | Guardado em cache por alguns segundos na rede de entrega de conteúdo | Serviço próprio, que não disputa recurso com a equipe |\n| **Custo de referência** | Cerca de R$ 490 por mês | Cerca de R$ 1.390 por mês | Cerca de R$ 4.400 por mês ou mais |\n\nOs valores de custo e as premissas estão em [`infraestrutura-e-custos.md`](infraestrutura-e-custos.md).\nA passagem de um patamar ao outro não exige reescrever o sistema: a arquitetura separa os módulos\npor dentro desde o começo (`DEC-SL-12`), e é por essas costuras que ela se divide.",
+          "body": "| | Patamar 1 | Patamar 2 | Patamar 3 |\n|---|---|---|---|\n| **Operação** | Até cerca de 300 entregas por dia e 25 motoristas — a SEALog de hoje | Até cerca de 2.000 entregas por dia e 100 motoristas | Mais de 2.000 entregas por dia, ou mais de um galpão ou cidade |\n| **Aplicação** | Uma aplicação, com os sete módulos por dentro | A mesma, com as tarefas em segundo plano num processo próprio | O envio de avisos e o rastreio público separados em serviços próprios |\n| **Banco** | Uma instância, a menor | Instância maior e cópia só de leitura para buscas, rastreio e exportações | Dados separados por galpão; histórico antigo arquivado |\n| **Fotos** | Armazenamento padrão | Fotos de mais de 6 meses movidas para armazenamento mais barato | Regra de guarda aplicada automaticamente, conforme o prazo combinado na LGPD (`RNF-SL-10`) |\n| **Rastreio público** | Servido pela aplicação | Guardado em cache por alguns segundos na rede de entrega de conteúdo | Serviço próprio, que não disputa recurso com a equipe |\n| **Custo de referência** | Cerca de R$ 640 por mês, com 300 entregas por dia | Cerca de R$ 3.600 por mês, com 2.000 entregas por dia | Acima de R$ 3.600 por mês; a maior parte é o WhatsApp |\n\nO preço de cada item está em [`infraestrutura-e-custos.md`](infraestrutura-e-custos.md).\nA passagem de um patamar ao outro não exige reescrever o sistema: a arquitetura separa os módulos\npor dentro desde o começo (`DEC-SL-12`), e é por essas costuras que ela se divide.",
           "ids": [
             "RNF-SL-10",
             "DEC-SL-12"
@@ -7859,75 +7859,28 @@
       "system": "geral",
       "file": "infraestrutura-e-custos",
       "title": "SEALog — Infraestrutura e custos",
-      "intro": "Onde o SEALog roda e quanto custa por mês, para a stack proposta em\n[`arquitetura.md`](arquitetura.md). Como a arquitetura, é **proposta** (`Q-SL-01`).\n\n> **Sobre os valores.** São preços de tabela públicos, consultados em outubro de 2026, em dólar\n> convertido a **R$ 5,50**, sem impostos. Os fornecedores mudam preço e limite com frequência:\n> **confira na página de cada um antes de contratar.** O volume de entregas por dia não está na\n> origem (`Q-SL-02`), e por isso o custo é dado em três cenários, não num número só.\n\n---",
+      "intro": "Quanto custa rodar o SEALog na stack proposta em [`arquitetura.md`](arquitetura.md). Como a\narquitetura, é **proposta** (`Q-SL-01`).\n\n> **Sobre os valores.** Preços de tabela públicos consultados em 29/10/2026, sem impostos, com o\n> dólar a **R$ 5,50**. Fornecedores mudam preço com frequência: **confira antes de contratar.**\n\n---",
       "sections": [
         {
-          "anchor": "1-ambientes",
+          "anchor": "1-custos",
           "level": 2,
-          "title": "1. Ambientes",
-          "body": "| Ambiente | Para quê | Onde | Custo |\n|---|---|---|---|\n| **Produção** | A operação real | Supabase no plano Pro e Vercel no plano Pro | Ver §3 |\n| **Homologação** | Testar cada versão com dados de exemplo antes de publicar; treinar a equipe | Projeto Supabase no plano gratuito e versão de prévia da Vercel | Zero (o projeto gratuito pausa quando fica parado, o que serve para homologação) |\n| **Desenvolvimento** | O computador de quem programa | Banco local | Zero |",
-          "ids": []
-        },
-        {
-          "anchor": "2-servicos",
-          "level": 2,
-          "title": "2. Serviços",
-          "body": "| Serviço | Fornecedor proposto | O que entra no plano | Cobrança além do plano |\n|---|---|---|---|\n| Banco, autenticação e arquivos | Supabase, plano Pro | US$ 25 por mês, com US$ 10 de crédito de processamento que cobre a menor instância; 8 GB de banco; 100 GB de arquivos; cópia de segurança diária guardada por 7 dias | Banco: cerca de US$ 0,125 por GB. Arquivos: cerca de US$ 0,021 por GB. Instância maior: diferença sobre o crédito |\n| Hospedagem da aplicação | Vercel, plano Pro | US$ 20 por assento de quem publica, por mês, com crédito de uso incluso | Uso acima do crédito; assento a mais, US$ 20 |\n| Avisos ao cliente | WhatsApp Business, plataforma oficial da Meta | Cobrança por modelo de mensagem entregue (quem paga e se a SEALog já tem conta comercial: `Q-SL-12`). A mensagem de utilidade enviada dentro da janela de atendimento aberta pelo cliente não é cobrada | Mensagem de utilidade no Brasil: entre R$ 0,04 e R$ 0,08 nas fontes consultadas; aqui se usa **R$ 0,08**, o teto. A Meta anunciou cobrança em reais no segundo semestre de 2026 |\n| Domínio | Registro.br (`.com.br`) | Cerca de R$ 40 por ano | — |\n| Monitoramento de erros | Plano gratuito de um serviço de registro de erros | Suficiente para o patamar 1 | Plano pago, cerca de US$ 26 por mês, a partir do patamar 2 |",
+          "title": "1. Custos",
+          "body": "O custo tem uma parte fixa, que quase não muda com o volume, e uma parte que cresce com cada\nentrega. Como o volume diário não está na origem (`Q-SL-02`), a tabela dá o preço de cada item, e\no total vem como fórmula.\n\n| Item | Fornecedor e plano | O que inclui | Custo estimado | Quando muda |\n|---|---|---|---|---|\n| Banco, autenticação e arquivos | Supabase, plano Pro | Menor instância de processamento, 8 GB de banco, 100 GB de arquivos, cópia de segurança diária guardada por 7 dias | **R$ 138 por mês** (US$ 25) | Instância pequena: R$ 165 por mês. Instância média: R$ 413 por mês. Arquivos acima de 100 GB: cerca de R$ 0,12 por GB |\n| Hospedagem da aplicação | Vercel, plano Pro | Um assento de quem publica, com crédito de uso incluso | **R$ 110 por mês** (US$ 20) | Cada assento a mais: R$ 110 por mês |\n| Avisos ao cliente | WhatsApp Business, plataforma oficial da Meta | Mensagem de utilidade no Brasil, US$ 0,0068 cada, cobrada também dentro da conversa aberta pelo cliente desde 01/10/2026 | **R$ 0,04 por mensagem**, cerca de **R$ 0,05 por entrega** | Cresce com as entregas: 1,16 mensagem por entrega (`RN-SL-033`, `RN-SL-040`). Quem paga: `Q-SL-12` |\n| Monitoramento de erros | Sentry | Plano gratuito no começo; plano Team com 50 mil erros por mês | **R$ 0** | Plano Team: R$ 143 por mês (US$ 26), quando o volume passar do gratuito |\n| Domínio | Registro.br (`.com.br`) | Registro anual | **R$ 3 por mês** (R$ 40 por ano) | — |\n| Homologação | Supabase gratuito e prévia da Vercel | Ambiente para testar cada versão e treinar a equipe | **R$ 0** | — |\n| Etiquetas | Rolo de etiqueta térmica adesiva | Uma etiqueta por volume (`DEC-SL-05`) | **R$ 0,03 a R$ 0,05 por etiqueta** | Cresce com os volumes |\n| Impressora de etiquetas | Impressora térmica, por exemplo Zebra ZD220 | Uma por ponto de impressão no galpão | **R$ 650 a R$ 1.600, uma vez** | Uma a mais por ponto de impressão |\n| Celulares dos motoristas | — | — | **Não estimado** | A origem não diz se o aparelho é do motorista nem quem paga o plano de dados |\n| Desenvolvimento e implantação | — | — | **Não estimado** | Depende da equipe que vai construir; o esforço relativo está no backlog |\n| **Total mensal** | | | **Cerca de R$ 250 fixos + R$ 0,05 por entrega + as etiquetas** | |\n\n**Exemplo.** Com 300 entregas por dia, o patamar 1 da [`escalabilidade.md`](escalabilidade.md),\nsão 7.800 entregas em 26 dias de operação: R$ 250 + R$ 390 = **cerca de R$ 640 por mês, R$ 0,08\npor entrega**, abaixo da meta de R$ 0,25 (`RNF-SL-15`). O WhatsApp é a maior parcela e a única que\ncresce com o volume; a forma mais simples de reduzi-la é avisar por cliente, não por entrega, nos\ndias de muitas ocorrências (`RN-SL-041`).",
           "ids": [
-            "Q-SL-12"
-          ]
-        },
-        {
-          "anchor": "3-custo-mensal-por-cenario",
-          "level": 2,
-          "title": "3. Custo mensal por cenário",
-          "body": "",
-          "ids": []
-        },
-        {
-          "anchor": "3-1-premissas",
-          "level": 3,
-          "title": "3.1 Premissas",
-          "body": "| Premissa | Valor | Por quê |\n|---|---|---|\n| Dias de operação por mês | 26 | Segunda a sábado |\n| Fotos por entrega | 1, de cerca de 250 KB depois de comprimida no celular | `RF-SL-15` exige uma foto; a compressão é decisão de arquitetura |\n| Avisos cobrados por entrega | 1,16: o link de rastreio de toda entrega, mais dois avisos para os cerca de 8% com ocorrência | `RN-SL-033`, `RN-SL-040`; a taxa de ocorrência não está na origem e é estimativa |\n| Câmbio | R$ 5,50 por dólar | Referência; atualize na hora de contratar |",
-          "ids": [
-            "RF-SL-15",
+            "Q-SL-02",
             "RN-SL-033",
-            "RN-SL-040"
-          ]
-        },
-        {
-          "anchor": "3-2-tres-cenarios",
-          "level": 3,
-          "title": "3.2 Três cenários",
-          "body": "| Item | Patamar 1 — 100 entregas/dia | Patamar 2 — 400 entregas/dia | Patamar 3 — 1.500 entregas/dia |\n|---|---|---|---|\n| Entregas no mês | 2.600 | 10.400 | 39.000 |\n| Supabase (plano e processamento) | R$ 138 (US$ 25, menor instância) | R$ 165 (US$ 30, instância pequena) | R$ 413 (US$ 75, instância média) |\n| Arquivos (fotos) | Incluso (0,7 GB por mês) | Incluso (2,6 GB por mês) | Incluso no primeiro ano (9,8 GB por mês); depois, cerca de R$ 12 por mês a cada 100 GB |\n| Vercel | R$ 110 (1 assento) | R$ 110 (1 assento) | R$ 220 (2 assentos) |\n| WhatsApp (avisos) | R$ 240 (3.000 mensagens) | R$ 965 (12.100 mensagens) | R$ 3.620 (45.200 mensagens) |\n| Monitoramento | R$ 0 | R$ 143 | R$ 143 |\n| Domínio | R$ 3 | R$ 3 | R$ 3 |\n| **Total por mês** | **cerca de R$ 490** | **cerca de R$ 1.390** | **cerca de R$ 4.400** |\n| **Por entrega** | **R$ 0,19** | **R$ 0,13** | **R$ 0,11** |\n\nO custo por entrega cai com o volume, porque a parte fixa se divide por mais entregas. Nos três\ncenários o patamar fica abaixo da meta de R$ 0,25 por entrega (`RNF-SL-15`).",
-          "ids": [
-            "RNF-SL-15"
-          ]
-        },
-        {
-          "anchor": "3-3-onde-esta-o-dinheiro",
-          "level": 3,
-          "title": "3.3 Onde está o dinheiro",
-          "body": "O **WhatsApp é a maior parcela**: metade do custo no patamar 1 e mais de 80% no patamar 3, e\ncresce na mesma proporção das entregas. É também a parcela mais fácil de reduzir:\n\n| Alavanca | Efeito |\n|---|---|\n| Mandar o link de rastreio na conversa que o cliente acabou de abrir para fazer o pedido | Dentro da janela de atendimento a mensagem de utilidade não é cobrada; na R1 o atendente já cola o link à mão (`BL-SL-16`) |\n| Desconto por volume que a Meta aplica às mensagens de utilidade | Reduz o preço unitário no patamar 3 |\n| Avisar em lote por cliente, não por entrega | O caso \"Segunda-feira de chuva\" vira um aviso por cliente, não um por entrega (`RN-SL-041`) |",
-          "ids": [
-            "BL-SL-16",
+            "RN-SL-040",
+            "Q-SL-12",
+            "DEC-SL-05",
+            "RNF-SL-15",
             "RN-SL-041"
           ]
         },
         {
-          "anchor": "4-custos-unicos",
+          "anchor": "2-operacao",
           "level": 2,
-          "title": "4. Custos únicos",
-          "body": "| Item | Estimativa | Observação |\n|---|---|---|\n| Impressora térmica de etiquetas para o galpão | R$ 700 a R$ 1.200 | Uma por ponto de impressão (`DEC-SL-05`) |\n| Rolos de etiqueta adesiva | Cerca de R$ 0,03 a R$ 0,05 por etiqueta | Custo recorrente, proporcional aos volumes |\n| Celulares dos motoristas | Não estimado | A origem não diz se os motoristas usam aparelho próprio nem quem paga o plano de dados |\n| Desenvolvimento e implantação | Não estimado | Depende do tamanho da equipe que vai construir; o esforço relativo de cada item está no backlog |",
-          "ids": [
-            "DEC-SL-05"
-          ]
-        },
-        {
-          "anchor": "5-operacao",
-          "level": 2,
-          "title": "5. Operação",
-          "body": "| Rotina | Como | Atende |\n|---|---|---|\n| Cópia de segurança | Diária, automática, guardada por 7 dias no plano Pro; restauração testada antes da virada | `RNF-SL-17` (perda máxima de 24 horas) |\n| Publicação de versão | Automática a cada versão aprovada, primeiro em homologação; nunca entre 7h e 19h | `RNF-SL-04` |\n| Monitoramento | Monitor externo do link de rastreio a cada minuto; erros do aplicativo do motorista registrados | `RNF-SL-04`, `RNF-SL-19` |\n| Revisão de custo | Mensal: fatura dividida pelas entregas do mês, conferida contra o patamar | `RNF-SL-15`, [`escalabilidade.md`](escalabilidade.md) |",
+          "title": "2. Operação",
+          "body": "| Rotina | Como | Atende |\n|---|---|---|\n| Cópia de segurança | Diária e automática, guardada por 7 dias; restauração testada antes da virada | `RNF-SL-17` (perda máxima de 24 horas) |\n| Publicação de versão | Automática a cada versão aprovada, primeiro em homologação; nunca entre 7h e 19h | `RNF-SL-04` |\n| Monitoramento | Monitor externo do link de rastreio a cada minuto; erros do aplicativo do motorista registrados | `RNF-SL-04`, `RNF-SL-19` |\n| Revisão de custo | Mensal: fatura dividida pelas entregas do mês, conferida contra o patamar | `RNF-SL-15` |",
           "ids": [
             "RNF-SL-17",
             "RNF-SL-04",
@@ -9438,7 +9391,7 @@
       "file": "decisoes",
       "anchor": "DEC-SL-14",
       "title": "Avisos pela plataforma oficial do WhatsApp Business",
-      "text": "| | |\n|---|---|\n| **Status** | Proposta |\n| **Data** | 29/10/2026 |\n| **Tema** | Infraestrutura |\n| **Contexto** | O cliente já está no WhatsApp, e o aviso precisa sair sem atendente (`DEC-SL-07`) |\n| **Decisão** | Enviar os avisos pela plataforma oficial de mensagens da Meta, com modelos de mensagem de utilidade aprovados. O pedido de aprovação começa na R1, porque o prazo é da Meta |\n| **Alternativas descartadas** | Automação não oficial do WhatsApp: risco de bloqueio do número. SMS: o cliente não está lá. E-mail: não é o canal da operação |\n| **Consequências** | Custo por mensagem enviada fora da janela de atendimento, a maior parcela do custo variável (`infraestrutura-e-custos`) |\n| **Referências** | `RN-SL-040`, `RN-SL-043`, `HU-SL-020`, `BL-SL-17`, `DIV-SL-03`, `Q-SL-12` |",
+      "text": "| | |\n|---|---|\n| **Status** | Proposta |\n| **Data** | 29/10/2026 |\n| **Tema** | Infraestrutura |\n| **Contexto** | O cliente já está no WhatsApp, e o aviso precisa sair sem atendente (`DEC-SL-07`) |\n| **Decisão** | Enviar os avisos pela plataforma oficial de mensagens da Meta, com modelos de mensagem de utilidade aprovados. O pedido de aprovação começa na R1, porque o prazo é da Meta |\n| **Alternativas descartadas** | Automação não oficial do WhatsApp: risco de bloqueio do número. SMS: o cliente não está lá. E-mail: não é o canal da operação |\n| **Consequências** | Custo por mensagem enviada, inclusive dentro da conversa aberta pelo cliente desde 01/10/2026; é a maior parcela do custo variável (`infraestrutura-e-custos`) |\n| **Referências** | `RN-SL-040`, `RN-SL-043`, `HU-SL-020`, `BL-SL-17`, `DIV-SL-03`, `Q-SL-12` |",
       "via": "secao",
       "fields": {
         "Status": "Proposta",
@@ -9447,7 +9400,7 @@
         "Contexto": "O cliente já está no WhatsApp, e o aviso precisa sair sem atendente (`DEC-SL-07`)",
         "Decisão": "Enviar os avisos pela plataforma oficial de mensagens da Meta, com modelos de mensagem de utilidade aprovados. O pedido de aprovação começa na R1, porque o prazo é da Meta",
         "Alternativas descartadas": "Automação não oficial do WhatsApp: risco de bloqueio do número. SMS: o cliente não está lá. E-mail: não é o canal da operação",
-        "Consequências": "Custo por mensagem enviada fora da janela de atendimento, a maior parcela do custo variável (`infraestrutura-e-custos`)",
+        "Consequências": "Custo por mensagem enviada, inclusive dentro da conversa aberta pelo cliente desde 01/10/2026; é a maior parcela do custo variável (`infraestrutura-e-custos`)",
         "Referências": "`RN-SL-040`, `RN-SL-043`, `HU-SL-020`, `BL-SL-17`, `DIV-SL-03`, `Q-SL-12`"
       },
       "severity": null,

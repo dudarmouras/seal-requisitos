@@ -51,26 +51,19 @@ flowchart LR
 ```mermaid
 flowchart TB
   subgraph Entradas["Portas de entrada — um código só"]
-    Publico["Páginas públicas<br/>/pedido/código · /rastreio/código"]
+    Publico["Páginas públicas<br/>pedido e rastreio por link"]
     Web["Tela da equipe"]
     App["Aplicativo do motorista<br/>fila local de registros"]
   end
 
   subgraph Nucleo["Núcleo da aplicação"]
-    API["API<br/>regras de negócio e permissões"]
-    Mod1["Entrada de pedidos"]
-    Mod2["Registro e planejamento"]
-    Mod3["Execução do motorista"]
-    Mod4["Consulta de status"]
-    Mod5["Exceções e decisões"]
-    Mod6["Financeiro"]
-    Mod7["Acesso"]
+    API["API e os sete módulos de negócio<br/>regras, permissões, histórico"]
     Jobs["Tarefas em segundo plano<br/>avisos, importação, exportação"]
   end
 
   subgraph Dados["Dados gerenciados"]
     DB[("Banco relacional<br/>entregas, rotas, histórico")]
-    Arquivos[("Armazenamento de arquivos<br/>fotos, etiquetas, planilhas")]
+    Arquivos[("Arquivos<br/>fotos, etiquetas, planilhas")]
     Auth["Autenticação da equipe"]
   end
 
@@ -79,12 +72,10 @@ flowchart TB
   Publico --> API
   Web --> API
   App --> API
-  API --- Mod1 & Mod2 & Mod3 & Mod4 & Mod5 & Mod6 & Mod7
+  API --> Jobs
   API --> DB
   API --> Arquivos
   API --> Auth
-  API --> Jobs
-  Jobs --> DB
   Jobs --> WhatsApp
 ```
 

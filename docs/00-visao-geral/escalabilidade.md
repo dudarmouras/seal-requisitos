@@ -22,9 +22,9 @@ Escalar aqui tem três sentidos, e a página trata dos três:
 | **Banco** | Uma instância, a menor | Instância maior e cópia só de leitura para buscas, rastreio e exportações | Dados separados por galpão; histórico antigo arquivado |
 | **Fotos** | Armazenamento padrão | Fotos de mais de 6 meses movidas para armazenamento mais barato | Regra de guarda aplicada automaticamente, conforme o prazo combinado na LGPD (`RNF-SL-10`) |
 | **Rastreio público** | Servido pela aplicação | Guardado em cache por alguns segundos na rede de entrega de conteúdo | Serviço próprio, que não disputa recurso com a equipe |
-| **Custo de referência** | Cerca de R$ 490 por mês | Cerca de R$ 1.390 por mês | Cerca de R$ 4.400 por mês ou mais |
+| **Custo de referência** | Cerca de R$ 640 por mês, com 300 entregas por dia | Cerca de R$ 3.600 por mês, com 2.000 entregas por dia | Acima de R$ 3.600 por mês; a maior parte é o WhatsApp |
 
-Os valores de custo e as premissas estão em [`infraestrutura-e-custos.md`](infraestrutura-e-custos.md).
+O preço de cada item está em [`infraestrutura-e-custos.md`](infraestrutura-e-custos.md).
 A passagem de um patamar ao outro não exige reescrever o sistema: a arquitetura separa os módulos
 por dentro desde o começo (`DEC-SL-12`), e é por essas costuras que ela se divide.
 

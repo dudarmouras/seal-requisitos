@@ -47,6 +47,8 @@ export default function MermaidBoard({ board, mini = false }: MermaidBoardProps)
   const hostRef = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [zoom, setZoom] = useState(1);
+  // Tamanho intrínseco do SVG; a caixa ocupa o tamanho já escalado, não o original.
+  const [size, setSize] = useState<{ w: number; h: number } | null>(null);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const dragRef = useRef<{ x: number; y: number; panX: number; panY: number } | null>(null);
 
@@ -87,6 +89,7 @@ export default function MermaidBoard({ board, mini = false }: MermaidBoardProps)
         el.style.maxWidth = "none";
         el.setAttribute("width", String(vbW));
         el.setAttribute("height", String(vbH));
+        setSize({ w: vbW, h: vbH });
 
         // Zoom inicial. Na prévia o diagrama inteiro precisa caber no cartão;
         // na tela cheia o ajuste é só pela largura, e a altura fica no scroll —
@@ -147,13 +150,17 @@ export default function MermaidBoard({ board, mini = false }: MermaidBoardProps)
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
       >
-        <div
-          ref={hostRef}
-          className="mermaid-host"
-          style={{
-            transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
-          }}
-        />
+        {/* O `transform` não muda o espaço que o host ocupa no layout; sem a caixa com o tamanho
+            escalado, um diagrama largo reduzido a 25% deixava a altura original vazia embaixo. */}
+        <div className="mermaid-sizer" style={size ? { width: size.w * zoom, height: size.h * zoom } : undefined}>
+          <div
+            ref={hostRef}
+            className="mermaid-host"
+            style={{
+              transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
+            }}
+          />
+        </div>
       </div>
       {!mini && (
         <div className="mermaid-controls">

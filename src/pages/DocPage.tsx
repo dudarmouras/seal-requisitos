@@ -3,7 +3,7 @@ import { Link, Navigate, useLocation, useParams } from "react-router-dom";
 import { useData } from "../lib/data";
 import MdBlock, { MdInline } from "../lib/mdblock";
 import { numeroDoArquivo, rotuloDoArquivo } from "../lib/docs";
-import { PAGINAS_PRODUTO, paginaDoArquivo } from "../lib/produto";
+import { paginaDoArquivo } from "../lib/produto";
 import ProdutoTopbar from "../components/ProdutoTopbar";
 
 /**
@@ -36,10 +36,10 @@ export default function DocPage(props: { systemId?: string; file?: string }) {
   if (!doc) return <Navigate to={systemId && systemId !== "geral" ? `/sistema/${systemId}` : "/"} replace />;
 
   const sys = systemById.get(doc.system);
-  // Nas páginas da visão de produto, os irmãos são as sete páginas, cada uma na sua rota.
+  // Nas páginas da visão de produto, as sete já estão na barra lateral: o índice fica só com as seções.
   const produto = props.file ? paginaDoArquivo(doc.file) : undefined;
   const arquivos = produto
-    ? PAGINAS_PRODUTO.map((p) => ({ key: p.file, to: p.path, num: "", label: p.label, title: p.label, active: p.file === doc.file }))
+    ? []
     : irmaos.map((d) => ({
         key: d.file,
         to: `/doc/${d.system}/${d.file}`,
@@ -50,16 +50,20 @@ export default function DocPage(props: { systemId?: string; file?: string }) {
       }));
 
   return (
-    <div className="page doc-layout">
+    <div className={"page doc-layout" + (produto ? " doc-produto" : "")}>
       <aside className="doc-toc">
-        <div className="doc-toc-files">
-          {arquivos.map((a) => (
-            <Link key={a.key} to={a.to} className={"doc-toc-file" + (a.active ? " active" : "")} title={a.title}>
-              {a.num && <span className="num">{a.num}</span>}
-              <span>{a.label}</span>
-            </Link>
-          ))}
-        </div>
+        {produto ? (
+          <div className="doc-toc-label">Nesta página</div>
+        ) : (
+          <div className="doc-toc-files">
+            {arquivos.map((a) => (
+              <Link key={a.key} to={a.to} className={"doc-toc-file" + (a.active ? " active" : "")} title={a.title}>
+                {a.num && <span className="num">{a.num}</span>}
+                <span>{a.label}</span>
+              </Link>
+            ))}
+          </div>
+        )}
         <div className="doc-toc-sections">
           {doc.sections.map((s) => (
             <a key={s.anchor} href={`#${s.anchor}`} className={"doc-toc-sec lvl" + s.level}>
@@ -86,7 +90,7 @@ export default function DocPage(props: { systemId?: string; file?: string }) {
             <span className="chip-module chip-file">{doc.file}.md</span>
           </div>
         )}
-        <h1 className="hu-title">{doc.title}</h1>
+        <h1 className="hu-title">{produto ? produto.label : doc.title}</h1>
         {doc.intro && <MdBlock text={doc.intro} system={doc.system} idBase={`${doc.file}-intro`} />}
 
         {doc.sections.map((s) => {
