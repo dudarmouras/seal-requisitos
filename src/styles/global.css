@@ -1504,8 +1504,7 @@ a.md-code.md-id { cursor: pointer; }
 
 /* Páginas de texto corrido da visão de produto (arquitetura, infraestrutura, adoção, escalabilidade):
    mais ar, menos moldura. Os ids ficam como referência discreta, não como etiqueta. */
-.doc-produto { grid-template-columns: 200px minmax(0, 880px); gap: 48px; }
-.doc-toc-label { font-size: 10.5px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); padding: 4px 8px 8px; }
+.doc-produto { grid-template-columns: minmax(0, 1fr); max-width: 980px; }
 .doc-produto .hu-title { font-size: 24px; font-weight: 700; color: var(--navy-strong); margin: 6px 0 10px; }
 .doc-produto .md-block { font-size: 14px; line-height: 1.7; color: #3d414d; }
 .doc-produto hr { display: none; }
@@ -1636,8 +1635,8 @@ a.req-hu:hover { color: var(--navy); }
 }
 
 /* Páginas de texto corrido: largura maior e tabelas que respiram */
-.doc-produto { grid-template-columns: 190px minmax(0, 1fr); max-width: 1180px; }
-.doc-produto .doc-body { max-width: 900px; }
+.doc-produto { grid-template-columns: minmax(0, 1fr); max-width: 980px; }
+.doc-produto .doc-body { max-width: none; }
 .doc-produto .md-table td { vertical-align: top; }
 .doc-produto .md-table td:first-child { min-width: 130px; }
 .doc-produto .md-table td strong { font-weight: 600; }

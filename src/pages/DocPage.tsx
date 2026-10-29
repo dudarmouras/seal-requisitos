@@ -51,10 +51,9 @@ export default function DocPage(props: { systemId?: string; file?: string }) {
 
   return (
     <div className={"page doc-layout" + (produto ? " doc-produto" : "")}>
-      <aside className="doc-toc">
-        {produto ? (
-          <div className="doc-toc-label">Nesta página</div>
-        ) : (
+      {/* As páginas de produto já estão na barra lateral: sem índice próprio ("Nesta página"). */}
+      {!produto && (
+        <aside className="doc-toc">
           <div className="doc-toc-files">
             {arquivos.map((a) => (
               <Link key={a.key} to={a.to} className={"doc-toc-file" + (a.active ? " active" : "")} title={a.title}>
@@ -63,15 +62,15 @@ export default function DocPage(props: { systemId?: string; file?: string }) {
               </Link>
             ))}
           </div>
-        )}
-        <div className="doc-toc-sections">
-          {doc.sections.map((s) => (
-            <a key={s.anchor} href={`#${s.anchor}`} className={"doc-toc-sec lvl" + s.level}>
-              <MdInline text={s.title.replace(/`/g, "")} />
-            </a>
-          ))}
-        </div>
-      </aside>
+          <div className="doc-toc-sections">
+            {doc.sections.map((s) => (
+              <a key={s.anchor} href={`#${s.anchor}`} className={"doc-toc-sec lvl" + s.level}>
+                <MdInline text={s.title.replace(/`/g, "")} />
+              </a>
+            ))}
+          </div>
+        </aside>
+      )}
 
       <article className="doc-body">
         {produto ? (
