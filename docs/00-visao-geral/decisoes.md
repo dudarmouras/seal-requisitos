@@ -21,8 +21,8 @@ aplicativo do motorista e a montagem de rotas, está nas alternativas descartada
 | ID | Decisão | Tema | Status |
 |---|---|---|---|
 | `DEC-SL-01` | Um registro único por entrega, fonte da verdade da operação | Produto | Tomada |
-| `DEC-SL-02` | A loja continua no WhatsApp, com menu de três opções e formulário obrigatório | Produto | Tomada |
-| `DEC-SL-03` | A loja não tem senha: é identificada pelo número autorizado | Produto | Tomada |
+| `DEC-SL-02` | A loja continua no WhatsApp, com menu de duas opções e formulário obrigatório | Produto | Tomada |
+| `DEC-SL-03` | A loja não tem cadastro nem senha: o número é confirmado no primeiro pedido | Produto | Tomada |
 | `DEC-SL-04` | A entrega é das terceirizadas; o SEALog não constrói nada para o motorista | Produto | Tomada |
 | `DEC-SL-05` | Distribuição por regra fixa de região | Produto | Tomada |
 | `DEC-SL-06` | Retorno pela API padrão, com portal e planilha traduzida | Produto | Tomada |
@@ -59,7 +59,7 @@ aplicativo do motorista e a montagem de rotas, está nas alternativas descartada
 | **Consequências** | Quem registra na origem passa a ser a loja, ao pedir, e a terceirizada, ao retornar. O sistema precisa aceitar o retorno do jeito que a terceirizada consegue mandar (`DEC-SL-06`) |
 | **Referências** | `RN-SL-001`, `RN-SL-020`, `HU-SL-009`; Planejamento da equipe (substituir planilha por banco) |
 
-### DEC-SL-02 — A loja continua no WhatsApp, com menu de três opções e formulário obrigatório
+### DEC-SL-02 — A loja continua no WhatsApp, com menu de duas opções e formulário obrigatório
 
 | | |
 |---|---|
@@ -67,23 +67,23 @@ aplicativo do motorista e a montagem de rotas, está nas alternativas descartada
 | **Data** | 29/10/2026 |
 | **Tema** | Produto |
 | **Contexto** | As lojas são pequenas e pedem pelo número de WhatsApp da SEALog (Enunciado §2). Cerca de 1 em 5 pedidos chega incompleto, e nada impede o envio (caso "Pedido com informações incompletas", Enunciado §8) |
-| **Decisão** | A loja continua no mesmo número. A mensagem abre um menu com três opções — novo pedido, acompanhar pedido e editar pedido — e o novo pedido é um formulário do próprio WhatsApp, que não envia sem os dados obrigatórios. O relato de problema sai do acompanhamento, para manter os três botões |
+| **Decisão** | A loja continua no mesmo número. A mensagem abre um menu com duas opções — novo pedido e editar ou cancelar pedido — e o novo pedido é um formulário do próprio WhatsApp, que não envia sem os dados obrigatórios. A loja não acompanha o pedido pelo SEALog: acompanha pela terceirizada. O relato de problema não é opção do menu (`Q-SL-20`) |
 | **Alternativas descartadas** | Link para um formulário na web: tira a loja da conversa. Aplicativo ou portal da loja: barreira de adoção para quem pede poucas vezes por semana. Continuar recebendo texto livre e validar depois: é o que acontece hoje |
 | **Consequências** | O pedido incompleto deixa de existir no caminho principal; sobra o que a equipe registra à mão, que vira pendência (`RN-SL-012`). Depende da plataforma oficial do WhatsApp (`DEC-SL-15`) |
-| **Referências** | `RN-SL-002` a `RN-SL-006`, `HU-SL-001` a `HU-SL-003`; Encontro 1 [07:35], [08:38], [14:33], [35:39] |
+| **Referências** | `RN-SL-002` a `RN-SL-006`, `HU-SL-001`, `HU-SL-003`; Encontro 1 [07:35], [08:38], [14:33], [35:39] |
 
-### DEC-SL-03 — A loja não tem senha: é identificada pelo número autorizado
+### DEC-SL-03 — A loja não tem cadastro nem senha: o número é confirmado no primeiro pedido
 
 | | |
 |---|---|
 | **Status** | Tomada |
 | **Data** | 29/10/2026 |
 | **Tema** | Produto |
-| **Contexto** | A lista da equipe previa autenticação da loja por conta comercial (RF-02). No Encontro 1, a validação proposta foi a do número de origem: só números de lojas autorizadas fazem pedido |
-| **Decisão** | A equipe cadastra a loja e os números de WhatsApp que podem pedir por ela. A mensagem de um número autorizado abre o menu; de outro número, recebe a orientação de procurar o atendimento, e nada é registrado. A loja vê só os próprios pedidos |
-| **Alternativas descartadas** | Usuário e senha da loja: mais uma coisa para lembrar, sem ganho de segurança sobre o número. Aceitar qualquer número: qualquer pessoa faria pedido em nome de uma loja |
-| **Consequências** | Trocar ou incluir um número passa pela equipe (`HU-SL-005`). A senha fica só para a equipe e as terceirizadas, com bloqueio depois de cinco tentativas (`RNF-SL-10`) |
-| **Referências** | `RN-SL-003`, `RN-SL-014`, `RN-SL-054`, `HU-SL-005`; Encontro 1 [08:38] |
+| **Contexto** | A lista da equipe previa autenticação da loja por conta comercial (RF-02). No Encontro 1, a validação proposta foi a do número de origem. Em 29/10/2026 a equipe decidiu que a loja não se cadastra: quem se cadastra são as empresas terceirizadas |
+| **Decisão** | A loja se identifica no formulário, pelo nome, e qualquer número abre o menu. O primeiro pedido de um número fica "A confirmar": a equipe confere que é cliente e o aprova ou cancela; depois disso, os pedidos desse número seguem direto |
+| **Alternativas descartadas** | Cadastro da loja com números autorizados, a primeira versão desta decisão: a equipe decidiu que a loja não se cadastra. Usuário e senha da loja: mais uma coisa para lembrar. Aceitar qualquer número sem confirmação: qualquer pessoa faria pedido em nome de uma loja, e a SEALog pagaria a entrega |
+| **Consequências** | A equipe confirma os números novos na lista de entregas (`HU-SL-009`). Sem dados comerciais, o endereço de coleta vem no pedido (`Q-SL-19`) e a cobrança usa o nome da loja informado nos pedidos (`Q-SL-21`). A senha fica só para a equipe e as terceirizadas, com bloqueio depois de cinco tentativas (`RNF-SL-10`) |
+| **Referências** | `RN-SL-003`, `RN-SL-014`, `HU-SL-001`, `HU-SL-009`, `DIV-SL-10`, `Q-SL-18`; Encontro 1 [08:38] |
 
 ### DEC-SL-04 — A entrega é das terceirizadas; o SEALog não constrói nada para o motorista
 
@@ -106,9 +106,9 @@ aplicativo do motorista e a montagem de rotas, está nas alternativas descartada
 | **Data** | 29/10/2026 |
 | **Tema** | Produto |
 | **Contexto** | São duas terceirizadas, cada uma numa região (Encontro 1 [15:19]). Hoje o coordenador e os analistas distribuem de cabeça (Enunciado §2) |
-| **Decisão** | Uma tabela liga cada bairro e cidade a uma terceirizada. O pedido recebido vai sozinho para a terceirizada do bairro de entrega. Bairro fora da tabela fica "Aguardando região" e vai ao coordenador, que escolhe e pode incluir o bairro na tabela |
-| **Alternativas descartadas** | Roteamento por IA, do planejamento inicial da equipe: era pensado para distribuir entre motoristas próprios; com duas empresas por região, uma tabela resolve, sem custo nem dado sensível enviado a um modelo. Distribuição manual pelo coordenador: é o gargalo de hoje |
-| **Consequências** | O coordenador mantém a tabela (`HU-SL-007`). Uma terceira terceirizada entra só com cadastro e linhas na tabela (`RNF-SL-15`) |
+| **Decisão** | As regiões que cada terceirizada atende ficam no cadastro dela, cada uma um par bairro e cidade. O pedido recebido vai sozinho para a terceirizada do bairro de entrega. Bairro que nenhuma atende fica "Aguardando região" e vai ao coordenador, que escolhe e pode incluir o bairro nas regiões dela. Não há tabela de regiões à parte |
+| **Alternativas descartadas** | Roteamento por IA, do planejamento inicial da equipe: era pensado para distribuir entre motoristas próprios; com duas empresas por região, uma regra fixa resolve, sem custo nem dado sensível enviado a um modelo. Distribuição manual pelo coordenador: é o gargalo de hoje |
+| **Consequências** | O coordenador mantém as regiões no cadastro da terceirizada (`HU-SL-007`). Uma terceira terceirizada entra só com cadastro e regiões (`RNF-SL-15`) |
 | **Referências** | `RN-SL-017`, `RN-SL-018`, `RN-SL-023`, `HU-SL-007`, `HU-SL-010` |
 
 ### DEC-SL-06 — Retorno pela API padrão, com portal e planilha traduzida
@@ -172,7 +172,7 @@ aplicativo do motorista e a montagem de rotas, está nas alternativas descartada
 | **Tema** | Produto |
 | **Contexto** | O planejamento da equipe previa IA no roteamento e numa recomendação a partir do motivo da devolução, com cuidado com dados sensíveis. O plano do agente detalhou dois agentes: um de consulta de status e um de ocorrências |
 | **Decisão** | Fica só o agente de ocorrências. A loja relata o problema pelo WhatsApp; o agente classifica o tipo, colhe o relato e as fotos, compara com o protocolo de atendimento da SEALog e abre um chamado no painel com uma ação sugerida. Uma pessoa aprova, muda ou recusa. O agente não recebe nome, telefone nem endereço |
-| **Alternativas descartadas** | Agente de consulta de status: o botão de acompanhar responde do banco, sem IA, e sem custo de modelo — fica fora por enquanto. IA decidindo sozinha: a decisão envolve dinheiro e relação com a loja. Roteamento por IA: substituído pela tabela de regiões (`DEC-SL-05`) |
+| **Alternativas descartadas** | Agente de consulta de status: a loja acompanha pela terceirizada, e o SEALog não oferece consulta de status — fica fora. IA decidindo sozinha: a decisão envolve dinheiro e relação com a loja. Roteamento por IA: substituído pelas regiões cadastradas (`DEC-SL-05`) |
 | **Consequências** | Não há protocolo de atendimento escrito por enquanto (`Q-SL-05`): o agente se apoia nos dados do pedido e do relato, e o coordenador, que é quem aprova (`Q-SL-06`), trata cada chamado |
 | **Referências** | `RN-SL-036` a `RN-SL-040`, `HU-SL-017`, `HU-SL-018`, `DIV-SL-04`, `DIV-SL-08`; Plano do agente |
 

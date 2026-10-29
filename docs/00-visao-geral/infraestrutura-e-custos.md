@@ -60,7 +60,7 @@ status, que ficou fora por enquanto (`DEC-SL-10`).
 
 | Item | Fornecedor e plano | O que inclui | Custo estimado | Quando muda |
 |---|---|---|---|---|
-| WhatsApp | Plataforma oficial da Meta | Menu, formulário, acompanhamento, avisos e a conversa do agente | **R$ 150 a R$ 450 por mês**, pela estimativa de 3.000 conversas a R$ 0,05 a R$ 0,15 cada | A Meta cobra por mensagem de modelo enviada pela empresa — os avisos — e não cobra a resposta dentro da janela de atendimento aberta pela loja; a conferir na tabela vigente. Quem paga: a SEALog (`Q-SL-12`) |
+| WhatsApp | Plataforma oficial da Meta | Menu, formulário, edição, avisos e a conversa do agente | **R$ 150 a R$ 450 por mês**, pela estimativa de 3.000 conversas a R$ 0,05 a R$ 0,15 cada | A Meta cobra por mensagem de modelo enviada pela empresa — os avisos — e não cobra a resposta dentro da janela de atendimento aberta pela loja; a conferir na tabela vigente. Quem paga: a SEALog (`Q-SL-12`) |
 | Automação do agente | n8n Cloud | Assinatura da plataforma, sem servidor para manter | **R$ 120 a R$ 250 por mês** (20 a 40 euros) | Varia com o euro e com o limite de execuções do plano |
 | Modelo de linguagem do agente | OpenAI, GPT-4o | Cerca de 1.000 atendimentos de ocorrência por mês, cerca de 4.000 trocas de mensagem | **R$ 90 a R$ 120 por mês** (16 a 22 dólares) | Cresce com o número de ocorrências, não de entregas |
 | **Subtotal dos serviços** | | | **R$ 360 a R$ 820 por mês** | |

@@ -33,7 +33,7 @@ flowchart LR
 
 | Fase | Release | Quem entra | O que muda | Duração indicativa |
 |---|---|---|---|---|
-| **0 — Cadastros** | R1 em homologação | Coordenador, um atendente | Cadastro da equipe, das lojas ativas com os números autorizados, das duas terceirizadas e da tabela de regiões; pedido de aprovação dos modelos de mensagem do WhatsApp; treino de até 1 hora por perfil | 1 a 2 semanas |
+| **0 — Cadastros** | R1 em homologação | Coordenador, um atendente | Cadastro da equipe e das duas terceirizadas, com as regiões que cada uma atende; pedido de aprovação dos modelos de mensagem do WhatsApp; treino de até 1 hora por perfil | 1 a 2 semanas |
 | **1 — Piloto** | R1 | Uma terceirizada e as lojas de uma região | As lojas da região pedem pelo menu do WhatsApp; os pedidos vão à terceirizada pelo sistema; ela retorna por planilha ou pelo portal, com o comprovante padrão. As outras lojas seguem como hoje | 2 semanas, no máximo 3 |
 | **2 — Segunda terceirizada** | R1 | A outra terceirizada e as lojas da região dela | As duas regiões passam pelo sistema. A terceirizada que já está no piloto é convidada a sair da planilha para o portal ou a integração | 2 semanas |
 | **3 — Todas as lojas** | R2 | Todas as lojas | Todo pedido entra pelo menu ou pela equipe; os avisos automáticos e o agente de ocorrências entram; o grupo interno de WhatsApp deixa de receber pedido | 2 a 4 semanas |
@@ -50,7 +50,7 @@ O painel de adoção (`BL-SL-26`) mede cada critério a partir do próprio regis
 | 0 → 1 | Lojas e regiões cadastradas; modelos de mensagem aprovados; restauração de cópia testada | Lista de verificação do coordenador |
 | 1 → 2 | 95% dos pedidos das lojas do piloto entrando pelo menu; toda entrega do piloto com retorno no mesmo dia; nenhum Entregue sem comprovante aceito | Canal de origem; hora do último retorno; retornos recusados |
 | 2 → 3 | As duas terceirizadas retornando pelo sistema; duas semanas sem consultar planilha para saber de uma entrega | Painel de adoção |
-| 3 → 4 | Nenhum chamado sem conclusão no fim do dia; "cadê minha entrega?" respondida pelo próprio menu | Painel de chamados; uso do acompanhar |
+| 3 → 4 | Nenhum chamado sem conclusão no fim do dia; "cadê minha entrega?" respondida pela lista de entregas | Painel de chamados; busca na lista de entregas |
 | 4 → fim | Fechamento do sistema igual ao da planilha, ou diferenças explicadas | Conferência linha a linha |
 
 ## 4. Indicadores de adoção

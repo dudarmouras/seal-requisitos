@@ -41,7 +41,7 @@ O SEALog tem quatro frentes de uso, todas sobre o mesmo registro:
 
 | Frente | Quem usa | Onde |
 |---|---|---|
-| Conversa no WhatsApp | Lojas | O número que já usam: menu, formulário, acompanhamento, relato |
+| Conversa no WhatsApp | Lojas | O número que já usam: menu, formulário, edição, relato |
 | Painel da equipe | Atendente, coordenador, financeiro | Navegador, no computador ou no celular |
 | Portal e API da terceirizada | Terceirizadas | Portal simples no navegador, ou integração; planilha também aceita |
 | Agente de ocorrências | Lojas, pelo WhatsApp; equipe, pelo painel | Conversa com a loja e sugere a ação à equipe |

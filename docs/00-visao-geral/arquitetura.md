@@ -51,7 +51,7 @@ flowchart LR
 ```mermaid
 flowchart TB
   subgraph Portas["Portas de entrada"]
-    WA["Conversa no WhatsApp<br/>menu, formulário, acompanhar"]
+    WA["Conversa no WhatsApp<br/>menu, formulário, editar"]
     Painel["Painel da equipe"]
     Portal["Portal da terceirizada<br/>situações e planilha"]
     IntT["Integração da terceirizada"]
@@ -98,8 +98,8 @@ flowchart TB
 
 | Componente | Responsabilidade | Requisitos que atende |
 |---|---|---|
-| Conversa no WhatsApp | Menu de três opções, formulário do pedido e da edição, acompanhamento, avisos; tudo pela plataforma oficial | `RF-SL-01` a `RF-SL-04`, `RF-SL-20`, `RNF-SL-01` |
-| Painel da equipe | Lista de entregas, cadastros, regiões, chamados, devoluções, afetados, fechamentos, exportação; web responsivo | `RF-SL-05` a `RF-SL-10`, `RF-SL-18`, `RF-SL-19`, `RF-SL-21` a `RF-SL-24`, `RNF-SL-03` |
+| Conversa no WhatsApp | Menu de duas opções, formulário do pedido e da edição, avisos; tudo pela plataforma oficial | `RF-SL-01` a `RF-SL-04`, `RF-SL-20`, `RNF-SL-01` |
+| Painel da equipe | Lista de entregas, cadastro de terceirizadas e regiões, chamados, devoluções, afetados, fechamentos, exportação; web responsivo | `RF-SL-07`, `RF-SL-09`, `RF-SL-10`, `RF-SL-18`, `RF-SL-19`, `RF-SL-21` a `RF-SL-24`, `RNF-SL-03` |
 | Portal da terceirizada | Lista do dia, situação de cada entrega com foto, envio de planilha | `RF-SL-11`, `RF-SL-14`, `RF-SL-15`, `RNF-SL-02` |
 | Integração da terceirizada | Recebe o despacho e as alterações; devolve as situações e o comprovante; chave por terceirizada | `RF-SL-11` a `RF-SL-13`, `RNF-SL-05`, `RNF-SL-12`, `RNF-SL-15` |
 | Agente de ocorrências | Conversa com a loja, classifica, colhe relato e fotos, compara com o protocolo e abre o chamado com a sugestão | `RF-SL-17`, `RNF-SL-13` |
@@ -123,12 +123,12 @@ sequenceDiagram
 
   L->>W: "Oi"
   W->>S: mensagem com o número de origem
-  S->>B: número autorizado?
-  S-->>W: menu: novo, acompanhar, editar
+  S-->>W: menu: novo pedido ou editar
   L->>W: Novo pedido → preenche o formulário
   Note over W: o formulário não envia sem os obrigatórios
   W->>S: respostas do formulário
   S->>B: grava a entrega com o código SEALog
+  S->>B: número já confirmado? Se não, fica a confirmar
   S->>B: região do bairro → terceirizada
   S-->>W: pedido recebido, com o código e a data prevista
   S->>T: despacho pela integração, ou lista do dia no portal
@@ -187,7 +187,7 @@ sequenceDiagram
 
 | Ameaça | Proteção |
 |---|---|
-| Alguém pede em nome de uma loja | Só número autorizado abre o menu (`RN-SL-003`) |
+| Alguém faz pedido falso em nome de uma loja | O primeiro pedido de um número fica a confirmar até a equipe aprovar (`RN-SL-014`) |
 | Uma terceirizada lê ou altera entrega da outra | Chave e usuário por terceirizada; ela só vê e altera o que foi despachado para ela (`RN-SL-053`) |
 | Chamada falsa abrindo chamados | A rota de chamados aceita só a chave fixa do agente; limite de chamadas por minuto em toda integração (`RNF-SL-12`) |
 | Um perfil faz o que não pode chamando a API direto | Permissão conferida no back end, não só escondida na tela (`RNF-SL-11`) |

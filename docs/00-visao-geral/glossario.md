@@ -14,12 +14,13 @@ Termos da operação da SEALog e desta documentação, com o sentido em que são
 | Pedido | O que a loja pede: levar um ou mais volumes a um destinatário. No sistema, um pedido é uma entrega |
 | Entrega | O registro único de um pedido, do recebimento ao status final. É a "fonte única da verdade" que falta hoje |
 | Código SEALog | Identificador gerado no registro. Identifica o pacote, sem etiqueta, e vai em todo retorno da terceirizada |
-| Número autorizado | Número de WhatsApp cadastrado que pode fazer pedidos em nome de uma loja |
-| Menu | As três opções que a loja vê no WhatsApp: novo pedido, acompanhar pedido, editar pedido |
+| Número confirmado | Número de WhatsApp cujo primeiro pedido a equipe aprovou; os pedidos seguintes dele seguem direto. A loja não tem cadastro |
+| A confirmar | Pedido completo de um número novo, que espera a equipe aprovar antes de seguir para a terceirizada |
+| Menu | As duas opções que a loja vê no WhatsApp: novo pedido e editar ou cancelar pedido |
 | Formulário do WhatsApp | Tela dentro da conversa que não envia o pedido sem os dados obrigatórios |
 | Pendente de dados | Pedido registrado pela equipe sem algum dado obrigatório; a loja completa pelo WhatsApp |
-| Tabela de regiões | Lista de pares bairro e cidade, cada um com a terceirizada que o atende |
-| Aguardando região | Pedido para um bairro fora da tabela; o coordenador escolhe a terceirizada |
+| Regiões | Pares de bairro e cidade que cada terceirizada atende, no cadastro dela |
+| Aguardando região | Pedido para um bairro que nenhuma terceirizada atende; o coordenador escolhe a terceirizada |
 | Despacho | Envio do pedido à terceirizada da região, pela API ou pelo portal |
 | Retorno | O que a terceirizada informa: coleta, saída, entrega, não entrega ou devolução, com data e hora |
 | API padrão | O caminho de integração que o SEALog publica, igual para toda terceirizada |

@@ -25,14 +25,14 @@ perfis está em `Q-SL-10`.
 
 Perfil único por usuário, que define o menu e as ações, conferido no servidor (`RN-SL-051`). Cinco
 tentativas seguidas sem sucesso bloqueiam a entrada por um tempo (`RN-SL-052`). A terceirizada vê
-só as entregas despachadas para ela (`RN-SL-053`). A loja é identificada pelo número autorizado e
-vê só os próprios pedidos (`RN-SL-054`).
+só as entregas despachadas para ela (`RN-SL-053`). A loja não tem cadastro nem senha: o primeiro
+pedido de um número é confirmado pela equipe (`RN-SL-014`).
 
 ## 3. Horários que limitam os atores
 
 | Quem | Horário | Efeito na solução |
 |---|---|---|
-| Atendimento | Segunda a sexta, 8h às 18h; sábado, 8h às 12h | Avisos à loja e acompanhamento funcionam sem atendente (`RN-SL-043`) |
+| Atendimento | Segunda a sexta, 8h às 18h; sábado, 8h às 12h | Pedido e avisos à loja funcionam sem atendente (`RN-SL-043`) |
 | Operação | Segunda a sábado, 7h às 19h | Chamado sem conclusão às 19h fica destacado (`RN-SL-046`) |
 | Coleta, antes da terceirização | 14h às 18h; a loja levava ao galpão até 17h | Só a terceirizada coleta; a loja não leva mais ao galpão (`Q-SL-02`) |
 | Volta ao galpão, antes da terceirização | 17h às 18h | A terceirizada devolve no dia útil seguinte (`Q-SL-03`) |

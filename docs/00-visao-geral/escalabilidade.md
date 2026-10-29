@@ -40,7 +40,7 @@ Cada gatilho é medido desde a R1, e cada um tem a sua resposta. A resposta é a
 | Chamado chegando ao painel | Mais de 5 segundos (`RNF-SL-09`) | Rever a atualização em tempo real | 1 → 2 |
 | Retornos recebidos por minuto | Integração recusando por limite de chamadas em horário normal | Subir o limite por terceirizada; depois, separar a integração | 2 → 3 |
 | Espaço das fotos | Acima do plano contratado | Mover fotos antigas; aplicar o prazo de guarda | 2 |
-| Nova terceirizada ou região | A SEALog contratar outra empresa | Cadastro e linhas na tabela de regiões, sem mudança no sistema (`RNF-SL-15`) | Qualquer |
+| Nova terceirizada ou região | A SEALog contratar outra empresa | Cadastro com as regiões dela, sem mudança no sistema (`RNF-SL-15`) | Qualquer |
 | Custo por entrega | Subindo mês a mês | Rever os avisos por mensagem antes de mexer na infraestrutura | Qualquer |
 
 ## 3. Escalar para baixo
