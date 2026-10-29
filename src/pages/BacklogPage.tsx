@@ -44,7 +44,7 @@ export default function BacklogPage() {
   }));
 
   return (
-    <div className="page page-wide">
+    <div className="page produto-page">
       <ProdutoTopbar file="backlog" />
       <h1 className="hu-title">
         Backlog e priorização <span className="title-count">{itens.length}</span>
@@ -140,72 +140,63 @@ export default function BacklogPage() {
               </div>
             </div>
 
-            <div className="md-table-wrap">
-              <table className="md-table backlog-table">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>ID</th>
-                    <th>Item</th>
-                    <th>História e prioridade</th>
-                    <th>MoSCoW</th>
-                    <th>Valor</th>
-                    <th>Esforço</th>
-                    <th>Depende de</th>
-                    <th>Por quê</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {g.itens.map((b) => (
-                    <tr key={b.id}>
-                      <td className="ordem">{itens.indexOf(b) + 1}</td>
-                      <td>
-                        <Link to={`/id/${b.id}`} className="md-code md-id">
+            <ol className="bl-list">
+              {g.itens.map((b) => {
+                const hus = idsDoTexto(b.fields["HUs"]);
+                const depende = b.fields["Depende de"];
+                return (
+                  <li key={b.id} className="bl-row">
+                    <span className="bl-ordem">{itens.indexOf(b) + 1}</span>
+                    <div className="bl-main">
+                      <div className="bl-titulo">
+                        <MdInline text={b.fields["Item"] ?? b.title} />
+                      </div>
+                      {b.fields["Por quê"] && (
+                        <p className="bl-porque">
+                          <MdInline text={b.fields["Por quê"]} />
+                        </p>
+                      )}
+                      <div className="bl-links">
+                        <Link to={`/id/${b.id}`} className="bl-id">
                           {b.id}
                         </Link>
-                      </td>
-                      <td className="item">
-                        <MdInline text={b.fields["Item"] ?? b.title} />
-                      </td>
-                      <td>
-                        {idsDoTexto(b.fields["HUs"]).map((id) => {
+                        {hus.map((id) => {
                           const hu = huById.get(id);
                           return (
-                            <div key={id} className="bl-hu">
-                              {hu ? (
-                                <Link to={`/hu/${id}`} title={hu.title} className="code">
-                                  {id}
-                                </Link>
-                              ) : (
-                                <span className="code">{id}</span>
-                              )}
+                            <span key={id} className="bl-hu">
+                              <Link to={`/hu/${id}`} title={hu?.title} className="code">
+                                {id}
+                              </Link>
                               {hu?.priority && <span className={"prio prio-" + classeDePrioridade(hu.priority)}>{hu.priority}</span>}
                               {divergeDaHu(b.fields["MoSCoW"], hu) && (
                                 <span className="bl-diverge" title="A ordem do backlog diverge da prioridade escrita na história">
                                   ≠ ordem
                                 </span>
                               )}
-                            </div>
+                            </span>
                           );
                         })}
-                        {!b.fields["HUs"] && <span className="bl-habilitador">{b.fields["MoSCoW"] === "Won't" ? "—" : "habilitador"}</span>}
-                      </td>
-                      <td>
-                        <span className={classeMoscow(b.fields["MoSCoW"])}>{b.fields["MoSCoW"] ?? "—"}</span>
-                      </td>
-                      <td>{b.fields["Valor"] ?? "—"}</td>
-                      <td>{b.fields["Esforço"] ?? "—"}</td>
-                      <td>
-                        <MdInline text={b.fields["Depende de"] ?? "—"} />
-                      </td>
-                      <td className="porque">
-                        <MdInline text={b.fields["Por quê"] ?? ""} />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                        {hus.length === 0 && <span className="bl-habilitador">{b.fields["MoSCoW"] === "Won't" ? "sem história" : "habilitador"}</span>}
+                        {depende && depende !== "—" && (
+                          <span className="bl-depende">
+                            depende de <MdInline text={depende} />
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="bl-meta">
+                      <span className={classeMoscow(b.fields["MoSCoW"])}>{b.fields["MoSCoW"] ?? "—"}</span>
+                      <span className="bl-va">
+                        Valor <strong>{b.fields["Valor"] ?? "—"}</strong>
+                      </span>
+                      <span className="bl-va">
+                        Esforço <strong>{b.fields["Esforço"] ?? "—"}</strong>
+                      </span>
+                    </div>
+                  </li>
+                );
+              })}
+            </ol>
           </section>
         ))}
     </div>

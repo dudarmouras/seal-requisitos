@@ -14,19 +14,19 @@ O custo tem uma parte fixa, que quase não muda com o volume, e uma parte que cr
 entrega. Como o volume diário não está na origem (`Q-SL-02`), a tabela dá o preço de cada item, e
 o total vem como fórmula.
 
-| Item | Fornecedor e plano | O que inclui | Custo estimado | Quando muda |
-|---|---|---|---|---|
-| Banco, autenticação e arquivos | Supabase, plano Pro | Menor instância de processamento, 8 GB de banco, 100 GB de arquivos, cópia de segurança diária guardada por 7 dias | **R$ 138 por mês** (US$ 25) | Instância pequena: R$ 165 por mês. Instância média: R$ 413 por mês. Arquivos acima de 100 GB: cerca de R$ 0,12 por GB |
-| Hospedagem da aplicação | Vercel, plano Pro | Um assento de quem publica, com crédito de uso incluso | **R$ 110 por mês** (US$ 20) | Cada assento a mais: R$ 110 por mês |
-| Avisos ao cliente | WhatsApp Business, plataforma oficial da Meta | Mensagem de utilidade no Brasil, US$ 0,0068 cada, cobrada também dentro da conversa aberta pelo cliente desde 01/10/2026 | **R$ 0,04 por mensagem**, cerca de **R$ 0,05 por entrega** | Cresce com as entregas: 1,16 mensagem por entrega (`RN-SL-033`, `RN-SL-040`). Quem paga: `Q-SL-12` |
-| Monitoramento de erros | Sentry | Plano gratuito no começo; plano Team com 50 mil erros por mês | **R$ 0** | Plano Team: R$ 143 por mês (US$ 26), quando o volume passar do gratuito |
-| Domínio | Registro.br (`.com.br`) | Registro anual | **R$ 3 por mês** (R$ 40 por ano) | — |
-| Homologação | Supabase gratuito e prévia da Vercel | Ambiente para testar cada versão e treinar a equipe | **R$ 0** | — |
-| Etiquetas | Rolo de etiqueta térmica adesiva | Uma etiqueta por volume (`DEC-SL-05`) | **R$ 0,03 a R$ 0,05 por etiqueta** | Cresce com os volumes |
-| Impressora de etiquetas | Impressora térmica, por exemplo Zebra ZD220 | Uma por ponto de impressão no galpão | **R$ 650 a R$ 1.600, uma vez** | Uma a mais por ponto de impressão |
-| Celulares dos motoristas | — | — | **Não estimado** | A origem não diz se o aparelho é do motorista nem quem paga o plano de dados |
-| Desenvolvimento e implantação | — | — | **Não estimado** | Depende da equipe que vai construir; o esforço relativo está no backlog |
-| **Total mensal** | | | **Cerca de R$ 250 fixos + R$ 0,05 por entrega + as etiquetas** | |
+| Item | Custo estimado | Fornecedor e observação |
+|---|---|---|
+| Banco, autenticação e arquivos | **R$ 138 por mês** | Supabase Pro (US$ 25): menor instância, 8 GB de banco, 100 GB de arquivos, cópia diária por 7 dias. Instância pequena: R$ 165; média: R$ 413 |
+| Hospedagem da aplicação | **R$ 110 por mês** | Vercel Pro (US$ 20), um assento de quem publica. Cada assento a mais: R$ 110 |
+| Avisos ao cliente | **R$ 0,05 por entrega** | WhatsApp Business (Meta): R$ 0,04 por mensagem de utilidade, cobrada também dentro da conversa aberta pelo cliente desde 01/10/2026. Média de 1,16 mensagem por entrega (`RN-SL-033`, `RN-SL-040`). Quem paga: `Q-SL-12` |
+| Monitoramento de erros | **R$ 0** | Sentry gratuito no começo. Plano Team (US$ 26, R$ 143 por mês) quando o volume passar do gratuito |
+| Domínio | **R$ 3 por mês** | Registro.br (`.com.br`), R$ 40 por ano |
+| Homologação | **R$ 0** | Supabase gratuito e prévia da Vercel, para testar cada versão e treinar a equipe |
+| Etiquetas | **R$ 0,03 a R$ 0,05 cada** | Rolo de etiqueta térmica, uma por volume (`DEC-SL-05`) |
+| Impressora de etiquetas | **R$ 650 a R$ 1.600, uma vez** | Térmica, por exemplo Zebra ZD220; uma por ponto de impressão |
+| Celulares dos motoristas | **Não estimado** | A origem não diz se o aparelho é do motorista nem quem paga o plano de dados |
+| Desenvolvimento e implantação | **Não estimado** | Depende da equipe que vai construir; o esforço relativo está no backlog |
+| **Total mensal** | **R$ 250 + R$ 0,05 por entrega** | Fixo mais variável, fora as etiquetas |
 
 **Exemplo.** Com 300 entregas por dia, o patamar 1 da [`escalabilidade.md`](escalabilidade.md),
 são 7.800 entregas em 26 dias de operação: R$ 250 + R$ 390 = **cerca de R$ 640 por mês, R$ 0,08

@@ -43,7 +43,7 @@ export default function DecisoesPage() {
     });
 
   return (
-    <div className="page">
+    <div className="page produto-page">
       <ProdutoTopbar file="decisoes" />
       <h1 className="hu-title">
         Principais decisões <span className="title-count">{decisoes.length}</span>

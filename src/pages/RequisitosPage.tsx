@@ -46,7 +46,7 @@ export default function RequisitosPage() {
   const rnfFiltrados = rnf.filter((r) => casa(r, q) && (!categoria || r.fields["Categoria"] === categoria));
 
   return (
-    <div className="page">
+    <div className="page produto-page">
       <ProdutoTopbar file="requisitos" />
       <h1 className="hu-title">Requisitos funcionais e não funcionais</h1>
       <p className="produto-lead">
