@@ -1,39 +1,47 @@
 # SEALog — Backlog e priorização
 
-O backlog do SEALog, em ordem de entrega. Cada item tem um id `BL-SL-NN` e aponta a história de
-usuário que entrega; os itens sem história são habilitadores — trabalho que nenhuma história
-descreve, mas sem o qual uma delas não funciona — ou itens deixados de fora de propósito.
+O backlog do SEALog, em ordem de entrega. Cada item tem um id `BL-SL-NN` e uma camada: **Canal**
+(WhatsApp), **Front** (telas), **Back** (API, regras e dados), **Integração** (terceirizadas),
+**Agente** (agente de ocorrências), **Infra** (publicação, cópia de segurança, monitoramento) e
+**Negócio** (protocolo, cadastros e treinamento que a SEALog faz). Itens sem história são
+habilitadores: trabalho que nenhuma história descreve, mas sem o qual uma delas não funciona.
 
-> **Rascunho.** Esta é a primeira versão do backlog depois da terceirização, montada a partir das
-> histórias e das decisões. A equipe ainda vai revisá-la na sessão de priorização: classe MoSCoW,
-> esforço e corte das releases podem mudar.
+> **Rascunho.** Esta é a segunda versão do backlog, reorganizada por entrega ao cliente e por camada
+> técnica. A equipe ainda vai revisá-la na sessão de priorização: classe MoSCoW, esforço e corte das
+> releases podem mudar.
 
 ## 1. Como se prioriza
 
-A priorização combina quatro critérios, nesta ordem (`DEC-SL-20`):
+Um item sobe na ordem quando entrega valor ao cliente com pouco esforço e sem esperar outro. O
+cliente aqui são três: a loja que pede, a terceirizada que entrega e o consumidor que acompanha. A
+ordem combina quatro critérios (`DEC-SL-20`):
 
 | Critério | Pergunta | Valores |
 |---|---|---|
-| **MoSCoW** | O produto funciona sem isto? | **Must** — sem ele a release não resolve o caso a que se propõe · **Should** — importante, mas há contorno · **Could** — desejável se sobrar tempo · **Won't** — fora desta versão, de propósito |
-| **Valor** | Quanto do gargalo isto resolve? | **Alto** — resolve um dos casos do enunciado ou a causa comum · **Médio** — reduz trabalho manual · **Baixo** — conforto |
+| **MoSCoW** | A release funciona sem isto? | **Must** — sem ele a release não resolve o caso a que se propõe · **Should** — importante, mas há contorno · **Could** — desejável se sobrar tempo · **Won't** — fora desta versão, de propósito |
+| **Valor** | Quanto isto muda a vida do cliente? | **Alto** — resolve um dos casos do enunciado ou a causa comum · **Médio** — tira trabalho manual · **Baixo** — conforto |
 | **Esforço** | Quanto custa construir? | **P** — dias · **M** — uma a duas semanas · **G** — mais de duas semanas, ou depende de terceiro |
 | **Dependência** | O que precisa existir antes? | Os itens da coluna `Depende de` |
 
 A **prioridade da HU** (Alta, Média), escrita em cada história, mede o valor para quem usa. A
 **ordem do backlog** soma a ela o esforço e a dependência, e por isso as duas podem divergir. Os
 fechamentos (`HU-SL-022`, `HU-SL-023`) são Média na história, mas Must na R3: são a razão de ser da
-release, e até lá o financeiro fecha pela exportação da lista. O agente de ocorrências
-(`HU-SL-017`) é Alta, mas fica na R2: depende do protocolo de atendimento, que a SEALog ainda vai
-escrever (`Q-SL-05`), e o chamado já existe sem ele, aberto pelo Não entregue da terceirizada.
+release. O agente de ocorrências (`HU-SL-017`) é Alta, mas fica na R2: depende do protocolo de
+atendimento, que a SEALog ainda vai escrever (`Q-SL-05`).
+
+As camadas sozinhas não definem a ordem. Antes de começar a tela de uma release, a API e o banco
+dela precisam existir; por isso a base técnica (`BL-SL-33`) e o canal do WhatsApp (`BL-SL-05`)
+aparecem primeiro, mesmo sem valor visível para o cliente: um deles tem prazo da Meta, e o outro
+é a fundação de tudo.
 
 ## 2. Releases
 
-Cada release resolve casos inteiros do enunciado, para que a SEALog sinta a diferença no dia a dia,
-e cada uma corresponde a uma fase da adoção gradual.
+Cada release entrega uma experiência inteira ao cliente, para que a SEALog sinta a diferença no
+dia a dia. Cada uma corresponde a uma fase da adoção gradual.
 
-| Release | Objetivo | Casos que resolve | Fase da adoção |
+| Release | Entrega ao cliente | Casos que resolve | Fase da adoção |
 |---|---|---|---|
-| **R1 — Pedido, despacho e retorno** | Do pedido completo no WhatsApp ao comprovante padrão da terceirizada, num registro único | "Pedido com informações incompletas", "O registro incorreto" | Cadastros, piloto e segunda terceirizada |
+| **R1 — Pedido, despacho e retorno** | A loja pede pelo WhatsApp e acompanha sozinha; a terceirizada recebe o pedido e devolve o comprovante padrão; a equipe enxerga tudo numa lista só | "Pedido com informações incompletas", "O registro incorreto" | Cadastros, piloto e segunda terceirizada |
 | **R2 — Ocorrências e comunicação** | Nenhuma ocorrência perdida, a loja avisada sem depender do atendimento, e a decisão registrada | "O buquê de sábado", "A segunda-feira de chuva" | Todas as lojas |
 | **R3 — Financeiro** | A cobrança das lojas e o pagamento das terceirizadas saem do registro | — (Enunciado §2: o financeiro calcula pelos registros) | Financeiro |
 | **Fora desta versão** | O que foi deixado de fora de propósito, e por quê | — | — |
@@ -42,55 +50,64 @@ e cada uma corresponde a uma fase da adoção gradual.
 
 ### R1 — Pedido, despacho e retorno
 
-| ID | Item | HUs | MoSCoW | Release | Valor | Esforço | Depende de | Por quê |
-|---|---|---|---|---|---|---|---|---|
-| `BL-SL-01` | Acesso por perfil da equipe e da terceirizada | `HU-SL-024` | Must | R1 | Alto | M | — | Todo registro precisa de autor, e cada perfil vê só a sua parte |
-| `BL-SL-02` | Cadastro da loja e dos números autorizados | `HU-SL-005` | Must | R1 | Alto | P | `BL-SL-01` | Sem número autorizado, ninguém pede pelo WhatsApp (`DEC-SL-03`) |
-| `BL-SL-03` | Cadastro da terceirizada | `HU-SL-007` | Must | R1 | Alto | P | `BL-SL-01` | É para quem o pedido vai |
-| `BL-SL-04` | Tabela de regiões | `HU-SL-008` | Must | R1 | Alto | P | `BL-SL-03` | Base da distribuição automática (`DEC-SL-05`) |
-| `BL-SL-05` | Habilitador: conta do WhatsApp Business, formulário e modelos de mensagem aprovados | — | Must | R1 | Alto | G | — | O prazo de aprovação é da Meta; começar cedo destrava o pedido e os avisos (`DEC-SL-15`) |
-| `BL-SL-06` | Pedido pelo WhatsApp com formulário obrigatório | `HU-SL-001` | Must | R1 | Alto | G | `BL-SL-02`, `BL-SL-05` | Resolve o caso "Pedido com informações incompletas" na entrada (`DEC-SL-02`) |
-| `BL-SL-07` | Acompanhar o pedido pelo WhatsApp | `HU-SL-002` | Must | R1 | Alto | P | `BL-SL-06` | Responde "cadê minha entrega?" sem passar por ninguém |
-| `BL-SL-08` | Registro do pedido pela equipe | `HU-SL-004` | Must | R1 | Alto | M | `BL-SL-09` | Áudio, ligação e planilha da loja continuam chegando |
-| `BL-SL-09` | Lista única de entregas com histórico | `HU-SL-009` | Must | R1 | Alto | M | `BL-SL-01` | É a fonte da verdade (`DEC-SL-01`); resolve o caso "O registro incorreto" |
-| `BL-SL-10` | Distribuição pela região | `HU-SL-010` | Must | R1 | Alto | P | `BL-SL-04`, `BL-SL-06` | Ninguém distribui à mão |
-| `BL-SL-11` | Habilitador: padrão da integração publicado para as terceirizadas | — | Must | R1 | Alto | M | — | As terceirizadas precisam do padrão antes de integrar (`DEC-SL-06`, `RNF-SL-15`) |
-| `BL-SL-12` | Envio da solicitação à terceirizada | `HU-SL-011` | Must | R1 | Alto | M | `BL-SL-10`, `BL-SL-11` | Substitui o envio por WhatsApp e planilha |
-| `BL-SL-13` | Retorno pela integração | `HU-SL-013` | Must | R1 | Alto | M | `BL-SL-11`, `BL-SL-12` | O caminho preferencial do status |
-| `BL-SL-14` | Retorno pelo portal | `HU-SL-014` | Must | R1 | Alto | M | `BL-SL-12` | A terceirizada sem integração precisa de um caminho simples (`RNF-SL-02`) |
-| `BL-SL-15` | Comprovante padrão | `HU-SL-016` | Must | R1 | Alto | M | `BL-SL-13`, `BL-SL-14` | Resolve a dúvida "diz que entregou" e a foto sem vínculo (`DEC-SL-07`) |
-| `BL-SL-16` | Retorno por planilha traduzida | `HU-SL-015` | Should | R1 | Médio | M | `BL-SL-12` | Deixa a terceirizada começar como já trabalha; até lá, a equipe usa o portal por ela |
-| `BL-SL-17` | Editar ou cancelar o pedido pelo WhatsApp | `HU-SL-003` | Should | R1 | Médio | P | `BL-SL-06` | Até lá, a loja pede a mudança ao atendimento |
-| `BL-SL-18` | Aviso de alteração à terceirizada | `HU-SL-012` | Should | R1 | Médio | P | `BL-SL-12`, `BL-SL-17` | Sem ele, a alteração depois do despacho volta ao telefone |
+| ID | Ordem | Camada | Item | HUs | MoSCoW | Release | Valor | Esforço | Depende de | Por quê |
+|---|---|---|---|---|---|---|---|---|---|---|
+| `BL-SL-05` | 1 | Canal | Conta do WhatsApp Business, formulário e modelos de mensagem aprovados | — | Must | R1 | Alto | G | — | O prazo de aprovação é da Meta; começar cedo destrava o pedido e os avisos (`DEC-SL-15`) |
+| `BL-SL-33` | 2 | Infra | Base técnica: API em FastAPI, banco no Supabase e ambiente de homologação | — | Must | R1 | Alto | M | — | Sem ela nenhuma tela ou canal roda; a escolha da stack está em `DEC-SL-21` |
+| `BL-SL-01` | 3 | Back | Acesso por perfil da equipe e da terceirizada | `HU-SL-024` | Must | R1 | Alto | M | `BL-SL-33` | Todo registro precisa de autor, e cada perfil vê só a sua parte |
+| `BL-SL-34` | 4 | Back | Recebimento das mensagens do WhatsApp e controle dos status do pedido | — | Must | R1 | Alto | M | `BL-SL-05`, `BL-SL-33` | O canal da loja chega por aqui; o status só muda por regra, nunca à mão no texto |
+| `BL-SL-35` | 5 | Front | Painel da equipe: entrada, navegação e listas | — | Must | R1 | Alto | M | `BL-SL-01`, `BL-SL-33` | É a tela em que a equipe trabalha; sem ela, cada cadastro vira planilha |
+| `BL-SL-02` | 6 | Front | Cadastro da loja e dos números autorizados | `HU-SL-005` | Must | R1 | Alto | P | `BL-SL-35` | Sem número autorizado, ninguém pede pelo WhatsApp (`DEC-SL-03`) |
+| `BL-SL-03` | 7 | Front | Cadastro da terceirizada | `HU-SL-007` | Must | R1 | Alto | P | `BL-SL-35` | É para quem o pedido vai |
+| `BL-SL-04` | 8 | Back | Tabela de regiões | `HU-SL-008` | Must | R1 | Alto | P | `BL-SL-03` | Base da distribuição automática (`DEC-SL-05`) |
+| `BL-SL-06` | 9 | Canal | Pedido pelo WhatsApp com formulário obrigatório | `HU-SL-001` | Must | R1 | Alto | G | `BL-SL-02`, `BL-SL-34` | Resolve o caso "Pedido com informações incompletas" na entrada (`DEC-SL-02`) |
+| `BL-SL-07` | 10 | Canal | Acompanhar o pedido pelo WhatsApp | `HU-SL-002` | Must | R1 | Alto | P | `BL-SL-06` | Responde "cadê minha entrega?" sem passar por ninguém |
+| `BL-SL-09` | 11 | Back | Lista única de entregas com histórico | `HU-SL-009` | Must | R1 | Alto | M | `BL-SL-01` | É a fonte da verdade (`DEC-SL-01`); resolve o caso "O registro incorreto" |
+| `BL-SL-08` | 12 | Front | Registro do pedido pela equipe | `HU-SL-004` | Must | R1 | Alto | M | `BL-SL-09` | Áudio, ligação e planilha da loja continuam chegando |
+| `BL-SL-10` | 13 | Back | Distribuição pela região | `HU-SL-010` | Must | R1 | Alto | P | `BL-SL-04`, `BL-SL-06` | Ninguém distribui à mão |
+| `BL-SL-11` | 14 | Integração | Padrão de integração publicado para as terceirizadas | — | Must | R1 | Alto | M | — | As terceirizadas precisam do padrão antes de integrar (`DEC-SL-06`, `RNF-SL-15`) |
+| `BL-SL-12` | 15 | Back | Envio da solicitação à terceirizada | `HU-SL-011` | Must | R1 | Alto | M | `BL-SL-10`, `BL-SL-11` | Substitui o envio por WhatsApp e planilha |
+| `BL-SL-13` | 16 | Integração | Retorno pela integração | `HU-SL-013` | Must | R1 | Alto | M | `BL-SL-11`, `BL-SL-12` | O caminho preferencial do status |
+| `BL-SL-14` | 17 | Front | Retorno pelo portal da terceirizada | `HU-SL-014` | Must | R1 | Alto | M | `BL-SL-12` | A terceirizada sem integração precisa de um caminho simples (`RNF-SL-02`) |
+| `BL-SL-15` | 18 | Back | Comprovante padrão | `HU-SL-016` | Must | R1 | Alto | M | `BL-SL-13`, `BL-SL-14` | Resolve a dúvida "diz que entregou" e a foto sem vínculo (`DEC-SL-07`) |
+| `BL-SL-36` | 19 | Integração | Leitura da planilha modelo pela API | — | Should | R1 | Médio | M | `BL-SL-33` | Deixa a terceirizada devolver a planilha que já usa, sem portal |
+| `BL-SL-16` | 20 | Integração | Retorno por planilha traduzida | `HU-SL-015` | Should | R1 | Médio | M | `BL-SL-12`, `BL-SL-36` | Até lá, a equipe usa o portal pela terceirizada |
+| `BL-SL-17` | 21 | Canal | Editar ou cancelar o pedido pelo WhatsApp | `HU-SL-003` | Should | R1 | Médio | P | `BL-SL-06` | Até lá, a loja pede a mudança ao atendimento |
+| `BL-SL-18` | 22 | Integração | Aviso de alteração à terceirizada | `HU-SL-012` | Should | R1 | Médio | P | `BL-SL-12`, `BL-SL-17` | Sem ele, a alteração depois do despacho volta ao telefone |
+| `BL-SL-37` | 23 | Infra | Cópia de segurança diária e restauração testada | — | Must | R1 | Alto | P | `BL-SL-33` | Perda máxima de 24 horas (`RNF-SL-17`); sem teste de restauração, a cópia não conta |
+| `BL-SL-38` | 24 | Infra | Monitoramento do link de rastreio e dos erros | — | Should | R1 | Médio | P | `BL-SL-33` | Falha percebida pela equipe antes da reclamação da loja (`RNF-SL-19`) |
 
 ### R2 — Ocorrências e comunicação
 
-| ID | Item | HUs | MoSCoW | Release | Valor | Esforço | Depende de | Por quê |
-|---|---|---|---|---|---|---|---|---|
-| `BL-SL-19` | Habilitador: protocolo de atendimento escrito com a SEALog | — | Must | R2 | Alto | M | — | Sem protocolo, o agente não tem com o que comparar (`Q-SL-05`) |
-| `BL-SL-20` | Painel de chamados | `HU-SL-018` | Must | R2 | Alto | M | `BL-SL-13` | Nenhuma ocorrência tratada fora do painel; resolve o caso "O buquê de sábado" |
-| `BL-SL-21` | Aviso automático à loja | `HU-SL-020` | Must | R2 | Alto | P | `BL-SL-05`, `BL-SL-20` | A loja sabe do problema antes do consumidor (`DEC-SL-11`) |
-| `BL-SL-22` | Devolução no galpão e decisão | `HU-SL-019` | Must | R2 | Alto | M | `BL-SL-20` | Os quatro destinos registrados (`DEC-SL-09`) |
-| `BL-SL-23` | Relato de problema com o agente de ocorrências | `HU-SL-017` | Must | R2 | Alto | G | `BL-SL-19`, `BL-SL-20` | A loja relata a qualquer hora e o chamado chega com sugestão (`DEC-SL-10`) |
-| `BL-SL-24` | Entregas afetadas por loja e aviso em lote | `HU-SL-021` | Must | R2 | Alto | M | `BL-SL-21` | Resolve o caso "A segunda-feira de chuva": um aviso por loja em vez de 120 mensagens |
-| `BL-SL-25` | Manutenção dos dados comerciais da loja | `HU-SL-006` | Could | R2 | Baixo | P | `BL-SL-02` | Até lá, o cadastro inicial basta; a mudança passa pelo coordenador |
-| `BL-SL-26` | Habilitador: painel de adoção | — | Should | R2 | Médio | P | `BL-SL-09` | Mede os critérios de avanço de cada fase (`DEC-SL-16`) |
+| ID | Ordem | Camada | Item | HUs | MoSCoW | Release | Valor | Esforço | Depende de | Por quê |
+|---|---|---|---|---|---|---|---|---|---|---|
+| `BL-SL-19` | 25 | Negócio | Protocolo de atendimento escrito com a SEALog | — | Must | R2 | Alto | M | — | Sem protocolo, o agente não tem com o que comparar (`Q-SL-05`) |
+| `BL-SL-20` | 26 | Front | Painel de chamados | `HU-SL-018` | Must | R2 | Alto | M | `BL-SL-13` | Nenhuma ocorrência tratada fora do painel; resolve o caso "O buquê de sábado" |
+| `BL-SL-40` | 27 | Agente | Chamado aberto pela API para o agente de ocorrências, com chave própria | — | Must | R2 | Alto | M | `BL-SL-20`, `BL-SL-34` | O agente abre e lê chamados só pela API, nunca direto no banco (`RNF-SL-11`) |
+| `BL-SL-23` | 28 | Agente | Relato de problema com o agente de ocorrências | `HU-SL-017` | Must | R2 | Alto | G | `BL-SL-19`, `BL-SL-40` | A loja relata a qualquer hora e o chamado chega com sugestão (`DEC-SL-10`) |
+| `BL-SL-22` | 29 | Back | Devolução no galpão e decisão | `HU-SL-019` | Must | R2 | Alto | M | `BL-SL-20` | Os quatro destinos registrados (`DEC-SL-09`) |
+| `BL-SL-21` | 30 | Canal | Aviso automático à loja | `HU-SL-020` | Must | R2 | Alto | P | `BL-SL-05`, `BL-SL-20` | A loja sabe do problema antes do consumidor (`DEC-SL-11`) |
+| `BL-SL-24` | 31 | Back | Entregas afetadas por loja e aviso em lote | `HU-SL-021` | Must | R2 | Alto | M | `BL-SL-21` | Resolve o caso "A segunda-feira de chuva": um aviso por loja em vez de 120 mensagens |
+| `BL-SL-43` | 32 | Front | Exportação da lista de entregas para o financeiro | — | Must | R2 | Alto | P | `BL-SL-09` | Até o fechamento, o financeiro confere pela lista exportada |
+| `BL-SL-42` | 33 | Front | Painel de chamados em tempo real | — | Should | R2 | Médio | M | `BL-SL-20` | A equipe vê o chamado novo sem recarregar a tela (`RNF-SL-09`) |
+| `BL-SL-25` | 34 | Front | Manutenção dos dados comerciais da loja | `HU-SL-006` | Could | R2 | Baixo | P | `BL-SL-02` | Até lá, o cadastro inicial basta; a mudança passa pelo coordenador |
+| `BL-SL-26` | 35 | Front | Painel de adoção | — | Should | R2 | Médio | P | `BL-SL-09` | Mede os critérios de avanço de cada fase (`DEC-SL-16`) |
 
 ### R3 — Financeiro
 
-| ID | Item | HUs | MoSCoW | Release | Valor | Esforço | Depende de | Por quê |
-|---|---|---|---|---|---|---|---|---|
-| `BL-SL-27` | Fechamento da cobrança das lojas | `HU-SL-022` | Must | R3 | Alto | G | `BL-SL-09` | A cobrança sai do registro; o valor depende da tabela de preços (`DEC-SL-18`) |
-| `BL-SL-28` | Fechamento do pagamento das terceirizadas | `HU-SL-023` | Must | R3 | Alto | M | `BL-SL-15` | Paga só a entrega comprovada (`RN-SL-048`); o valor depende da SEALog (`DEC-SL-18`) |
+| ID | Ordem | Camada | Item | HUs | MoSCoW | Release | Valor | Esforço | Depende de | Por quê |
+|---|---|---|---|---|---|---|---|---|---|---|
+| `BL-SL-27` | 36 | Back | Fechamento da cobrança das lojas | `HU-SL-022` | Must | R3 | Alto | G | `BL-SL-09` | A cobrança sai do registro; o valor depende da tabela de preços (`DEC-SL-18`) |
+| `BL-SL-28` | 37 | Back | Fechamento do pagamento das terceirizadas | `HU-SL-023` | Must | R3 | Alto | M | `BL-SL-15` | Paga só a entrega comprovada (`RN-SL-048`); o valor depende da SEALog (`DEC-SL-18`) |
 
 ### Fora desta versão
 
-| ID | Item | HUs | MoSCoW | Release | Valor | Esforço | Depende de | Por quê |
-|---|---|---|---|---|---|---|---|---|
-| `BL-SL-29` | Aplicativo do motorista | — | Won't | — | Baixo | G | — | O motorista é da terceirizada (`DEC-SL-04`) |
-| `BL-SL-30` | Roteirização ou otimização de rotas | — | Won't | — | Baixo | G | — | A rota é da terceirizada; a SEALog só distribui por região (`DEC-SL-05`) |
-| `BL-SL-31` | Agente de consulta de status | — | Won't | — | Baixo | M | — | O botão de acompanhar responde do banco, sem custo de modelo (`DEC-SL-10`) |
-| `BL-SL-32` | Emissão de nota fiscal e cobrança bancária | — | Won't | — | Médio | G | — | A origem só cita o cálculo da cobrança |
+| ID | Ordem | Camada | Item | HUs | MoSCoW | Release | Valor | Esforço | Depende de | Por quê |
+|---|---|---|---|---|---|---|---|---|---|---|
+| `BL-SL-29` | 38 | — | Aplicativo do motorista | — | Won't | — | Baixo | G | — | O motorista é da terceirizada (`DEC-SL-04`) |
+| `BL-SL-30` | 39 | — | Roteirização ou otimização de rotas | — | Won't | — | Baixo | G | — | A rota é da terceirizada; a SEALog só distribui por região (`DEC-SL-05`) |
+| `BL-SL-31` | 40 | — | Agente de consulta de status | — | Won't | — | Baixo | M | — | O botão de acompanhar responde do banco, sem custo de modelo (`DEC-SL-10`) |
+| `BL-SL-32` | 41 | — | Emissão de nota fiscal e cobrança bancária | — | Won't | — | Médio | G | — | A origem só cita o cálculo da cobrança |
 
 ## 4. Cobertura
 

@@ -228,7 +228,7 @@ aplicativo do motorista e a montagem de rotas, está nas alternativas descartada
 | **Decisão** | Cada item do backlog recebe uma classe MoSCoW (Must, Should, Could, Won't), um valor, um esforço e as dependências. As releases são cortadas para que cada uma resolva casos inteiros do enunciado |
 | **Alternativas descartadas** | Ordenar só pela prioridade da HU (Alta, Média): ignora dependência |
 | **Consequências** | A ordem do backlog pode divergir da prioridade da HU, e a página de backlog mostra essa diferença. O backlog atual é rascunho, para a equipe revisar |
-| **Referências** | `BL-SL-01` a `BL-SL-32` |
+| **Referências** | `BL-SL-01` a `BL-SL-43` |
 
 ## Decisões de arquitetura e infraestrutura
 

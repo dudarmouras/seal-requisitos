@@ -8338,26 +8338,28 @@
       "system": "geral",
       "file": "backlog",
       "title": "SEALog — Backlog e priorização",
-      "intro": "O backlog do SEALog, em ordem de entrega. Cada item tem um id `BL-SL-NN` e aponta a história de\nusuário que entrega; os itens sem história são habilitadores — trabalho que nenhuma história\ndescreve, mas sem o qual uma delas não funciona — ou itens deixados de fora de propósito.\n\n> **Rascunho.** Esta é a primeira versão do backlog depois da terceirização, montada a partir das\n> histórias e das decisões. A equipe ainda vai revisá-la na sessão de priorização: classe MoSCoW,\n> esforço e corte das releases podem mudar.",
+      "intro": "O backlog do SEALog, em ordem de entrega. Cada item tem um id `BL-SL-NN` e uma camada: **Canal**\n(WhatsApp), **Front** (telas), **Back** (API, regras e dados), **Integração** (terceirizadas),\n**Agente** (agente de ocorrências), **Infra** (publicação, cópia de segurança, monitoramento) e\n**Negócio** (protocolo, cadastros e treinamento que a SEALog faz). Itens sem história são\nhabilitadores: trabalho que nenhuma história descreve, mas sem o qual uma delas não funciona.\n\n> **Rascunho.** Esta é a segunda versão do backlog, reorganizada por entrega ao cliente e por camada\n> técnica. A equipe ainda vai revisá-la na sessão de priorização: classe MoSCoW, esforço e corte das\n> releases podem mudar.",
       "sections": [
         {
           "anchor": "1-como-se-prioriza",
           "level": 2,
           "title": "1. Como se prioriza",
-          "body": "A priorização combina quatro critérios, nesta ordem (`DEC-SL-20`):\n\n| Critério | Pergunta | Valores |\n|---|---|---|\n| **MoSCoW** | O produto funciona sem isto? | **Must** — sem ele a release não resolve o caso a que se propõe · **Should** — importante, mas há contorno · **Could** — desejável se sobrar tempo · **Won't** — fora desta versão, de propósito |\n| **Valor** | Quanto do gargalo isto resolve? | **Alto** — resolve um dos casos do enunciado ou a causa comum · **Médio** — reduz trabalho manual · **Baixo** — conforto |\n| **Esforço** | Quanto custa construir? | **P** — dias · **M** — uma a duas semanas · **G** — mais de duas semanas, ou depende de terceiro |\n| **Dependência** | O que precisa existir antes? | Os itens da coluna `Depende de` |\n\nA **prioridade da HU** (Alta, Média), escrita em cada história, mede o valor para quem usa. A\n**ordem do backlog** soma a ela o esforço e a dependência, e por isso as duas podem divergir. Os\nfechamentos (`HU-SL-022`, `HU-SL-023`) são Média na história, mas Must na R3: são a razão de ser da\nrelease, e até lá o financeiro fecha pela exportação da lista. O agente de ocorrências\n(`HU-SL-017`) é Alta, mas fica na R2: depende do protocolo de atendimento, que a SEALog ainda vai\nescrever (`Q-SL-05`), e o chamado já existe sem ele, aberto pelo Não entregue da terceirizada.",
+          "body": "Um item sobe na ordem quando entrega valor ao cliente com pouco esforço e sem esperar outro. O\ncliente aqui são três: a loja que pede, a terceirizada que entrega e o consumidor que acompanha. A\nordem combina quatro critérios (`DEC-SL-20`):\n\n| Critério | Pergunta | Valores |\n|---|---|---|\n| **MoSCoW** | A release funciona sem isto? | **Must** — sem ele a release não resolve o caso a que se propõe · **Should** — importante, mas há contorno · **Could** — desejável se sobrar tempo · **Won't** — fora desta versão, de propósito |\n| **Valor** | Quanto isto muda a vida do cliente? | **Alto** — resolve um dos casos do enunciado ou a causa comum · **Médio** — tira trabalho manual · **Baixo** — conforto |\n| **Esforço** | Quanto custa construir? | **P** — dias · **M** — uma a duas semanas · **G** — mais de duas semanas, ou depende de terceiro |\n| **Dependência** | O que precisa existir antes? | Os itens da coluna `Depende de` |\n\nA **prioridade da HU** (Alta, Média), escrita em cada história, mede o valor para quem usa. A\n**ordem do backlog** soma a ela o esforço e a dependência, e por isso as duas podem divergir. Os\nfechamentos (`HU-SL-022`, `HU-SL-023`) são Média na história, mas Must na R3: são a razão de ser da\nrelease. O agente de ocorrências (`HU-SL-017`) é Alta, mas fica na R2: depende do protocolo de\natendimento, que a SEALog ainda vai escrever (`Q-SL-05`).\n\nAs camadas sozinhas não definem a ordem. Antes de começar a tela de uma release, a API e o banco\ndela precisam existir; por isso a base técnica (`BL-SL-33`) e o canal do WhatsApp (`BL-SL-05`)\naparecem primeiro, mesmo sem valor visível para o cliente: um deles tem prazo da Meta, e o outro\né a fundação de tudo.",
           "ids": [
             "DEC-SL-20",
             "HU-SL-022",
             "HU-SL-023",
             "HU-SL-017",
-            "Q-SL-05"
+            "Q-SL-05",
+            "BL-SL-33",
+            "BL-SL-05"
           ]
         },
         {
           "anchor": "2-releases",
           "level": 2,
           "title": "2. Releases",
-          "body": "Cada release resolve casos inteiros do enunciado, para que a SEALog sinta a diferença no dia a dia,\ne cada uma corresponde a uma fase da adoção gradual.\n\n| Release | Objetivo | Casos que resolve | Fase da adoção |\n|---|---|---|---|\n| **R1 — Pedido, despacho e retorno** | Do pedido completo no WhatsApp ao comprovante padrão da terceirizada, num registro único | \"Pedido com informações incompletas\", \"O registro incorreto\" | Cadastros, piloto e segunda terceirizada |\n| **R2 — Ocorrências e comunicação** | Nenhuma ocorrência perdida, a loja avisada sem depender do atendimento, e a decisão registrada | \"O buquê de sábado\", \"A segunda-feira de chuva\" | Todas as lojas |\n| **R3 — Financeiro** | A cobrança das lojas e o pagamento das terceirizadas saem do registro | — (Enunciado §2: o financeiro calcula pelos registros) | Financeiro |\n| **Fora desta versão** | O que foi deixado de fora de propósito, e por quê | — | — |",
+          "body": "Cada release entrega uma experiência inteira ao cliente, para que a SEALog sinta a diferença no\ndia a dia. Cada uma corresponde a uma fase da adoção gradual.\n\n| Release | Entrega ao cliente | Casos que resolve | Fase da adoção |\n|---|---|---|---|\n| **R1 — Pedido, despacho e retorno** | A loja pede pelo WhatsApp e acompanha sozinha; a terceirizada recebe o pedido e devolve o comprovante padrão; a equipe enxerga tudo numa lista só | \"Pedido com informações incompletas\", \"O registro incorreto\" | Cadastros, piloto e segunda terceirizada |\n| **R2 — Ocorrências e comunicação** | Nenhuma ocorrência perdida, a loja avisada sem depender do atendimento, e a decisão registrada | \"O buquê de sábado\", \"A segunda-feira de chuva\" | Todas as lojas |\n| **R3 — Financeiro** | A cobrança das lojas e o pagamento das terceirizadas saem do registro | — (Enunciado §2: o financeiro calcula pelos registros) | Financeiro |\n| **Fora desta versão** | O que foi deixado de fora de propósito, e por quê | — | — |",
           "ids": []
         },
         {
@@ -8371,10 +8373,16 @@
           "anchor": "r1-pedido-despacho-e-retorno",
           "level": 3,
           "title": "R1 — Pedido, despacho e retorno",
-          "body": "| ID | Item | HUs | MoSCoW | Release | Valor | Esforço | Depende de | Por quê |\n|---|---|---|---|---|---|---|---|---|\n| `BL-SL-01` | Acesso por perfil da equipe e da terceirizada | `HU-SL-024` | Must | R1 | Alto | M | — | Todo registro precisa de autor, e cada perfil vê só a sua parte |\n| `BL-SL-02` | Cadastro da loja e dos números autorizados | `HU-SL-005` | Must | R1 | Alto | P | `BL-SL-01` | Sem número autorizado, ninguém pede pelo WhatsApp (`DEC-SL-03`) |\n| `BL-SL-03` | Cadastro da terceirizada | `HU-SL-007` | Must | R1 | Alto | P | `BL-SL-01` | É para quem o pedido vai |\n| `BL-SL-04` | Tabela de regiões | `HU-SL-008` | Must | R1 | Alto | P | `BL-SL-03` | Base da distribuição automática (`DEC-SL-05`) |\n| `BL-SL-05` | Habilitador: conta do WhatsApp Business, formulário e modelos de mensagem aprovados | — | Must | R1 | Alto | G | — | O prazo de aprovação é da Meta; começar cedo destrava o pedido e os avisos (`DEC-SL-15`) |\n| `BL-SL-06` | Pedido pelo WhatsApp com formulário obrigatório | `HU-SL-001` | Must | R1 | Alto | G | `BL-SL-02`, `BL-SL-05` | Resolve o caso \"Pedido com informações incompletas\" na entrada (`DEC-SL-02`) |\n| `BL-SL-07` | Acompanhar o pedido pelo WhatsApp | `HU-SL-002` | Must | R1 | Alto | P | `BL-SL-06` | Responde \"cadê minha entrega?\" sem passar por ninguém |\n| `BL-SL-08` | Registro do pedido pela equipe | `HU-SL-004` | Must | R1 | Alto | M | `BL-SL-09` | Áudio, ligação e planilha da loja continuam chegando |\n| `BL-SL-09` | Lista única de entregas com histórico | `HU-SL-009` | Must | R1 | Alto | M | `BL-SL-01` | É a fonte da verdade (`DEC-SL-01`); resolve o caso \"O registro incorreto\" |\n| `BL-SL-10` | Distribuição pela região | `HU-SL-010` | Must | R1 | Alto | P | `BL-SL-04`, `BL-SL-06` | Ninguém distribui à mão |\n| `BL-SL-11` | Habilitador: padrão da integração publicado para as terceirizadas | — | Must | R1 | Alto | M | — | As terceirizadas precisam do padrão antes de integrar (`DEC-SL-06`, `RNF-SL-15`) |\n| `BL-SL-12` | Envio da solicitação à terceirizada | `HU-SL-011` | Must | R1 | Alto | M | `BL-SL-10`, `BL-SL-11` | Substitui o envio por WhatsApp e planilha |\n| `BL-SL-13` | Retorno pela integração | `HU-SL-013` | Must | R1 | Alto | M | `BL-SL-11`, `BL-SL-12` | O caminho preferencial do status |\n| `BL-SL-14` | Retorno pelo portal | `HU-SL-014` | Must | R1 | Alto | M | `BL-SL-12` | A terceirizada sem integração precisa de um caminho simples (`RNF-SL-02`) |\n| `BL-SL-15` | Comprovante padrão | `HU-SL-016` | Must | R1 | Alto | M | `BL-SL-13`, `BL-SL-14` | Resolve a dúvida \"diz que entregou\" e a foto sem vínculo (`DEC-SL-07`) |\n| `BL-SL-16` | Retorno por planilha traduzida | `HU-SL-015` | Should | R1 | Médio | M | `BL-SL-12` | Deixa a terceirizada começar como já trabalha; até lá, a equipe usa o portal por ela |\n| `BL-SL-17` | Editar ou cancelar o pedido pelo WhatsApp | `HU-SL-003` | Should | R1 | Médio | P | `BL-SL-06` | Até lá, a loja pede a mudança ao atendimento |\n| `BL-SL-18` | Aviso de alteração à terceirizada | `HU-SL-012` | Should | R1 | Médio | P | `BL-SL-12`, `BL-SL-17` | Sem ele, a alteração depois do despacho volta ao telefone |",
+          "body": "| ID | Ordem | Camada | Item | HUs | MoSCoW | Release | Valor | Esforço | Depende de | Por quê |\n|---|---|---|---|---|---|---|---|---|---|---|\n| `BL-SL-05` | 1 | Canal | Conta do WhatsApp Business, formulário e modelos de mensagem aprovados | — | Must | R1 | Alto | G | — | O prazo de aprovação é da Meta; começar cedo destrava o pedido e os avisos (`DEC-SL-15`) |\n| `BL-SL-33` | 2 | Infra | Base técnica: API em FastAPI, banco no Supabase e ambiente de homologação | — | Must | R1 | Alto | M | — | Sem ela nenhuma tela ou canal roda; a escolha da stack está em `DEC-SL-21` |\n| `BL-SL-01` | 3 | Back | Acesso por perfil da equipe e da terceirizada | `HU-SL-024` | Must | R1 | Alto | M | `BL-SL-33` | Todo registro precisa de autor, e cada perfil vê só a sua parte |\n| `BL-SL-34` | 4 | Back | Recebimento das mensagens do WhatsApp e controle dos status do pedido | — | Must | R1 | Alto | M | `BL-SL-05`, `BL-SL-33` | O canal da loja chega por aqui; o status só muda por regra, nunca à mão no texto |\n| `BL-SL-35` | 5 | Front | Painel da equipe: entrada, navegação e listas | — | Must | R1 | Alto | M | `BL-SL-01`, `BL-SL-33` | É a tela em que a equipe trabalha; sem ela, cada cadastro vira planilha |\n| `BL-SL-02` | 6 | Front | Cadastro da loja e dos números autorizados | `HU-SL-005` | Must | R1 | Alto | P | `BL-SL-35` | Sem número autorizado, ninguém pede pelo WhatsApp (`DEC-SL-03`) |\n| `BL-SL-03` | 7 | Front | Cadastro da terceirizada | `HU-SL-007` | Must | R1 | Alto | P | `BL-SL-35` | É para quem o pedido vai |\n| `BL-SL-04` | 8 | Back | Tabela de regiões | `HU-SL-008` | Must | R1 | Alto | P | `BL-SL-03` | Base da distribuição automática (`DEC-SL-05`) |\n| `BL-SL-06` | 9 | Canal | Pedido pelo WhatsApp com formulário obrigatório | `HU-SL-001` | Must | R1 | Alto | G | `BL-SL-02`, `BL-SL-34` | Resolve o caso \"Pedido com informações incompletas\" na entrada (`DEC-SL-02`) |\n| `BL-SL-07` | 10 | Canal | Acompanhar o pedido pelo WhatsApp | `HU-SL-002` | Must | R1 | Alto | P | `BL-SL-06` | Responde \"cadê minha entrega?\" sem passar por ninguém |\n| `BL-SL-09` | 11 | Back | Lista única de entregas com histórico | `HU-SL-009` | Must | R1 | Alto | M | `BL-SL-01` | É a fonte da verdade (`DEC-SL-01`); resolve o caso \"O registro incorreto\" |\n| `BL-SL-08` | 12 | Front | Registro do pedido pela equipe | `HU-SL-004` | Must | R1 | Alto | M | `BL-SL-09` | Áudio, ligação e planilha da loja continuam chegando |\n| `BL-SL-10` | 13 | Back | Distribuição pela região | `HU-SL-010` | Must | R1 | Alto | P | `BL-SL-04`, `BL-SL-06` | Ninguém distribui à mão |\n| `BL-SL-11` | 14 | Integração | Padrão de integração publicado para as terceirizadas | — | Must | R1 | Alto | M | — | As terceirizadas precisam do padrão antes de integrar (`DEC-SL-06`, `RNF-SL-15`) |\n| `BL-SL-12` | 15 | Back | Envio da solicitação à terceirizada | `HU-SL-011` | Must | R1 | Alto | M | `BL-SL-10`, `BL-SL-11` | Substitui o envio por WhatsApp e planilha |\n| `BL-SL-13` | 16 | Integração | Retorno pela integração | `HU-SL-013` | Must | R1 | Alto | M | `BL-SL-11`, `BL-SL-12` | O caminho preferencial do status |\n| `BL-SL-14` | 17 | Front | Retorno pelo portal da terceirizada | `HU-SL-014` | Must | R1 | Alto | M | `BL-SL-12` | A terceirizada sem integração precisa de um caminho simples (`RNF-SL-02`) |\n| `BL-SL-15` | 18 | Back | Comprovante padrão | `HU-SL-016` | Must | R1 | Alto | M | `BL-SL-13`, `BL-SL-14` | Resolve a dúvida \"diz que entregou\" e a foto sem vínculo (`DEC-SL-07`) |\n| `BL-SL-36` | 19 | Integração | Leitura da planilha modelo pela API | — | Should | R1 | Médio | M | `BL-SL-33` | Deixa a terceirizada devolver a planilha que já usa, sem portal |\n| `BL-SL-16` | 20 | Integração | Retorno por planilha traduzida | `HU-SL-015` | Should | R1 | Médio | M | `BL-SL-12`, `BL-SL-36` | Até lá, a equipe usa o portal pela terceirizada |\n| `BL-SL-17` | 21 | Canal | Editar ou cancelar o pedido pelo WhatsApp | `HU-SL-003` | Should | R1 | Médio | P | `BL-SL-06` | Até lá, a loja pede a mudança ao atendimento |\n| `BL-SL-18` | 22 | Integração | Aviso de alteração à terceirizada | `HU-SL-012` | Should | R1 | Médio | P | `BL-SL-12`, `BL-SL-17` | Sem ele, a alteração depois do despacho volta ao telefone |\n| `BL-SL-37` | 23 | Infra | Cópia de segurança diária e restauração testada | — | Must | R1 | Alto | P | `BL-SL-33` | Perda máxima de 24 horas (`RNF-SL-17`); sem teste de restauração, a cópia não conta |\n| `BL-SL-38` | 24 | Infra | Monitoramento do link de rastreio e dos erros | — | Should | R1 | Médio | P | `BL-SL-33` | Falha percebida pela equipe antes da reclamação da loja (`RNF-SL-19`) |",
           "ids": [
+            "BL-SL-05",
+            "DEC-SL-15",
+            "BL-SL-33",
+            "DEC-SL-21",
             "BL-SL-01",
             "HU-SL-024",
+            "BL-SL-34",
+            "BL-SL-35",
             "BL-SL-02",
             "HU-SL-005",
             "DEC-SL-03",
@@ -8383,18 +8391,16 @@
             "BL-SL-04",
             "HU-SL-008",
             "DEC-SL-05",
-            "BL-SL-05",
-            "DEC-SL-15",
             "BL-SL-06",
             "HU-SL-001",
             "DEC-SL-02",
             "BL-SL-07",
             "HU-SL-002",
-            "BL-SL-08",
-            "HU-SL-004",
             "BL-SL-09",
             "HU-SL-009",
             "DEC-SL-01",
+            "BL-SL-08",
+            "HU-SL-004",
             "BL-SL-10",
             "HU-SL-010",
             "BL-SL-11",
@@ -8410,42 +8416,53 @@
             "BL-SL-15",
             "HU-SL-016",
             "DEC-SL-07",
+            "BL-SL-36",
             "BL-SL-16",
             "HU-SL-015",
             "BL-SL-17",
             "HU-SL-003",
             "BL-SL-18",
-            "HU-SL-012"
+            "HU-SL-012",
+            "BL-SL-37",
+            "RNF-SL-17",
+            "BL-SL-38",
+            "RNF-SL-19"
           ]
         },
         {
           "anchor": "r2-ocorrencias-e-comunicacao",
           "level": 3,
           "title": "R2 — Ocorrências e comunicação",
-          "body": "| ID | Item | HUs | MoSCoW | Release | Valor | Esforço | Depende de | Por quê |\n|---|---|---|---|---|---|---|---|---|\n| `BL-SL-19` | Habilitador: protocolo de atendimento escrito com a SEALog | — | Must | R2 | Alto | M | — | Sem protocolo, o agente não tem com o que comparar (`Q-SL-05`) |\n| `BL-SL-20` | Painel de chamados | `HU-SL-018` | Must | R2 | Alto | M | `BL-SL-13` | Nenhuma ocorrência tratada fora do painel; resolve o caso \"O buquê de sábado\" |\n| `BL-SL-21` | Aviso automático à loja | `HU-SL-020` | Must | R2 | Alto | P | `BL-SL-05`, `BL-SL-20` | A loja sabe do problema antes do consumidor (`DEC-SL-11`) |\n| `BL-SL-22` | Devolução no galpão e decisão | `HU-SL-019` | Must | R2 | Alto | M | `BL-SL-20` | Os quatro destinos registrados (`DEC-SL-09`) |\n| `BL-SL-23` | Relato de problema com o agente de ocorrências | `HU-SL-017` | Must | R2 | Alto | G | `BL-SL-19`, `BL-SL-20` | A loja relata a qualquer hora e o chamado chega com sugestão (`DEC-SL-10`) |\n| `BL-SL-24` | Entregas afetadas por loja e aviso em lote | `HU-SL-021` | Must | R2 | Alto | M | `BL-SL-21` | Resolve o caso \"A segunda-feira de chuva\": um aviso por loja em vez de 120 mensagens |\n| `BL-SL-25` | Manutenção dos dados comerciais da loja | `HU-SL-006` | Could | R2 | Baixo | P | `BL-SL-02` | Até lá, o cadastro inicial basta; a mudança passa pelo coordenador |\n| `BL-SL-26` | Habilitador: painel de adoção | — | Should | R2 | Médio | P | `BL-SL-09` | Mede os critérios de avanço de cada fase (`DEC-SL-16`) |",
+          "body": "| ID | Ordem | Camada | Item | HUs | MoSCoW | Release | Valor | Esforço | Depende de | Por quê |\n|---|---|---|---|---|---|---|---|---|---|---|\n| `BL-SL-19` | 25 | Negócio | Protocolo de atendimento escrito com a SEALog | — | Must | R2 | Alto | M | — | Sem protocolo, o agente não tem com o que comparar (`Q-SL-05`) |\n| `BL-SL-20` | 26 | Front | Painel de chamados | `HU-SL-018` | Must | R2 | Alto | M | `BL-SL-13` | Nenhuma ocorrência tratada fora do painel; resolve o caso \"O buquê de sábado\" |\n| `BL-SL-40` | 27 | Agente | Chamado aberto pela API para o agente de ocorrências, com chave própria | — | Must | R2 | Alto | M | `BL-SL-20`, `BL-SL-34` | O agente abre e lê chamados só pela API, nunca direto no banco (`RNF-SL-11`) |\n| `BL-SL-23` | 28 | Agente | Relato de problema com o agente de ocorrências | `HU-SL-017` | Must | R2 | Alto | G | `BL-SL-19`, `BL-SL-40` | A loja relata a qualquer hora e o chamado chega com sugestão (`DEC-SL-10`) |\n| `BL-SL-22` | 29 | Back | Devolução no galpão e decisão | `HU-SL-019` | Must | R2 | Alto | M | `BL-SL-20` | Os quatro destinos registrados (`DEC-SL-09`) |\n| `BL-SL-21` | 30 | Canal | Aviso automático à loja | `HU-SL-020` | Must | R2 | Alto | P | `BL-SL-05`, `BL-SL-20` | A loja sabe do problema antes do consumidor (`DEC-SL-11`) |\n| `BL-SL-24` | 31 | Back | Entregas afetadas por loja e aviso em lote | `HU-SL-021` | Must | R2 | Alto | M | `BL-SL-21` | Resolve o caso \"A segunda-feira de chuva\": um aviso por loja em vez de 120 mensagens |\n| `BL-SL-43` | 32 | Front | Exportação da lista de entregas para o financeiro | — | Must | R2 | Alto | P | `BL-SL-09` | Até o fechamento, o financeiro confere pela lista exportada |\n| `BL-SL-42` | 33 | Front | Painel de chamados em tempo real | — | Should | R2 | Médio | M | `BL-SL-20` | A equipe vê o chamado novo sem recarregar a tela (`RNF-SL-09`) |\n| `BL-SL-25` | 34 | Front | Manutenção dos dados comerciais da loja | `HU-SL-006` | Could | R2 | Baixo | P | `BL-SL-02` | Até lá, o cadastro inicial basta; a mudança passa pelo coordenador |\n| `BL-SL-26` | 35 | Front | Painel de adoção | — | Should | R2 | Médio | P | `BL-SL-09` | Mede os critérios de avanço de cada fase (`DEC-SL-16`) |",
           "ids": [
             "BL-SL-19",
             "Q-SL-05",
             "BL-SL-20",
             "HU-SL-018",
             "BL-SL-13",
+            "BL-SL-40",
+            "BL-SL-34",
+            "RNF-SL-11",
+            "BL-SL-23",
+            "HU-SL-017",
+            "DEC-SL-10",
+            "BL-SL-22",
+            "HU-SL-019",
+            "DEC-SL-09",
             "BL-SL-21",
             "HU-SL-020",
             "BL-SL-05",
             "DEC-SL-11",
-            "BL-SL-22",
-            "HU-SL-019",
-            "DEC-SL-09",
-            "BL-SL-23",
-            "HU-SL-017",
-            "DEC-SL-10",
             "BL-SL-24",
             "HU-SL-021",
+            "BL-SL-43",
+            "BL-SL-09",
+            "BL-SL-42",
+            "RNF-SL-09",
             "BL-SL-25",
             "HU-SL-006",
             "BL-SL-02",
             "BL-SL-26",
-            "BL-SL-09",
             "DEC-SL-16"
           ]
         },
@@ -8453,7 +8470,7 @@
           "anchor": "r3-financeiro",
           "level": 3,
           "title": "R3 — Financeiro",
-          "body": "| ID | Item | HUs | MoSCoW | Release | Valor | Esforço | Depende de | Por quê |\n|---|---|---|---|---|---|---|---|---|\n| `BL-SL-27` | Fechamento da cobrança das lojas | `HU-SL-022` | Must | R3 | Alto | G | `BL-SL-09` | A cobrança sai do registro; o valor depende da tabela de preços (`DEC-SL-18`) |\n| `BL-SL-28` | Fechamento do pagamento das terceirizadas | `HU-SL-023` | Must | R3 | Alto | M | `BL-SL-15` | Paga só a entrega comprovada (`RN-SL-048`); o valor depende da SEALog (`DEC-SL-18`) |",
+          "body": "| ID | Ordem | Camada | Item | HUs | MoSCoW | Release | Valor | Esforço | Depende de | Por quê |\n|---|---|---|---|---|---|---|---|---|---|---|\n| `BL-SL-27` | 36 | Back | Fechamento da cobrança das lojas | `HU-SL-022` | Must | R3 | Alto | G | `BL-SL-09` | A cobrança sai do registro; o valor depende da tabela de preços (`DEC-SL-18`) |\n| `BL-SL-28` | 37 | Back | Fechamento do pagamento das terceirizadas | `HU-SL-023` | Must | R3 | Alto | M | `BL-SL-15` | Paga só a entrega comprovada (`RN-SL-048`); o valor depende da SEALog (`DEC-SL-18`) |",
           "ids": [
             "BL-SL-27",
             "HU-SL-022",
@@ -8469,7 +8486,7 @@
           "anchor": "fora-desta-versao",
           "level": 3,
           "title": "Fora desta versão",
-          "body": "| ID | Item | HUs | MoSCoW | Release | Valor | Esforço | Depende de | Por quê |\n|---|---|---|---|---|---|---|---|---|\n| `BL-SL-29` | Aplicativo do motorista | — | Won't | — | Baixo | G | — | O motorista é da terceirizada (`DEC-SL-04`) |\n| `BL-SL-30` | Roteirização ou otimização de rotas | — | Won't | — | Baixo | G | — | A rota é da terceirizada; a SEALog só distribui por região (`DEC-SL-05`) |\n| `BL-SL-31` | Agente de consulta de status | — | Won't | — | Baixo | M | — | O botão de acompanhar responde do banco, sem custo de modelo (`DEC-SL-10`) |\n| `BL-SL-32` | Emissão de nota fiscal e cobrança bancária | — | Won't | — | Médio | G | — | A origem só cita o cálculo da cobrança |",
+          "body": "| ID | Ordem | Camada | Item | HUs | MoSCoW | Release | Valor | Esforço | Depende de | Por quê |\n|---|---|---|---|---|---|---|---|---|---|---|\n| `BL-SL-29` | 38 | — | Aplicativo do motorista | — | Won't | — | Baixo | G | — | O motorista é da terceirizada (`DEC-SL-04`) |\n| `BL-SL-30` | 39 | — | Roteirização ou otimização de rotas | — | Won't | — | Baixo | G | — | A rota é da terceirizada; a SEALog só distribui por região (`DEC-SL-05`) |\n| `BL-SL-31` | 40 | — | Agente de consulta de status | — | Won't | — | Baixo | M | — | O botão de acompanhar responde do banco, sem custo de modelo (`DEC-SL-10`) |\n| `BL-SL-32` | 41 | — | Emissão de nota fiscal e cobrança bancária | — | Won't | — | Médio | G | — | A origem só cita o cálculo da cobrança |",
           "ids": [
             "BL-SL-29",
             "DEC-SL-04",
@@ -8736,11 +8753,11 @@
           "anchor": "DEC-SL-20",
           "level": 3,
           "title": "DEC-SL-20 — Priorização em MoSCoW, com releases guiadas pelos casos do enunciado",
-          "body": "| | |\n|---|---|\n| **Status** | Tomada |\n| **Data** | 29/10/2026 |\n| **Tema** | Método |\n| **Contexto** | São 24 histórias, o risco principal é a adoção e o volume deve chegar a 400 entregas por dia no mês que vem (Encontro 1 [23:40]). Entregar tudo de uma vez adia o primeiro uso real |\n| **Decisão** | Cada item do backlog recebe uma classe MoSCoW (Must, Should, Could, Won't), um valor, um esforço e as dependências. As releases são cortadas para que cada uma resolva casos inteiros do enunciado |\n| **Alternativas descartadas** | Ordenar só pela prioridade da HU (Alta, Média): ignora dependência |\n| **Consequências** | A ordem do backlog pode divergir da prioridade da HU, e a página de backlog mostra essa diferença. O backlog atual é rascunho, para a equipe revisar |\n| **Referências** | `BL-SL-01` a `BL-SL-32` |",
+          "body": "| | |\n|---|---|\n| **Status** | Tomada |\n| **Data** | 29/10/2026 |\n| **Tema** | Método |\n| **Contexto** | São 24 histórias, o risco principal é a adoção e o volume deve chegar a 400 entregas por dia no mês que vem (Encontro 1 [23:40]). Entregar tudo de uma vez adia o primeiro uso real |\n| **Decisão** | Cada item do backlog recebe uma classe MoSCoW (Must, Should, Could, Won't), um valor, um esforço e as dependências. As releases são cortadas para que cada uma resolva casos inteiros do enunciado |\n| **Alternativas descartadas** | Ordenar só pela prioridade da HU (Alta, Média): ignora dependência |\n| **Consequências** | A ordem do backlog pode divergir da prioridade da HU, e a página de backlog mostra essa diferença. O backlog atual é rascunho, para a equipe revisar |\n| **Referências** | `BL-SL-01` a `BL-SL-43` |",
           "ids": [
             "DEC-SL-20",
             "BL-SL-01",
-            "BL-SL-32"
+            "BL-SL-43"
           ]
         },
         {
@@ -9508,21 +9525,25 @@
       "file": "backlog",
       "anchor": "r1-pedido-despacho-e-retorno",
       "title": "Acesso por perfil da equipe e da terceirizada",
-      "text": "**HUs:** `HU-SL-024`\n\n**MoSCoW:** Must\n\n**Release:** R1\n\n**Valor:** Alto\n\n**Esforço:** M\n\n**Por quê:** Todo registro precisa de autor, e cada perfil vê só a sua parte",
+      "text": "**Ordem:** 3\n\n**Camada:** Back\n\n**HUs:** `HU-SL-024`\n\n**MoSCoW:** Must\n\n**Release:** R1\n\n**Valor:** Alto\n\n**Esforço:** M\n\n**Depende de:** `BL-SL-33`\n\n**Por quê:** Todo registro precisa de autor, e cada perfil vê só a sua parte",
       "via": "tabela",
       "fields": {
+        "Ordem": "3",
+        "Camada": "Back",
         "Item": "Acesso por perfil da equipe e da terceirizada",
         "HUs": "`HU-SL-024`",
         "MoSCoW": "Must",
         "Release": "R1",
         "Valor": "Alto",
         "Esforço": "M",
+        "Depende de": "`BL-SL-33`",
         "Por quê": "Todo registro precisa de autor, e cada perfil vê só a sua parte"
       },
       "severity": null,
       "hasOutcome": null,
       "cites": [
-        "HU-SL-024"
+        "HU-SL-024",
+        "BL-SL-33"
       ]
     },
     {
@@ -9532,23 +9553,25 @@
       "file": "backlog",
       "anchor": "r1-pedido-despacho-e-retorno",
       "title": "Cadastro da loja e dos números autorizados",
-      "text": "**HUs:** `HU-SL-005`\n\n**MoSCoW:** Must\n\n**Release:** R1\n\n**Valor:** Alto\n\n**Esforço:** P\n\n**Depende de:** `BL-SL-01`\n\n**Por quê:** Sem número autorizado, ninguém pede pelo WhatsApp (`DEC-SL-03`)",
+      "text": "**Ordem:** 6\n\n**Camada:** Front\n\n**HUs:** `HU-SL-005`\n\n**MoSCoW:** Must\n\n**Release:** R1\n\n**Valor:** Alto\n\n**Esforço:** P\n\n**Depende de:** `BL-SL-35`\n\n**Por quê:** Sem número autorizado, ninguém pede pelo WhatsApp (`DEC-SL-03`)",
       "via": "tabela",
       "fields": {
+        "Ordem": "6",
+        "Camada": "Front",
         "Item": "Cadastro da loja e dos números autorizados",
         "HUs": "`HU-SL-005`",
         "MoSCoW": "Must",
         "Release": "R1",
         "Valor": "Alto",
         "Esforço": "P",
-        "Depende de": "`BL-SL-01`",
+        "Depende de": "`BL-SL-35`",
         "Por quê": "Sem número autorizado, ninguém pede pelo WhatsApp (`DEC-SL-03`)"
       },
       "severity": null,
       "hasOutcome": null,
       "cites": [
         "HU-SL-005",
-        "BL-SL-01",
+        "BL-SL-35",
         "DEC-SL-03"
       ]
     },
@@ -9559,23 +9582,25 @@
       "file": "backlog",
       "anchor": "r1-pedido-despacho-e-retorno",
       "title": "Cadastro da terceirizada",
-      "text": "**HUs:** `HU-SL-007`\n\n**MoSCoW:** Must\n\n**Release:** R1\n\n**Valor:** Alto\n\n**Esforço:** P\n\n**Depende de:** `BL-SL-01`\n\n**Por quê:** É para quem o pedido vai",
+      "text": "**Ordem:** 7\n\n**Camada:** Front\n\n**HUs:** `HU-SL-007`\n\n**MoSCoW:** Must\n\n**Release:** R1\n\n**Valor:** Alto\n\n**Esforço:** P\n\n**Depende de:** `BL-SL-35`\n\n**Por quê:** É para quem o pedido vai",
       "via": "tabela",
       "fields": {
+        "Ordem": "7",
+        "Camada": "Front",
         "Item": "Cadastro da terceirizada",
         "HUs": "`HU-SL-007`",
         "MoSCoW": "Must",
         "Release": "R1",
         "Valor": "Alto",
         "Esforço": "P",
-        "Depende de": "`BL-SL-01`",
+        "Depende de": "`BL-SL-35`",
         "Por quê": "É para quem o pedido vai"
       },
       "severity": null,
       "hasOutcome": null,
       "cites": [
         "HU-SL-007",
-        "BL-SL-01"
+        "BL-SL-35"
       ]
     },
     {
@@ -9585,9 +9610,11 @@
       "file": "backlog",
       "anchor": "r1-pedido-despacho-e-retorno",
       "title": "Tabela de regiões",
-      "text": "**HUs:** `HU-SL-008`\n\n**MoSCoW:** Must\n\n**Release:** R1\n\n**Valor:** Alto\n\n**Esforço:** P\n\n**Depende de:** `BL-SL-03`\n\n**Por quê:** Base da distribuição automática (`DEC-SL-05`)",
+      "text": "**Ordem:** 8\n\n**Camada:** Back\n\n**HUs:** `HU-SL-008`\n\n**MoSCoW:** Must\n\n**Release:** R1\n\n**Valor:** Alto\n\n**Esforço:** P\n\n**Depende de:** `BL-SL-03`\n\n**Por quê:** Base da distribuição automática (`DEC-SL-05`)",
       "via": "tabela",
       "fields": {
+        "Ordem": "8",
+        "Camada": "Back",
         "Item": "Tabela de regiões",
         "HUs": "`HU-SL-008`",
         "MoSCoW": "Must",
@@ -9611,11 +9638,13 @@
       "system": "geral",
       "file": "backlog",
       "anchor": "r1-pedido-despacho-e-retorno",
-      "title": "Habilitador: conta do WhatsApp Business, formulário e modelos de mensagem aprovados",
-      "text": "**MoSCoW:** Must\n\n**Release:** R1\n\n**Valor:** Alto\n\n**Esforço:** G\n\n**Por quê:** O prazo de aprovação é da Meta; começar cedo destrava o pedido e os avisos (`DEC-SL-15`)",
+      "title": "Conta do WhatsApp Business, formulário e modelos de mensagem aprovados",
+      "text": "**Ordem:** 1\n\n**Camada:** Canal\n\n**MoSCoW:** Must\n\n**Release:** R1\n\n**Valor:** Alto\n\n**Esforço:** G\n\n**Por quê:** O prazo de aprovação é da Meta; começar cedo destrava o pedido e os avisos (`DEC-SL-15`)",
       "via": "tabela",
       "fields": {
-        "Item": "Habilitador: conta do WhatsApp Business, formulário e modelos de mensagem aprovados",
+        "Ordem": "1",
+        "Camada": "Canal",
+        "Item": "Conta do WhatsApp Business, formulário e modelos de mensagem aprovados",
         "MoSCoW": "Must",
         "Release": "R1",
         "Valor": "Alto",
@@ -9635,16 +9664,18 @@
       "file": "backlog",
       "anchor": "r1-pedido-despacho-e-retorno",
       "title": "Pedido pelo WhatsApp com formulário obrigatório",
-      "text": "**HUs:** `HU-SL-001`\n\n**MoSCoW:** Must\n\n**Release:** R1\n\n**Valor:** Alto\n\n**Esforço:** G\n\n**Depende de:** `BL-SL-02`, `BL-SL-05`\n\n**Por quê:** Resolve o caso \"Pedido com informações incompletas\" na entrada (`DEC-SL-02`)",
+      "text": "**Ordem:** 9\n\n**Camada:** Canal\n\n**HUs:** `HU-SL-001`\n\n**MoSCoW:** Must\n\n**Release:** R1\n\n**Valor:** Alto\n\n**Esforço:** G\n\n**Depende de:** `BL-SL-02`, `BL-SL-34`\n\n**Por quê:** Resolve o caso \"Pedido com informações incompletas\" na entrada (`DEC-SL-02`)",
       "via": "tabela",
       "fields": {
+        "Ordem": "9",
+        "Camada": "Canal",
         "Item": "Pedido pelo WhatsApp com formulário obrigatório",
         "HUs": "`HU-SL-001`",
         "MoSCoW": "Must",
         "Release": "R1",
         "Valor": "Alto",
         "Esforço": "G",
-        "Depende de": "`BL-SL-02`, `BL-SL-05`",
+        "Depende de": "`BL-SL-02`, `BL-SL-34`",
         "Por quê": "Resolve o caso \"Pedido com informações incompletas\" na entrada (`DEC-SL-02`)"
       },
       "severity": null,
@@ -9652,7 +9683,7 @@
       "cites": [
         "HU-SL-001",
         "BL-SL-02",
-        "BL-SL-05",
+        "BL-SL-34",
         "DEC-SL-02"
       ]
     },
@@ -9663,9 +9694,11 @@
       "file": "backlog",
       "anchor": "r1-pedido-despacho-e-retorno",
       "title": "Acompanhar o pedido pelo WhatsApp",
-      "text": "**HUs:** `HU-SL-002`\n\n**MoSCoW:** Must\n\n**Release:** R1\n\n**Valor:** Alto\n\n**Esforço:** P\n\n**Depende de:** `BL-SL-06`\n\n**Por quê:** Responde \"cadê minha entrega?\" sem passar por ninguém",
+      "text": "**Ordem:** 10\n\n**Camada:** Canal\n\n**HUs:** `HU-SL-002`\n\n**MoSCoW:** Must\n\n**Release:** R1\n\n**Valor:** Alto\n\n**Esforço:** P\n\n**Depende de:** `BL-SL-06`\n\n**Por quê:** Responde \"cadê minha entrega?\" sem passar por ninguém",
       "via": "tabela",
       "fields": {
+        "Ordem": "10",
+        "Camada": "Canal",
         "Item": "Acompanhar o pedido pelo WhatsApp",
         "HUs": "`HU-SL-002`",
         "MoSCoW": "Must",
@@ -9689,9 +9722,11 @@
       "file": "backlog",
       "anchor": "r1-pedido-despacho-e-retorno",
       "title": "Registro do pedido pela equipe",
-      "text": "**HUs:** `HU-SL-004`\n\n**MoSCoW:** Must\n\n**Release:** R1\n\n**Valor:** Alto\n\n**Esforço:** M\n\n**Depende de:** `BL-SL-09`\n\n**Por quê:** Áudio, ligação e planilha da loja continuam chegando",
+      "text": "**Ordem:** 12\n\n**Camada:** Front\n\n**HUs:** `HU-SL-004`\n\n**MoSCoW:** Must\n\n**Release:** R1\n\n**Valor:** Alto\n\n**Esforço:** M\n\n**Depende de:** `BL-SL-09`\n\n**Por quê:** Áudio, ligação e planilha da loja continuam chegando",
       "via": "tabela",
       "fields": {
+        "Ordem": "12",
+        "Camada": "Front",
         "Item": "Registro do pedido pela equipe",
         "HUs": "`HU-SL-004`",
         "MoSCoW": "Must",
@@ -9715,9 +9750,11 @@
       "file": "backlog",
       "anchor": "r1-pedido-despacho-e-retorno",
       "title": "Lista única de entregas com histórico",
-      "text": "**HUs:** `HU-SL-009`\n\n**MoSCoW:** Must\n\n**Release:** R1\n\n**Valor:** Alto\n\n**Esforço:** M\n\n**Depende de:** `BL-SL-01`\n\n**Por quê:** É a fonte da verdade (`DEC-SL-01`); resolve o caso \"O registro incorreto\"",
+      "text": "**Ordem:** 11\n\n**Camada:** Back\n\n**HUs:** `HU-SL-009`\n\n**MoSCoW:** Must\n\n**Release:** R1\n\n**Valor:** Alto\n\n**Esforço:** M\n\n**Depende de:** `BL-SL-01`\n\n**Por quê:** É a fonte da verdade (`DEC-SL-01`); resolve o caso \"O registro incorreto\"",
       "via": "tabela",
       "fields": {
+        "Ordem": "11",
+        "Camada": "Back",
         "Item": "Lista única de entregas com histórico",
         "HUs": "`HU-SL-009`",
         "MoSCoW": "Must",
@@ -9742,9 +9779,11 @@
       "file": "backlog",
       "anchor": "r1-pedido-despacho-e-retorno",
       "title": "Distribuição pela região",
-      "text": "**HUs:** `HU-SL-010`\n\n**MoSCoW:** Must\n\n**Release:** R1\n\n**Valor:** Alto\n\n**Esforço:** P\n\n**Depende de:** `BL-SL-04`, `BL-SL-06`\n\n**Por quê:** Ninguém distribui à mão",
+      "text": "**Ordem:** 13\n\n**Camada:** Back\n\n**HUs:** `HU-SL-010`\n\n**MoSCoW:** Must\n\n**Release:** R1\n\n**Valor:** Alto\n\n**Esforço:** P\n\n**Depende de:** `BL-SL-04`, `BL-SL-06`\n\n**Por quê:** Ninguém distribui à mão",
       "via": "tabela",
       "fields": {
+        "Ordem": "13",
+        "Camada": "Back",
         "Item": "Distribuição pela região",
         "HUs": "`HU-SL-010`",
         "MoSCoW": "Must",
@@ -9768,11 +9807,13 @@
       "system": "geral",
       "file": "backlog",
       "anchor": "r1-pedido-despacho-e-retorno",
-      "title": "Habilitador: padrão da integração publicado para as terceirizadas",
-      "text": "**MoSCoW:** Must\n\n**Release:** R1\n\n**Valor:** Alto\n\n**Esforço:** M\n\n**Por quê:** As terceirizadas precisam do padrão antes de integrar (`DEC-SL-06`, `RNF-SL-15`)",
+      "title": "Padrão de integração publicado para as terceirizadas",
+      "text": "**Ordem:** 14\n\n**Camada:** Integração\n\n**MoSCoW:** Must\n\n**Release:** R1\n\n**Valor:** Alto\n\n**Esforço:** M\n\n**Por quê:** As terceirizadas precisam do padrão antes de integrar (`DEC-SL-06`, `RNF-SL-15`)",
       "via": "tabela",
       "fields": {
-        "Item": "Habilitador: padrão da integração publicado para as terceirizadas",
+        "Ordem": "14",
+        "Camada": "Integração",
+        "Item": "Padrão de integração publicado para as terceirizadas",
         "MoSCoW": "Must",
         "Release": "R1",
         "Valor": "Alto",
@@ -9793,9 +9834,11 @@
       "file": "backlog",
       "anchor": "r1-pedido-despacho-e-retorno",
       "title": "Envio da solicitação à terceirizada",
-      "text": "**HUs:** `HU-SL-011`\n\n**MoSCoW:** Must\n\n**Release:** R1\n\n**Valor:** Alto\n\n**Esforço:** M\n\n**Depende de:** `BL-SL-10`, `BL-SL-11`\n\n**Por quê:** Substitui o envio por WhatsApp e planilha",
+      "text": "**Ordem:** 15\n\n**Camada:** Back\n\n**HUs:** `HU-SL-011`\n\n**MoSCoW:** Must\n\n**Release:** R1\n\n**Valor:** Alto\n\n**Esforço:** M\n\n**Depende de:** `BL-SL-10`, `BL-SL-11`\n\n**Por quê:** Substitui o envio por WhatsApp e planilha",
       "via": "tabela",
       "fields": {
+        "Ordem": "15",
+        "Camada": "Back",
         "Item": "Envio da solicitação à terceirizada",
         "HUs": "`HU-SL-011`",
         "MoSCoW": "Must",
@@ -9820,9 +9863,11 @@
       "file": "backlog",
       "anchor": "r1-pedido-despacho-e-retorno",
       "title": "Retorno pela integração",
-      "text": "**HUs:** `HU-SL-013`\n\n**MoSCoW:** Must\n\n**Release:** R1\n\n**Valor:** Alto\n\n**Esforço:** M\n\n**Depende de:** `BL-SL-11`, `BL-SL-12`\n\n**Por quê:** O caminho preferencial do status",
+      "text": "**Ordem:** 16\n\n**Camada:** Integração\n\n**HUs:** `HU-SL-013`\n\n**MoSCoW:** Must\n\n**Release:** R1\n\n**Valor:** Alto\n\n**Esforço:** M\n\n**Depende de:** `BL-SL-11`, `BL-SL-12`\n\n**Por quê:** O caminho preferencial do status",
       "via": "tabela",
       "fields": {
+        "Ordem": "16",
+        "Camada": "Integração",
         "Item": "Retorno pela integração",
         "HUs": "`HU-SL-013`",
         "MoSCoW": "Must",
@@ -9846,11 +9891,13 @@
       "system": "geral",
       "file": "backlog",
       "anchor": "r1-pedido-despacho-e-retorno",
-      "title": "Retorno pelo portal",
-      "text": "**HUs:** `HU-SL-014`\n\n**MoSCoW:** Must\n\n**Release:** R1\n\n**Valor:** Alto\n\n**Esforço:** M\n\n**Depende de:** `BL-SL-12`\n\n**Por quê:** A terceirizada sem integração precisa de um caminho simples (`RNF-SL-02`)",
+      "title": "Retorno pelo portal da terceirizada",
+      "text": "**Ordem:** 17\n\n**Camada:** Front\n\n**HUs:** `HU-SL-014`\n\n**MoSCoW:** Must\n\n**Release:** R1\n\n**Valor:** Alto\n\n**Esforço:** M\n\n**Depende de:** `BL-SL-12`\n\n**Por quê:** A terceirizada sem integração precisa de um caminho simples (`RNF-SL-02`)",
       "via": "tabela",
       "fields": {
-        "Item": "Retorno pelo portal",
+        "Ordem": "17",
+        "Camada": "Front",
+        "Item": "Retorno pelo portal da terceirizada",
         "HUs": "`HU-SL-014`",
         "MoSCoW": "Must",
         "Release": "R1",
@@ -9874,9 +9921,11 @@
       "file": "backlog",
       "anchor": "r1-pedido-despacho-e-retorno",
       "title": "Comprovante padrão",
-      "text": "**HUs:** `HU-SL-016`\n\n**MoSCoW:** Must\n\n**Release:** R1\n\n**Valor:** Alto\n\n**Esforço:** M\n\n**Depende de:** `BL-SL-13`, `BL-SL-14`\n\n**Por quê:** Resolve a dúvida \"diz que entregou\" e a foto sem vínculo (`DEC-SL-07`)",
+      "text": "**Ordem:** 18\n\n**Camada:** Back\n\n**HUs:** `HU-SL-016`\n\n**MoSCoW:** Must\n\n**Release:** R1\n\n**Valor:** Alto\n\n**Esforço:** M\n\n**Depende de:** `BL-SL-13`, `BL-SL-14`\n\n**Por quê:** Resolve a dúvida \"diz que entregou\" e a foto sem vínculo (`DEC-SL-07`)",
       "via": "tabela",
       "fields": {
+        "Ordem": "18",
+        "Camada": "Back",
         "Item": "Comprovante padrão",
         "HUs": "`HU-SL-016`",
         "MoSCoW": "Must",
@@ -9902,23 +9951,26 @@
       "file": "backlog",
       "anchor": "r1-pedido-despacho-e-retorno",
       "title": "Retorno por planilha traduzida",
-      "text": "**HUs:** `HU-SL-015`\n\n**MoSCoW:** Should\n\n**Release:** R1\n\n**Valor:** Médio\n\n**Esforço:** M\n\n**Depende de:** `BL-SL-12`\n\n**Por quê:** Deixa a terceirizada começar como já trabalha; até lá, a equipe usa o portal por ela",
+      "text": "**Ordem:** 20\n\n**Camada:** Integração\n\n**HUs:** `HU-SL-015`\n\n**MoSCoW:** Should\n\n**Release:** R1\n\n**Valor:** Médio\n\n**Esforço:** M\n\n**Depende de:** `BL-SL-12`, `BL-SL-36`\n\n**Por quê:** Até lá, a equipe usa o portal pela terceirizada",
       "via": "tabela",
       "fields": {
+        "Ordem": "20",
+        "Camada": "Integração",
         "Item": "Retorno por planilha traduzida",
         "HUs": "`HU-SL-015`",
         "MoSCoW": "Should",
         "Release": "R1",
         "Valor": "Médio",
         "Esforço": "M",
-        "Depende de": "`BL-SL-12`",
-        "Por quê": "Deixa a terceirizada começar como já trabalha; até lá, a equipe usa o portal por ela"
+        "Depende de": "`BL-SL-12`, `BL-SL-36`",
+        "Por quê": "Até lá, a equipe usa o portal pela terceirizada"
       },
       "severity": null,
       "hasOutcome": null,
       "cites": [
         "HU-SL-015",
-        "BL-SL-12"
+        "BL-SL-12",
+        "BL-SL-36"
       ]
     },
     {
@@ -9928,9 +9980,11 @@
       "file": "backlog",
       "anchor": "r1-pedido-despacho-e-retorno",
       "title": "Editar ou cancelar o pedido pelo WhatsApp",
-      "text": "**HUs:** `HU-SL-003`\n\n**MoSCoW:** Should\n\n**Release:** R1\n\n**Valor:** Médio\n\n**Esforço:** P\n\n**Depende de:** `BL-SL-06`\n\n**Por quê:** Até lá, a loja pede a mudança ao atendimento",
+      "text": "**Ordem:** 21\n\n**Camada:** Canal\n\n**HUs:** `HU-SL-003`\n\n**MoSCoW:** Should\n\n**Release:** R1\n\n**Valor:** Médio\n\n**Esforço:** P\n\n**Depende de:** `BL-SL-06`\n\n**Por quê:** Até lá, a loja pede a mudança ao atendimento",
       "via": "tabela",
       "fields": {
+        "Ordem": "21",
+        "Camada": "Canal",
         "Item": "Editar ou cancelar o pedido pelo WhatsApp",
         "HUs": "`HU-SL-003`",
         "MoSCoW": "Should",
@@ -9954,9 +10008,11 @@
       "file": "backlog",
       "anchor": "r1-pedido-despacho-e-retorno",
       "title": "Aviso de alteração à terceirizada",
-      "text": "**HUs:** `HU-SL-012`\n\n**MoSCoW:** Should\n\n**Release:** R1\n\n**Valor:** Médio\n\n**Esforço:** P\n\n**Depende de:** `BL-SL-12`, `BL-SL-17`\n\n**Por quê:** Sem ele, a alteração depois do despacho volta ao telefone",
+      "text": "**Ordem:** 22\n\n**Camada:** Integração\n\n**HUs:** `HU-SL-012`\n\n**MoSCoW:** Should\n\n**Release:** R1\n\n**Valor:** Médio\n\n**Esforço:** P\n\n**Depende de:** `BL-SL-12`, `BL-SL-17`\n\n**Por quê:** Sem ele, a alteração depois do despacho volta ao telefone",
       "via": "tabela",
       "fields": {
+        "Ordem": "22",
+        "Camada": "Integração",
         "Item": "Aviso de alteração à terceirizada",
         "HUs": "`HU-SL-012`",
         "MoSCoW": "Should",
@@ -9980,11 +10036,13 @@
       "system": "geral",
       "file": "backlog",
       "anchor": "r2-ocorrencias-e-comunicacao",
-      "title": "Habilitador: protocolo de atendimento escrito com a SEALog",
-      "text": "**MoSCoW:** Must\n\n**Release:** R2\n\n**Valor:** Alto\n\n**Esforço:** M\n\n**Por quê:** Sem protocolo, o agente não tem com o que comparar (`Q-SL-05`)",
+      "title": "Protocolo de atendimento escrito com a SEALog",
+      "text": "**Ordem:** 25\n\n**Camada:** Negócio\n\n**MoSCoW:** Must\n\n**Release:** R2\n\n**Valor:** Alto\n\n**Esforço:** M\n\n**Por quê:** Sem protocolo, o agente não tem com o que comparar (`Q-SL-05`)",
       "via": "tabela",
       "fields": {
-        "Item": "Habilitador: protocolo de atendimento escrito com a SEALog",
+        "Ordem": "25",
+        "Camada": "Negócio",
+        "Item": "Protocolo de atendimento escrito com a SEALog",
         "MoSCoW": "Must",
         "Release": "R2",
         "Valor": "Alto",
@@ -10004,9 +10062,11 @@
       "file": "backlog",
       "anchor": "r2-ocorrencias-e-comunicacao",
       "title": "Painel de chamados",
-      "text": "**HUs:** `HU-SL-018`\n\n**MoSCoW:** Must\n\n**Release:** R2\n\n**Valor:** Alto\n\n**Esforço:** M\n\n**Depende de:** `BL-SL-13`\n\n**Por quê:** Nenhuma ocorrência tratada fora do painel; resolve o caso \"O buquê de sábado\"",
+      "text": "**Ordem:** 26\n\n**Camada:** Front\n\n**HUs:** `HU-SL-018`\n\n**MoSCoW:** Must\n\n**Release:** R2\n\n**Valor:** Alto\n\n**Esforço:** M\n\n**Depende de:** `BL-SL-13`\n\n**Por quê:** Nenhuma ocorrência tratada fora do painel; resolve o caso \"O buquê de sábado\"",
       "via": "tabela",
       "fields": {
+        "Ordem": "26",
+        "Camada": "Front",
         "Item": "Painel de chamados",
         "HUs": "`HU-SL-018`",
         "MoSCoW": "Must",
@@ -10030,9 +10090,11 @@
       "file": "backlog",
       "anchor": "r2-ocorrencias-e-comunicacao",
       "title": "Aviso automático à loja",
-      "text": "**HUs:** `HU-SL-020`\n\n**MoSCoW:** Must\n\n**Release:** R2\n\n**Valor:** Alto\n\n**Esforço:** P\n\n**Depende de:** `BL-SL-05`, `BL-SL-20`\n\n**Por quê:** A loja sabe do problema antes do consumidor (`DEC-SL-11`)",
+      "text": "**Ordem:** 30\n\n**Camada:** Canal\n\n**HUs:** `HU-SL-020`\n\n**MoSCoW:** Must\n\n**Release:** R2\n\n**Valor:** Alto\n\n**Esforço:** P\n\n**Depende de:** `BL-SL-05`, `BL-SL-20`\n\n**Por quê:** A loja sabe do problema antes do consumidor (`DEC-SL-11`)",
       "via": "tabela",
       "fields": {
+        "Ordem": "30",
+        "Camada": "Canal",
         "Item": "Aviso automático à loja",
         "HUs": "`HU-SL-020`",
         "MoSCoW": "Must",
@@ -10058,9 +10120,11 @@
       "file": "backlog",
       "anchor": "r2-ocorrencias-e-comunicacao",
       "title": "Devolução no galpão e decisão",
-      "text": "**HUs:** `HU-SL-019`\n\n**MoSCoW:** Must\n\n**Release:** R2\n\n**Valor:** Alto\n\n**Esforço:** M\n\n**Depende de:** `BL-SL-20`\n\n**Por quê:** Os quatro destinos registrados (`DEC-SL-09`)",
+      "text": "**Ordem:** 29\n\n**Camada:** Back\n\n**HUs:** `HU-SL-019`\n\n**MoSCoW:** Must\n\n**Release:** R2\n\n**Valor:** Alto\n\n**Esforço:** M\n\n**Depende de:** `BL-SL-20`\n\n**Por quê:** Os quatro destinos registrados (`DEC-SL-09`)",
       "via": "tabela",
       "fields": {
+        "Ordem": "29",
+        "Camada": "Back",
         "Item": "Devolução no galpão e decisão",
         "HUs": "`HU-SL-019`",
         "MoSCoW": "Must",
@@ -10085,16 +10149,18 @@
       "file": "backlog",
       "anchor": "r2-ocorrencias-e-comunicacao",
       "title": "Relato de problema com o agente de ocorrências",
-      "text": "**HUs:** `HU-SL-017`\n\n**MoSCoW:** Must\n\n**Release:** R2\n\n**Valor:** Alto\n\n**Esforço:** G\n\n**Depende de:** `BL-SL-19`, `BL-SL-20`\n\n**Por quê:** A loja relata a qualquer hora e o chamado chega com sugestão (`DEC-SL-10`)",
+      "text": "**Ordem:** 28\n\n**Camada:** Agente\n\n**HUs:** `HU-SL-017`\n\n**MoSCoW:** Must\n\n**Release:** R2\n\n**Valor:** Alto\n\n**Esforço:** G\n\n**Depende de:** `BL-SL-19`, `BL-SL-40`\n\n**Por quê:** A loja relata a qualquer hora e o chamado chega com sugestão (`DEC-SL-10`)",
       "via": "tabela",
       "fields": {
+        "Ordem": "28",
+        "Camada": "Agente",
         "Item": "Relato de problema com o agente de ocorrências",
         "HUs": "`HU-SL-017`",
         "MoSCoW": "Must",
         "Release": "R2",
         "Valor": "Alto",
         "Esforço": "G",
-        "Depende de": "`BL-SL-19`, `BL-SL-20`",
+        "Depende de": "`BL-SL-19`, `BL-SL-40`",
         "Por quê": "A loja relata a qualquer hora e o chamado chega com sugestão (`DEC-SL-10`)"
       },
       "severity": null,
@@ -10102,7 +10168,7 @@
       "cites": [
         "HU-SL-017",
         "BL-SL-19",
-        "BL-SL-20",
+        "BL-SL-40",
         "DEC-SL-10"
       ]
     },
@@ -10113,9 +10179,11 @@
       "file": "backlog",
       "anchor": "r2-ocorrencias-e-comunicacao",
       "title": "Entregas afetadas por loja e aviso em lote",
-      "text": "**HUs:** `HU-SL-021`\n\n**MoSCoW:** Must\n\n**Release:** R2\n\n**Valor:** Alto\n\n**Esforço:** M\n\n**Depende de:** `BL-SL-21`\n\n**Por quê:** Resolve o caso \"A segunda-feira de chuva\": um aviso por loja em vez de 120 mensagens",
+      "text": "**Ordem:** 31\n\n**Camada:** Back\n\n**HUs:** `HU-SL-021`\n\n**MoSCoW:** Must\n\n**Release:** R2\n\n**Valor:** Alto\n\n**Esforço:** M\n\n**Depende de:** `BL-SL-21`\n\n**Por quê:** Resolve o caso \"A segunda-feira de chuva\": um aviso por loja em vez de 120 mensagens",
       "via": "tabela",
       "fields": {
+        "Ordem": "31",
+        "Camada": "Back",
         "Item": "Entregas afetadas por loja e aviso em lote",
         "HUs": "`HU-SL-021`",
         "MoSCoW": "Must",
@@ -10139,9 +10207,11 @@
       "file": "backlog",
       "anchor": "r2-ocorrencias-e-comunicacao",
       "title": "Manutenção dos dados comerciais da loja",
-      "text": "**HUs:** `HU-SL-006`\n\n**MoSCoW:** Could\n\n**Release:** R2\n\n**Valor:** Baixo\n\n**Esforço:** P\n\n**Depende de:** `BL-SL-02`\n\n**Por quê:** Até lá, o cadastro inicial basta; a mudança passa pelo coordenador",
+      "text": "**Ordem:** 34\n\n**Camada:** Front\n\n**HUs:** `HU-SL-006`\n\n**MoSCoW:** Could\n\n**Release:** R2\n\n**Valor:** Baixo\n\n**Esforço:** P\n\n**Depende de:** `BL-SL-02`\n\n**Por quê:** Até lá, o cadastro inicial basta; a mudança passa pelo coordenador",
       "via": "tabela",
       "fields": {
+        "Ordem": "34",
+        "Camada": "Front",
         "Item": "Manutenção dos dados comerciais da loja",
         "HUs": "`HU-SL-006`",
         "MoSCoW": "Could",
@@ -10164,11 +10234,13 @@
       "system": "geral",
       "file": "backlog",
       "anchor": "r2-ocorrencias-e-comunicacao",
-      "title": "Habilitador: painel de adoção",
-      "text": "**MoSCoW:** Should\n\n**Release:** R2\n\n**Valor:** Médio\n\n**Esforço:** P\n\n**Depende de:** `BL-SL-09`\n\n**Por quê:** Mede os critérios de avanço de cada fase (`DEC-SL-16`)",
+      "title": "Painel de adoção",
+      "text": "**Ordem:** 35\n\n**Camada:** Front\n\n**MoSCoW:** Should\n\n**Release:** R2\n\n**Valor:** Médio\n\n**Esforço:** P\n\n**Depende de:** `BL-SL-09`\n\n**Por quê:** Mede os critérios de avanço de cada fase (`DEC-SL-16`)",
       "via": "tabela",
       "fields": {
-        "Item": "Habilitador: painel de adoção",
+        "Ordem": "35",
+        "Camada": "Front",
+        "Item": "Painel de adoção",
         "MoSCoW": "Should",
         "Release": "R2",
         "Valor": "Médio",
@@ -10190,9 +10262,11 @@
       "file": "backlog",
       "anchor": "r3-financeiro",
       "title": "Fechamento da cobrança das lojas",
-      "text": "**HUs:** `HU-SL-022`\n\n**MoSCoW:** Must\n\n**Release:** R3\n\n**Valor:** Alto\n\n**Esforço:** G\n\n**Depende de:** `BL-SL-09`\n\n**Por quê:** A cobrança sai do registro; o valor depende da tabela de preços (`DEC-SL-18`)",
+      "text": "**Ordem:** 36\n\n**Camada:** Back\n\n**HUs:** `HU-SL-022`\n\n**MoSCoW:** Must\n\n**Release:** R3\n\n**Valor:** Alto\n\n**Esforço:** G\n\n**Depende de:** `BL-SL-09`\n\n**Por quê:** A cobrança sai do registro; o valor depende da tabela de preços (`DEC-SL-18`)",
       "via": "tabela",
       "fields": {
+        "Ordem": "36",
+        "Camada": "Back",
         "Item": "Fechamento da cobrança das lojas",
         "HUs": "`HU-SL-022`",
         "MoSCoW": "Must",
@@ -10217,9 +10291,11 @@
       "file": "backlog",
       "anchor": "r3-financeiro",
       "title": "Fechamento do pagamento das terceirizadas",
-      "text": "**HUs:** `HU-SL-023`\n\n**MoSCoW:** Must\n\n**Release:** R3\n\n**Valor:** Alto\n\n**Esforço:** M\n\n**Depende de:** `BL-SL-15`\n\n**Por quê:** Paga só a entrega comprovada (`RN-SL-048`); o valor depende da SEALog (`DEC-SL-18`)",
+      "text": "**Ordem:** 37\n\n**Camada:** Back\n\n**HUs:** `HU-SL-023`\n\n**MoSCoW:** Must\n\n**Release:** R3\n\n**Valor:** Alto\n\n**Esforço:** M\n\n**Depende de:** `BL-SL-15`\n\n**Por quê:** Paga só a entrega comprovada (`RN-SL-048`); o valor depende da SEALog (`DEC-SL-18`)",
       "via": "tabela",
       "fields": {
+        "Ordem": "37",
+        "Camada": "Back",
         "Item": "Fechamento do pagamento das terceirizadas",
         "HUs": "`HU-SL-023`",
         "MoSCoW": "Must",
@@ -10245,9 +10321,10 @@
       "file": "backlog",
       "anchor": "fora-desta-versao",
       "title": "Aplicativo do motorista",
-      "text": "**MoSCoW:** Won't\n\n**Valor:** Baixo\n\n**Esforço:** G\n\n**Por quê:** O motorista é da terceirizada (`DEC-SL-04`)",
+      "text": "**Ordem:** 38\n\n**MoSCoW:** Won't\n\n**Valor:** Baixo\n\n**Esforço:** G\n\n**Por quê:** O motorista é da terceirizada (`DEC-SL-04`)",
       "via": "tabela",
       "fields": {
+        "Ordem": "38",
         "Item": "Aplicativo do motorista",
         "MoSCoW": "Won't",
         "Valor": "Baixo",
@@ -10267,9 +10344,10 @@
       "file": "backlog",
       "anchor": "fora-desta-versao",
       "title": "Roteirização ou otimização de rotas",
-      "text": "**MoSCoW:** Won't\n\n**Valor:** Baixo\n\n**Esforço:** G\n\n**Por quê:** A rota é da terceirizada; a SEALog só distribui por região (`DEC-SL-05`)",
+      "text": "**Ordem:** 39\n\n**MoSCoW:** Won't\n\n**Valor:** Baixo\n\n**Esforço:** G\n\n**Por quê:** A rota é da terceirizada; a SEALog só distribui por região (`DEC-SL-05`)",
       "via": "tabela",
       "fields": {
+        "Ordem": "39",
         "Item": "Roteirização ou otimização de rotas",
         "MoSCoW": "Won't",
         "Valor": "Baixo",
@@ -10289,9 +10367,10 @@
       "file": "backlog",
       "anchor": "fora-desta-versao",
       "title": "Agente de consulta de status",
-      "text": "**MoSCoW:** Won't\n\n**Valor:** Baixo\n\n**Esforço:** M\n\n**Por quê:** O botão de acompanhar responde do banco, sem custo de modelo (`DEC-SL-10`)",
+      "text": "**Ordem:** 40\n\n**MoSCoW:** Won't\n\n**Valor:** Baixo\n\n**Esforço:** M\n\n**Por quê:** O botão de acompanhar responde do banco, sem custo de modelo (`DEC-SL-10`)",
       "via": "tabela",
       "fields": {
+        "Ordem": "40",
         "Item": "Agente de consulta de status",
         "MoSCoW": "Won't",
         "Valor": "Baixo",
@@ -10311,9 +10390,10 @@
       "file": "backlog",
       "anchor": "fora-desta-versao",
       "title": "Emissão de nota fiscal e cobrança bancária",
-      "text": "**MoSCoW:** Won't\n\n**Valor:** Médio\n\n**Esforço:** G\n\n**Por quê:** A origem só cita o cálculo da cobrança",
+      "text": "**Ordem:** 41\n\n**MoSCoW:** Won't\n\n**Valor:** Médio\n\n**Esforço:** G\n\n**Por quê:** A origem só cita o cálculo da cobrança",
       "via": "tabela",
       "fields": {
+        "Ordem": "41",
         "Item": "Emissão de nota fiscal e cobrança bancária",
         "MoSCoW": "Won't",
         "Valor": "Médio",
@@ -10323,6 +10403,246 @@
       "severity": null,
       "hasOutcome": null,
       "cites": []
+    },
+    {
+      "id": "BL-SL-33",
+      "kind": "BL",
+      "system": "geral",
+      "file": "backlog",
+      "anchor": "r1-pedido-despacho-e-retorno",
+      "title": "Base técnica: API em FastAPI, banco no Supabase e ambiente de homologação",
+      "text": "**Ordem:** 2\n\n**Camada:** Infra\n\n**MoSCoW:** Must\n\n**Release:** R1\n\n**Valor:** Alto\n\n**Esforço:** M\n\n**Por quê:** Sem ela nenhuma tela ou canal roda; a escolha da stack está em `DEC-SL-21`",
+      "via": "tabela",
+      "fields": {
+        "Ordem": "2",
+        "Camada": "Infra",
+        "Item": "Base técnica: API em FastAPI, banco no Supabase e ambiente de homologação",
+        "MoSCoW": "Must",
+        "Release": "R1",
+        "Valor": "Alto",
+        "Esforço": "M",
+        "Por quê": "Sem ela nenhuma tela ou canal roda; a escolha da stack está em `DEC-SL-21`"
+      },
+      "severity": null,
+      "hasOutcome": null,
+      "cites": [
+        "DEC-SL-21"
+      ]
+    },
+    {
+      "id": "BL-SL-34",
+      "kind": "BL",
+      "system": "geral",
+      "file": "backlog",
+      "anchor": "r1-pedido-despacho-e-retorno",
+      "title": "Recebimento das mensagens do WhatsApp e controle dos status do pedido",
+      "text": "**Ordem:** 4\n\n**Camada:** Back\n\n**MoSCoW:** Must\n\n**Release:** R1\n\n**Valor:** Alto\n\n**Esforço:** M\n\n**Depende de:** `BL-SL-05`, `BL-SL-33`\n\n**Por quê:** O canal da loja chega por aqui; o status só muda por regra, nunca à mão no texto",
+      "via": "tabela",
+      "fields": {
+        "Ordem": "4",
+        "Camada": "Back",
+        "Item": "Recebimento das mensagens do WhatsApp e controle dos status do pedido",
+        "MoSCoW": "Must",
+        "Release": "R1",
+        "Valor": "Alto",
+        "Esforço": "M",
+        "Depende de": "`BL-SL-05`, `BL-SL-33`",
+        "Por quê": "O canal da loja chega por aqui; o status só muda por regra, nunca à mão no texto"
+      },
+      "severity": null,
+      "hasOutcome": null,
+      "cites": [
+        "BL-SL-05",
+        "BL-SL-33"
+      ]
+    },
+    {
+      "id": "BL-SL-35",
+      "kind": "BL",
+      "system": "geral",
+      "file": "backlog",
+      "anchor": "r1-pedido-despacho-e-retorno",
+      "title": "Painel da equipe: entrada, navegação e listas",
+      "text": "**Ordem:** 5\n\n**Camada:** Front\n\n**MoSCoW:** Must\n\n**Release:** R1\n\n**Valor:** Alto\n\n**Esforço:** M\n\n**Depende de:** `BL-SL-01`, `BL-SL-33`\n\n**Por quê:** É a tela em que a equipe trabalha; sem ela, cada cadastro vira planilha",
+      "via": "tabela",
+      "fields": {
+        "Ordem": "5",
+        "Camada": "Front",
+        "Item": "Painel da equipe: entrada, navegação e listas",
+        "MoSCoW": "Must",
+        "Release": "R1",
+        "Valor": "Alto",
+        "Esforço": "M",
+        "Depende de": "`BL-SL-01`, `BL-SL-33`",
+        "Por quê": "É a tela em que a equipe trabalha; sem ela, cada cadastro vira planilha"
+      },
+      "severity": null,
+      "hasOutcome": null,
+      "cites": [
+        "BL-SL-01",
+        "BL-SL-33"
+      ]
+    },
+    {
+      "id": "BL-SL-36",
+      "kind": "BL",
+      "system": "geral",
+      "file": "backlog",
+      "anchor": "r1-pedido-despacho-e-retorno",
+      "title": "Leitura da planilha modelo pela API",
+      "text": "**Ordem:** 19\n\n**Camada:** Integração\n\n**MoSCoW:** Should\n\n**Release:** R1\n\n**Valor:** Médio\n\n**Esforço:** M\n\n**Depende de:** `BL-SL-33`\n\n**Por quê:** Deixa a terceirizada devolver a planilha que já usa, sem portal",
+      "via": "tabela",
+      "fields": {
+        "Ordem": "19",
+        "Camada": "Integração",
+        "Item": "Leitura da planilha modelo pela API",
+        "MoSCoW": "Should",
+        "Release": "R1",
+        "Valor": "Médio",
+        "Esforço": "M",
+        "Depende de": "`BL-SL-33`",
+        "Por quê": "Deixa a terceirizada devolver a planilha que já usa, sem portal"
+      },
+      "severity": null,
+      "hasOutcome": null,
+      "cites": [
+        "BL-SL-33"
+      ]
+    },
+    {
+      "id": "BL-SL-37",
+      "kind": "BL",
+      "system": "geral",
+      "file": "backlog",
+      "anchor": "r1-pedido-despacho-e-retorno",
+      "title": "Cópia de segurança diária e restauração testada",
+      "text": "**Ordem:** 23\n\n**Camada:** Infra\n\n**MoSCoW:** Must\n\n**Release:** R1\n\n**Valor:** Alto\n\n**Esforço:** P\n\n**Depende de:** `BL-SL-33`\n\n**Por quê:** Perda máxima de 24 horas (`RNF-SL-17`); sem teste de restauração, a cópia não conta",
+      "via": "tabela",
+      "fields": {
+        "Ordem": "23",
+        "Camada": "Infra",
+        "Item": "Cópia de segurança diária e restauração testada",
+        "MoSCoW": "Must",
+        "Release": "R1",
+        "Valor": "Alto",
+        "Esforço": "P",
+        "Depende de": "`BL-SL-33`",
+        "Por quê": "Perda máxima de 24 horas (`RNF-SL-17`); sem teste de restauração, a cópia não conta"
+      },
+      "severity": null,
+      "hasOutcome": null,
+      "cites": [
+        "BL-SL-33",
+        "RNF-SL-17"
+      ]
+    },
+    {
+      "id": "BL-SL-38",
+      "kind": "BL",
+      "system": "geral",
+      "file": "backlog",
+      "anchor": "r1-pedido-despacho-e-retorno",
+      "title": "Monitoramento do link de rastreio e dos erros",
+      "text": "**Ordem:** 24\n\n**Camada:** Infra\n\n**MoSCoW:** Should\n\n**Release:** R1\n\n**Valor:** Médio\n\n**Esforço:** P\n\n**Depende de:** `BL-SL-33`\n\n**Por quê:** Falha percebida pela equipe antes da reclamação da loja (`RNF-SL-19`)",
+      "via": "tabela",
+      "fields": {
+        "Ordem": "24",
+        "Camada": "Infra",
+        "Item": "Monitoramento do link de rastreio e dos erros",
+        "MoSCoW": "Should",
+        "Release": "R1",
+        "Valor": "Médio",
+        "Esforço": "P",
+        "Depende de": "`BL-SL-33`",
+        "Por quê": "Falha percebida pela equipe antes da reclamação da loja (`RNF-SL-19`)"
+      },
+      "severity": null,
+      "hasOutcome": null,
+      "cites": [
+        "BL-SL-33",
+        "RNF-SL-19"
+      ]
+    },
+    {
+      "id": "BL-SL-40",
+      "kind": "BL",
+      "system": "geral",
+      "file": "backlog",
+      "anchor": "r2-ocorrencias-e-comunicacao",
+      "title": "Chamado aberto pela API para o agente de ocorrências, com chave própria",
+      "text": "**Ordem:** 27\n\n**Camada:** Agente\n\n**MoSCoW:** Must\n\n**Release:** R2\n\n**Valor:** Alto\n\n**Esforço:** M\n\n**Depende de:** `BL-SL-20`, `BL-SL-34`\n\n**Por quê:** O agente abre e lê chamados só pela API, nunca direto no banco (`RNF-SL-11`)",
+      "via": "tabela",
+      "fields": {
+        "Ordem": "27",
+        "Camada": "Agente",
+        "Item": "Chamado aberto pela API para o agente de ocorrências, com chave própria",
+        "MoSCoW": "Must",
+        "Release": "R2",
+        "Valor": "Alto",
+        "Esforço": "M",
+        "Depende de": "`BL-SL-20`, `BL-SL-34`",
+        "Por quê": "O agente abre e lê chamados só pela API, nunca direto no banco (`RNF-SL-11`)"
+      },
+      "severity": null,
+      "hasOutcome": null,
+      "cites": [
+        "BL-SL-20",
+        "BL-SL-34",
+        "RNF-SL-11"
+      ]
+    },
+    {
+      "id": "BL-SL-42",
+      "kind": "BL",
+      "system": "geral",
+      "file": "backlog",
+      "anchor": "r2-ocorrencias-e-comunicacao",
+      "title": "Painel de chamados em tempo real",
+      "text": "**Ordem:** 33\n\n**Camada:** Front\n\n**MoSCoW:** Should\n\n**Release:** R2\n\n**Valor:** Médio\n\n**Esforço:** M\n\n**Depende de:** `BL-SL-20`\n\n**Por quê:** A equipe vê o chamado novo sem recarregar a tela (`RNF-SL-09`)",
+      "via": "tabela",
+      "fields": {
+        "Ordem": "33",
+        "Camada": "Front",
+        "Item": "Painel de chamados em tempo real",
+        "MoSCoW": "Should",
+        "Release": "R2",
+        "Valor": "Médio",
+        "Esforço": "M",
+        "Depende de": "`BL-SL-20`",
+        "Por quê": "A equipe vê o chamado novo sem recarregar a tela (`RNF-SL-09`)"
+      },
+      "severity": null,
+      "hasOutcome": null,
+      "cites": [
+        "BL-SL-20",
+        "RNF-SL-09"
+      ]
+    },
+    {
+      "id": "BL-SL-43",
+      "kind": "BL",
+      "system": "geral",
+      "file": "backlog",
+      "anchor": "r2-ocorrencias-e-comunicacao",
+      "title": "Exportação da lista de entregas para o financeiro",
+      "text": "**Ordem:** 32\n\n**Camada:** Front\n\n**MoSCoW:** Must\n\n**Release:** R2\n\n**Valor:** Alto\n\n**Esforço:** P\n\n**Depende de:** `BL-SL-09`\n\n**Por quê:** Até o fechamento, o financeiro confere pela lista exportada",
+      "via": "tabela",
+      "fields": {
+        "Ordem": "32",
+        "Camada": "Front",
+        "Item": "Exportação da lista de entregas para o financeiro",
+        "MoSCoW": "Must",
+        "Release": "R2",
+        "Valor": "Alto",
+        "Esforço": "P",
+        "Depende de": "`BL-SL-09`",
+        "Por quê": "Até o fechamento, o financeiro confere pela lista exportada"
+      },
+      "severity": null,
+      "hasOutcome": null,
+      "cites": [
+        "BL-SL-09"
+      ]
     },
     {
       "id": "DEC-SL-01",
@@ -10887,7 +11207,7 @@
       "file": "decisoes",
       "anchor": "DEC-SL-20",
       "title": "Priorização em MoSCoW, com releases guiadas pelos casos do enunciado",
-      "text": "| | |\n|---|---|\n| **Status** | Tomada |\n| **Data** | 29/10/2026 |\n| **Tema** | Método |\n| **Contexto** | São 24 histórias, o risco principal é a adoção e o volume deve chegar a 400 entregas por dia no mês que vem (Encontro 1 [23:40]). Entregar tudo de uma vez adia o primeiro uso real |\n| **Decisão** | Cada item do backlog recebe uma classe MoSCoW (Must, Should, Could, Won't), um valor, um esforço e as dependências. As releases são cortadas para que cada uma resolva casos inteiros do enunciado |\n| **Alternativas descartadas** | Ordenar só pela prioridade da HU (Alta, Média): ignora dependência |\n| **Consequências** | A ordem do backlog pode divergir da prioridade da HU, e a página de backlog mostra essa diferença. O backlog atual é rascunho, para a equipe revisar |\n| **Referências** | `BL-SL-01` a `BL-SL-32` |",
+      "text": "| | |\n|---|---|\n| **Status** | Tomada |\n| **Data** | 29/10/2026 |\n| **Tema** | Método |\n| **Contexto** | São 24 histórias, o risco principal é a adoção e o volume deve chegar a 400 entregas por dia no mês que vem (Encontro 1 [23:40]). Entregar tudo de uma vez adia o primeiro uso real |\n| **Decisão** | Cada item do backlog recebe uma classe MoSCoW (Must, Should, Could, Won't), um valor, um esforço e as dependências. As releases são cortadas para que cada uma resolva casos inteiros do enunciado |\n| **Alternativas descartadas** | Ordenar só pela prioridade da HU (Alta, Média): ignora dependência |\n| **Consequências** | A ordem do backlog pode divergir da prioridade da HU, e a página de backlog mostra essa diferença. O backlog atual é rascunho, para a equipe revisar |\n| **Referências** | `BL-SL-01` a `BL-SL-43` |",
       "via": "secao",
       "fields": {
         "Status": "Tomada",
@@ -10897,13 +11217,13 @@
         "Decisão": "Cada item do backlog recebe uma classe MoSCoW (Must, Should, Could, Won't), um valor, um esforço e as dependências. As releases são cortadas para que cada uma resolva casos inteiros do enunciado",
         "Alternativas descartadas": "Ordenar só pela prioridade da HU (Alta, Média): ignora dependência",
         "Consequências": "A ordem do backlog pode divergir da prioridade da HU, e a página de backlog mostra essa diferença. O backlog atual é rascunho, para a equipe revisar",
-        "Referências": "`BL-SL-01` a `BL-SL-32`"
+        "Referências": "`BL-SL-01` a `BL-SL-43`"
       },
       "severity": null,
       "hasOutcome": null,
       "cites": [
         "BL-SL-01",
-        "BL-SL-32"
+        "BL-SL-43"
       ]
     },
     {

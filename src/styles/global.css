@@ -1645,3 +1645,10 @@ a.req-hu:hover { color: var(--navy); }
 .doc-produto .md-table td:not(:first-child) { color: #4a4f5c; }
 .doc-produto .md-mermaid { border-radius: 14px; overflow: hidden; }
 .doc-produto .md-table td:nth-child(2) { min-width: 150px; }
+
+/* Camada técnica de cada item do backlog (Canal, Front, Back, Integração, Agente, Infra, Negócio) */
+.bl-camada { display: inline-block; font-size: 10px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--navy); background: var(--blue-soft); border-radius: 4px; padding: 2px 7px; margin-bottom: 6px; }
+.bl-camada-agente { color: #6b3fa0; background: #f3ecfb; }
+.bl-camada-infra { color: #5a5f6c; background: #eff0f3; }
+.bl-camada-negocio { color: var(--when); background: var(--when-bg); }
+.bl-camada-canal { color: var(--then); background: var(--then-bg); }
