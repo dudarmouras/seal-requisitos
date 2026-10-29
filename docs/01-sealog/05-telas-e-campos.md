@@ -1,7 +1,7 @@
 # SEALog — Telas e campos
 
-Dezessete telas: a entrada no painel, três da entrada de pedidos (duas delas na conversa do
-WhatsApp), três de cadastros, duas do despacho, duas do retorno da terceirizada, quatro de
+Quinze telas: a entrada no painel, três da entrada de pedidos (duas delas na conversa do
+WhatsApp), uma de cadastros, duas do despacho, duas do retorno da terceirizada, quatro de
 ocorrências e devoluções e duas do financeiro. As telas descrevem campos, ações e colunas, não o
 desenho: o desenho das telas é da equipe de UX e não está fixado aqui.
 
@@ -10,6 +10,10 @@ Não há rota legada — hoje tudo acontece no WhatsApp e na planilha online do 
 do WhatsApp, diz que a interação acontece na própria conversa. A coluna **Origem no banco** aponta o
 atributo da entidade em [`06-modelo-de-dados.md`](06-modelo-de-dados.md). Tamanhos e máscaras são
 proposta desta documentação; os dados obrigatórios do pedido vêm do enunciado (`RN-SL-005`).
+
+As telas `TL-SL-005` (lojas e números autorizados) e `TL-SL-007` (tabela de regiões) foram
+retiradas em 29/10/2026: a loja não tem cadastro, e as regiões passaram para o cadastro da
+terceirizada, em `TL-SL-006` (`DIV-SL-10`). Os ids não são reaproveitados.
 
 O motorista é da terceirizada, e o SEALog não tem tela para ele (`DIV-SL-01`). A terceirizada usa
 a API padrão (`INT-002`), o portal (`TL-SL-010`) ou a planilha (`TL-SL-011`).
@@ -47,32 +51,32 @@ decide para onde a pessoa vai depois de entrar.
 
 ## Entrada de pedidos
 
-### TL-SL-002 — Conversa do WhatsApp: menu, acompanhar e relato
+### TL-SL-002 — Conversa do WhatsApp: menu, editar e relato
 
 | | |
 |---|---|
 | **Rota legada** | Hoje: conversa livre com o número do atendimento, em texto, áudio ou planilha |
 | **Rota proposta** | — (conversa no WhatsApp) |
-| **Perfis** | Loja, pelo número autorizado |
-| **HUs** | `HU-SL-001`, `HU-SL-002`, `HU-SL-003`, `HU-SL-017` |
+| **Perfis** | Loja, pelo número de WhatsApp |
+| **HUs** | `HU-SL-001`, `HU-SL-003`, `HU-SL-017` |
 
-A loja manda qualquer mensagem ao número da SEALog. Se o número for autorizado, recebe o menu de
-três botões; se não for, recebe a orientação do atendimento e nada é registrado (`RN-SL-003`). O
-relato de problema não é um quarto botão: ele sai do resultado do acompanhamento (`RN-SL-004`), e a
-conversa passa ao agente de ocorrências.
+A loja manda qualquer mensagem ao número da SEALog e recebe o menu de dois botões; não há cadastro
+nem senha (`RN-SL-003`). O acompanhamento do pedido não é do SEALog: a loja acompanha pela
+terceirizada (`RN-SL-004`). O relato de problema também não é botão do menu: a conversa passa ao
+agente de ocorrências quando a loja o procura, e como ela chega a ele está em aberto (`Q-SL-20`).
 
 #### Menu
 
 | Campo | Rótulo | Controle | Tipo | Tam. | Obrig. | Máscara | Validações | Origem no banco | Observações |
 |---|---|---|---|---|---|---|---|---|---|
-| `numero_origem` | — | identificação automática | texto | 13 | Sim | — | número autorizado de loja ativa (`RN-SL-003`) | `NumeroAutorizado.telefone_whatsapp` | Não aparece à loja; fora do cadastro, `MSG-SL-002` |
-| `opcao_menu` | O que você quer fazer? | botão de resposta | texto | — | Sim | — | Novo pedido, Acompanhar pedido ou Editar pedido | — | `MSG-SL-001` |
+| `numero_origem` | — | identificação automática | texto | 13 | Sim | — | qualquer número; o primeiro pedido fica a confirmar (`RN-SL-003`, `RN-SL-014`) | `NumeroWhatsapp.telefone_whatsapp` | Não aparece à loja; número novo, `MSG-SL-002` |
+| `opcao_menu` | O que você quer fazer? | botão de resposta | texto | — | Sim | — | Novo pedido ou Editar ou cancelar pedido | — | `MSG-SL-001` |
 
-#### Acompanhar e editar
+#### Editar ou cancelar
 
 | Campo | Rótulo | Controle | Tipo | Tam. | Obrig. | Máscara | Validações | Origem no banco | Observações |
 |---|---|---|---|---|---|---|---|---|---|
-| `codigo` | Código do pedido | lista ou campo de texto do formulário | texto | 12 | Sim | — | pedido da mesma loja (`RN-SL-054`) | `Entrega.codigo` | A lista traz os pedidos abertos da loja; código de outra loja ou inexistente, `MSG-SL-009` |
+| `codigo` | Código do pedido | lista ou campo de texto do formulário | texto | 12 | Sim | — | pedido feito pelo mesmo número (`RN-SL-011`) | `Entrega.codigo` | A lista traz os pedidos abertos desse número; código de outro número ou inexistente, `MSG-SL-009` |
 
 #### Relato de problema
 
@@ -87,13 +91,12 @@ conversa passa ao agente de ocorrências.
 | Ação | Controle | Quem pode | Observações |
 |---|---|---|---|
 | Novo pedido | botão de resposta | Loja | Abre o formulário de `TL-SL-003` |
-| Acompanhar pedido | botão de resposta | Loja | Mostra status, data e hora do último registro (`MSG-SL-008`) |
-| Editar pedido | botão de resposta | Loja | Abre `TL-SL-003` com os dados do pedido; depois da coleta, `MSG-SL-010` (`RN-SL-011`, `Q-SL-04`) |
+| Editar ou cancelar pedido | botão de resposta | Loja | Abre `TL-SL-003` com os dados do pedido; depois da coleta, `MSG-SL-010` (`RN-SL-011`, `Q-SL-04`) |
 | Cancelar pedido | botão de resposta, dentro de Editar | Loja | Só até a coleta; confirma com `MSG-SL-011` |
-| Relatar problema | botão de resposta, no resultado do acompanhamento | Loja | Passa a conversa ao agente de ocorrências; termina com `MSG-SL-025` e abre o chamado (`RN-SL-039`) |
+| Relatar problema | conversa com o agente (`Q-SL-20`) | Loja | Passa a conversa ao agente de ocorrências; termina com `MSG-SL-025` e abre o chamado (`RN-SL-039`) |
 
 **Referências** — Encontro 1 [07:35], [08:38], [14:33]; Plano do agente; `RN-SL-002` a `RN-SL-004`,
-`RN-SL-011`, `RN-SL-036` a `RN-SL-038`, `RN-SL-054`.
+`RN-SL-011`, `RN-SL-014`, `RN-SL-036` a `RN-SL-038`.
 
 ---
 
@@ -103,12 +106,21 @@ conversa passa ao agente de ocorrências.
 |---|---|
 | **Rota legada** | Hoje: mensagem livre no WhatsApp, conferida à mão pela atendente |
 | **Rota proposta** | — (formulário do WhatsApp, dentro da conversa) |
-| **Perfis** | Loja, pelo número autorizado |
+| **Perfis** | Loja, pelo número de WhatsApp |
 | **HUs** | `HU-SL-001`, `HU-SL-003`, `HU-SL-004` |
 
 O formulário abre dentro da conversa, sem aplicativo e sem conta. Não envia sem os dados
 obrigatórios (`RN-SL-006`). O mesmo formulário serve à edição, com os dados do pedido preenchidos,
 e ao complemento do pedido pendente registrado pela equipe, pedindo só o que falta.
+
+#### Loja e coleta
+
+| Campo | Rótulo | Controle | Tipo | Tam. | Obrig. | Máscara | Validações | Origem no banco | Observações |
+|---|---|---|---|---|---|---|---|---|---|
+| `nome_loja` | Nome da loja | campo de texto do formulário | texto | 120 | Sim | — | não vazio (`MSG-SL-005`) | `Entrega.nome_loja` | A loja se identifica aqui; sem cadastro (`RN-SL-003`) |
+| `endereco_coleta` | Endereço de coleta | campo de texto do formulário | texto | 250 | Sim | — | não vazio (`MSG-SL-005`) | `Entrega.endereco_coleta` | Vai no despacho (`RN-SL-024`, `Q-SL-19`) |
+| `bairro_coleta` | Bairro de coleta | campo de texto do formulário | texto | 80 | Sim | — | não vazio | `Entrega.bairro_coleta` | — |
+| `cidade_coleta` | Cidade de coleta | campo de texto do formulário | texto | 80 | Sim | — | não vazio | `Entrega.cidade_coleta` | — |
 
 #### Destinatário
 
@@ -126,8 +138,8 @@ e ao complemento do pedido pendente registrado pela equipe, pedindo só o que fa
 | `sem_numero` | Sem número | caixa de marcação | booleano | — | Não | — | marcada torna o ponto de referência obrigatório | `Entrega.sem_numero` | Caso do Sr. Paulo (Enunciado §8) |
 | `complemento` | Complemento | campo de texto do formulário | texto | 80 | Sim, salvo "Sem complemento" | — | obrigatório sem a marca (`MSG-SL-005`) | `Entrega.complemento` | Apartamento, bloco, sala |
 | `sem_complemento` | Sem complemento | caixa de marcação | booleano | — | Não | — | — | `Entrega.sem_complemento` | — |
-| `bairro` | Bairro | campo de texto do formulário | texto | 80 | Sim | — | não vazio | `Entrega.bairro` | Define a terceirizada pela tabela de regiões (`RN-SL-023`) |
-| `cidade` | Cidade | lista | texto | 80 | Sim | — | não vazio | `Entrega.cidade` | Abre com a cidade da loja |
+| `bairro` | Bairro | campo de texto do formulário | texto | 80 | Sim | — | não vazio | `Entrega.bairro` | Define a terceirizada pelas regiões (`RN-SL-023`) |
+| `cidade` | Cidade | lista | texto | 80 | Sim | — | não vazio | `Entrega.cidade` | Abre com a cidade de coleta |
 | `ponto_referencia` | Ponto de referência | campo de texto do formulário | texto | 150 | Sim, com "Sem número" | — | obrigatório quando `sem_numero` (`MSG-SL-005`) | `Entrega.ponto_referencia` | — |
 
 #### Entrega
@@ -144,7 +156,7 @@ e ao complemento do pedido pendente registrado pela equipe, pedindo só o que fa
 
 | Ação | Controle | Quem pode | Observações |
 |---|---|---|---|
-| Enviar pedido | botão do formulário | Loja | Só com todos os obrigatórios; pedido igual pede confirmação (`MSG-SL-006`, `RN-SL-010`); recebido, `MSG-SL-007` |
+| Enviar pedido | botão do formulário | Loja | Só com todos os obrigatórios; pedido igual pede confirmação (`MSG-SL-006`, `RN-SL-010`); recebido, `MSG-SL-007`; de número novo, `MSG-SL-002` |
 | Salvar alteração | botão do formulário | Loja | Só na edição, até a coleta; confirma com `MSG-SL-011` e avisa a terceirizada se já despachado (`RN-SL-026`) |
 | Completar pedido | botão do formulário | Loja | Só no pedido pendente; pede só os campos de `Entrega.campos_pendentes` (`MSG-SL-013`) |
 
@@ -163,14 +175,18 @@ e ao complemento do pedido pendente registrado pela equipe, pedindo só o que fa
 | **HUs** | `HU-SL-004` |
 
 Para o pedido que chega fora do formulário: áudio, mensagem livre ou ligação. Tem os mesmos campos
-e validações de `TL-SL-003`, mais a loja e o canal. "Gravar como pendente" aceita o pedido
+e validações de `TL-SL-003`, mais a loja, o número de WhatsApp dela e o canal. "Gravar como pendente" aceita o pedido
 incompleto e manda à loja o formulário para completar. A planilha da loja entra por `TL-SL-011`.
 
-#### Loja e canal
+#### Loja, coleta e canal
 
 | Campo | Rótulo | Controle | Tipo | Tam. | Obrig. | Máscara | Validações | Origem no banco | Observações |
 |---|---|---|---|---|---|---|---|---|---|
-| `loja_id` | Loja | lista com busca | inteiro | — | Sim | — | loja cadastrada e ativa (`RN-SL-014`) | `Entrega.loja_id` | Busca por nome, documento ou número autorizado |
+| `nome_loja` | Nome da loja | text | texto | 120 | Sim | — | não vazio | `Entrega.nome_loja` | Sem cadastro de loja (`RN-SL-003`) |
+| `numero_origem` | WhatsApp da loja | text | texto | 13 | Sim | `+55 (00) 00000-0000` | DDI, DDD e número | `Entrega.numero_origem` | Para onde vão os avisos; vale como confirmado (`RN-SL-014`) |
+| `endereco_coleta` | Endereço de coleta | text | texto | 250 | Para confirmar | — | não vazio | `Entrega.endereco_coleta` | `Q-SL-19` |
+| `bairro_coleta` | Bairro de coleta | text | texto | 80 | Para confirmar | — | — | `Entrega.bairro_coleta` | — |
+| `cidade_coleta` | Cidade de coleta | text | texto | 80 | Para confirmar | — | — | `Entrega.cidade_coleta` | — |
 | `canal_origem` | Canal | lista | texto | — | Sim | — | Equipe ou Planilha (`06` §3.2) | `Entrega.canal_origem` | Abre em Equipe |
 
 #### Destinatário e endereço
@@ -214,53 +230,6 @@ incompleto e manda à loja o formulário para completar. A planilha da loja entr
 
 ## Cadastros
 
-### TL-SL-005 — Lojas e números autorizados
-
-| | |
-|---|---|
-| **Rota legada** | Hoje: contatos salvos no celular do atendimento e dados soltos nas planilhas |
-| **Rota proposta** | `/lojas` e `/lojas/{id}` |
-| **Perfis** | Coordenador; Atendente edita só os dados comerciais |
-| **HUs** | `HU-SL-005`, `HU-SL-006` |
-
-A lista de lojas leva ao cadastro de cada uma, com os dados comerciais e os números de WhatsApp que
-podem pedir em nome dela.
-
-#### Dados da loja
-
-| Campo | Rótulo | Controle | Tipo | Tam. | Obrig. | Máscara | Validações | Origem no banco | Observações |
-|---|---|---|---|---|---|---|---|---|---|
-| `nome` | Nome da loja | text | texto | 120 | Sim | — | não vazio | `Loja.nome` | — |
-| `documento` | CNPJ ou CPF | text | texto | 14 | Sim | `00.000.000/0000-00` ou `000.000.000-00` | dígito verificador | `Loja.documento` | Guardado só com dígitos |
-| `endereco_coleta` | Endereço de coleta | text | texto | 250 | Sim | — | não vazio | `Loja.endereco_coleta` | Vai no despacho (`RN-SL-024`) |
-| `bairro_coleta` | Bairro de coleta | text | texto | 80 | Sim | — | — | `Loja.bairro_coleta` | — |
-| `cidade_coleta` | Cidade de coleta | text | texto | 80 | Sim | — | — | `Loja.cidade_coleta` | — |
-| `contato_nome` | Responsável | text | texto | 120 | Sim | — | — | `Loja.contato_nome` | — |
-| `condicao_cobranca` | Condição de cobrança | text | texto | 200 | Não | — | — | `Loja.condicao_cobranca` | Tabela de preços em `Q-SL-08` |
-| `ativa` | Ativa | caixa de marcação | booleano | — | Sim | — | — | `Loja.ativa` | Inativa não faz pedido novo (`RN-SL-014`) |
-
-#### Números autorizados
-
-| Campo | Rótulo | Controle | Tipo | Tam. | Obrig. | Máscara | Validações | Origem no banco | Observações |
-|---|---|---|---|---|---|---|---|---|---|
-| `telefone_whatsapp` | Número de WhatsApp | text, uma linha por número | texto | 13 | Sim, ao menos um | `+55 (00) 00000-0000` | único entre lojas ativas | `NumeroAutorizado.telefone_whatsapp` | — |
-| `nome_pessoa` | Quem usa | text | texto | 120 | Não | — | — | `NumeroAutorizado.nome_pessoa` | — |
-| `ativo` | Ativo | caixa de marcação | booleano | — | Sim | — | — | `NumeroAutorizado.ativo` | Inativo recebe `MSG-SL-002` |
-
-#### Ações da tela
-
-| Ação | Controle | Quem pode | Observações |
-|---|---|---|---|
-| Nova loja | botão | Coordenador | — |
-| Salvar dados comerciais | botão | Coordenador, Atendente | Vale do pedido seguinte em diante; vai ao histórico (`RN-SL-015`) |
-| Incluir ou tirar número | botão por linha | Coordenador | Grava quem autorizou e quando (`RN-SL-014`) |
-| Ativar ou inativar loja | botão | Coordenador | — |
-
-**Referências** — Planejamento da equipe (RF-01 a RF-04); Encontro 1 [08:38]; `RN-SL-014`,
-`RN-SL-015`, `RN-SL-054`.
-
----
-
 ### TL-SL-006 — Terceirizadas
 
 | | |
@@ -268,10 +237,12 @@ podem pedir em nome dela.
 | **Rota legada** | Hoje: contato das empresas no WhatsApp; cada uma manda o retorno do seu jeito |
 | **Rota proposta** | `/terceirizadas` e `/terceirizadas/{id}` |
 | **Perfis** | Coordenador |
-| **HUs** | `HU-SL-007` |
+| **HUs** | `HU-SL-007`, `HU-SL-010` |
 
-Cadastro das empresas que coletam e entregam. O padrão de retorno e de comprovação é o mesmo para
-todas (`RN-SL-019`); o que muda é o caminho que cada uma usa.
+Cadastro das empresas que coletam e entregam, com as regiões que cada uma atende. O padrão de
+retorno e de comprovação é o mesmo para todas (`RN-SL-019`); o que muda é o caminho que cada uma
+usa. Em cima, os pedidos "Aguardando região" pedem ao coordenador a escolha da terceirizada
+(`RN-SL-018`).
 
 | Campo | Rótulo | Controle | Tipo | Tam. | Obrig. | Máscara | Validações | Origem no banco | Observações |
 |---|---|---|---|---|---|---|---|---|---|
@@ -283,6 +254,23 @@ todas (`RN-SL-019`); o que muda é o caminho que cada uma usa.
 | `contato_telefone` | Telefone do contato | text | texto | 13 | Sim | `(00) 00000-0000` | — | `Terceirizada.contato_telefone` | — |
 | `ativa` | Ativa | caixa de marcação | booleano | — | Sim | — | — | `Terceirizada.ativa` | Inativa não recebe despacho |
 
+#### Regiões que atende
+
+| Campo | Rótulo | Controle | Tipo | Tam. | Obrig. | Máscara | Validações | Origem no banco | Observações |
+|---|---|---|---|---|---|---|---|---|---|
+| `bairro` | Bairro | text, uma linha por região | texto | 80 | Sim, ao menos um | — | sem acento e sem diferença de maiúsculas | `Regiao.bairro` | — |
+| `cidade` | Cidade | text | texto | 80 | Sim | — | — | `Regiao.cidade` | — |
+| `ativa` | Ativa | caixa de marcação | booleano | — | Sim | — | um só vínculo ativo por bairro (`RN-SL-017`, `MSG-SL-015`) | `Regiao.ativa` | — |
+
+#### Pedidos aguardando região
+
+| Coluna | Rótulo | Origem | Observações |
+|---|---|---|---|
+| Código | Código | `Entrega.codigo` | Abre `TL-SL-009` |
+| Loja | Loja | `Entrega.nome_loja` | — |
+| Bairro e cidade | Bairro e cidade | `Entrega.bairro`, `Entrega.cidade` | `MSG-SL-014` |
+| Data prevista | Data prevista | `Entrega.data_prevista` | Mais próxima primeiro |
+
 #### Ações da tela
 
 | Ação | Controle | Quem pode | Observações |
@@ -291,58 +279,10 @@ todas (`RN-SL-019`); o que muda é o caminho que cada uma usa.
 | Gerar chave de acesso | botão | Coordenador | Mostrada uma vez só; guardada como hash (`Terceirizada.chave_api`, `RN-SL-053`) |
 | Trocar chave | botão | Coordenador | A chave anterior deixa de valer |
 | Criar usuário do portal | botão | Coordenador | Cria usuário de perfil Terceirizada (`TL-SL-010`) |
-| Ver regiões | link | Coordenador | Abre `TL-SL-007` filtrada pela terceirizada |
+| Incluir ou tirar região | botão por linha | Coordenador | Vai ao histórico, com quem alterou (`RN-SL-017`); vale para os pedidos seguintes, e os já despachados não mudam |
+| Escolher terceirizada do pedido | botão por linha, em Aguardando região | Coordenador | Despacha na hora; caixa "Incluir este bairro nas regiões dela" (`RN-SL-018`) |
 
-**Referências** — Encontro 1 [15:19], [23:17], [27:54]; `RN-SL-016`, `RN-SL-019`, `RN-SL-053`.
-
----
-
-### TL-SL-007 — Tabela de regiões
-
-| | |
-|---|---|
-| **Rota legada** | Hoje: o conhecimento das regiões fica com o coordenador e os analistas |
-| **Rota proposta** | `/regioes` |
-| **Perfis** | Coordenador |
-| **HUs** | `HU-SL-008`, `HU-SL-010` |
-
-Cada linha liga um bairro e uma cidade a uma terceirizada. Em cima, os pedidos "Aguardando região"
-pedem ao coordenador a escolha da terceirizada (`RN-SL-018`).
-
-#### Filtros
-
-| Campo | Rótulo | Controle | Tipo | Tam. | Obrig. | Máscara | Validações | Origem no banco | Observações |
-|---|---|---|---|---|---|---|---|---|---|
-| `busca` | Bairro ou cidade | text | texto | 80 | Não | — | — | `Regiao.bairro`, `Regiao.cidade` | Sem acento e sem diferença de maiúsculas |
-| `terceirizada_id` | Terceirizada | lista | inteiro | — | Não | — | — | `Regiao.terceirizada_id` | — |
-
-#### Região
-
-| Campo | Rótulo | Controle | Tipo | Tam. | Obrig. | Máscara | Validações | Origem no banco | Observações |
-|---|---|---|---|---|---|---|---|---|---|
-| `bairro` | Bairro | text | texto | 80 | Sim | — | — | `Regiao.bairro` | — |
-| `cidade` | Cidade | text | texto | 80 | Sim | — | — | `Regiao.cidade` | — |
-| `terceirizada_id` | Terceirizada | lista | inteiro | — | Sim | — | terceirizada ativa; um só vínculo ativo por bairro (`RN-SL-017`, `MSG-SL-015`) | `Regiao.terceirizada_id` | — |
-
-#### Pedidos aguardando região
-
-| Coluna | Rótulo | Origem | Observações |
-|---|---|---|---|
-| Código | Código | `Entrega.codigo` | Abre `TL-SL-009` |
-| Loja | Loja | `Loja.nome` | — |
-| Bairro e cidade | Bairro e cidade | `Entrega.bairro`, `Entrega.cidade` | `MSG-SL-014` |
-| Data prevista | Data prevista | `Entrega.data_prevista` | Mais próxima primeiro |
-
-#### Ações da tela
-
-| Ação | Controle | Quem pode | Observações |
-|---|---|---|---|
-| Incluir região | botão | Coordenador | Vai ao histórico, com quem alterou |
-| Trocar terceirizada do bairro | botão por linha | Coordenador | Vale para os pedidos seguintes; os já despachados não mudam |
-| Escolher terceirizada do pedido | botão por linha, em Aguardando região | Coordenador | Despacha na hora; caixa "Incluir este bairro na tabela" (`RN-SL-018`) |
-| Exportar | botão | Coordenador | — |
-
-**Referências** — Encontro 1 [15:19]; `RN-SL-017`, `RN-SL-018`, `RN-SL-023`.
+**Referências** — Encontro 1 [15:19], [23:17], [27:54]; `RN-SL-016` a `RN-SL-019`, `RN-SL-023`, `RN-SL-053`.
 
 ---
 
@@ -364,10 +304,10 @@ perguntar a ninguém.
 
 | Campo | Rótulo | Controle | Tipo | Tam. | Obrig. | Máscara | Validações | Origem no banco | Observações |
 |---|---|---|---|---|---|---|---|---|---|
-| `busca` | Buscar | text | texto | 120 | Não | — | — | `Entrega.codigo`, `Loja.nome`, `Entrega.nome_destinatario`, `Entrega.telefone_destinatario`, `Entrega.bairro` | Acha por qualquer um dos cinco |
+| `busca` | Buscar | text | texto | 120 | Não | — | — | `Entrega.codigo`, `Entrega.nome_loja`, `Entrega.nome_destinatario`, `Entrega.telefone_destinatario`, `Entrega.bairro` | Acha por qualquer um dos cinco |
 | `status` | Status | lista, vários | texto | — | Não | — | valores de `06` §3.1 | `Entrega.status` | Vazio é todos |
 | `data_prevista` | Data prevista | intervalo de datas | data | — | Não | `dd/mm/aaaa` | início antes do fim | `Entrega.data_prevista` | Abre em hoje (`RN-SL-022`) |
-| `loja_id` | Loja | lista com busca | inteiro | — | Não | — | — | `Entrega.loja_id` | — |
+| `nome_loja` | Loja | lista com busca | texto | 120 | Não | — | — | `Entrega.nome_loja` | Os nomes informados nos pedidos |
 | `terceirizada_id` | Terceirizada | lista | inteiro | — | Não | — | — | `Entrega.terceirizada_id` | — |
 | `sem_retorno` | Só sem retorno | caixa de marcação | booleano | — | Não | — | — | `Entrega.ultimo_retorno_em` | Despachadas sem retorno há mais que o limite (`RN-SL-034`, `Q-SL-13`) |
 
@@ -376,7 +316,7 @@ perguntar a ninguém.
 | Coluna | Rótulo | Origem | Observações |
 |---|---|---|---|
 | Código | Código | `Entrega.codigo` | Abre `TL-SL-009` |
-| Loja | Loja | `Loja.nome` | — |
+| Loja | Loja | `Entrega.nome_loja` | — |
 | Destinatário | Destinatário | `Entrega.nome_destinatario` | — |
 | Bairro | Bairro | `Entrega.bairro` | — |
 | Data prevista | Data prevista | `Entrega.data_prevista` | Ordem padrão |
@@ -415,7 +355,7 @@ pode corrigir; os blocos abaixo são só leitura.
 | Coluna | Rótulo | Origem | Observações |
 |---|---|---|---|
 | Situação | Status atual e último registro | `Entrega.status`, `Entrega.atualizado_em` | — |
-| Despacho | Terceirizada e hora do despacho | `Entrega.terceirizada_id`, `Entrega.despachado_em` | Em Aguardando região, `MSG-SL-014` |
+| Despacho | Terceirizada e hora do despacho | `Entrega.terceirizada_id`, `Entrega.despachado_em` | Em Aguardando região, `MSG-SL-014`; em A confirmar, o número de WhatsApp e o nome da loja informados |
 | Retornos | Retornos da terceirizada | `RetornoTerceirizada` | Situação, hora do fato, hora de chegada, canal e resultado (`RN-SL-035`) |
 | Comprovante | Comprovante | `Comprovante` | Foto, data e hora, quem recebeu, entregador; marca de recebedor não autorizado (`RN-SL-031`) |
 | Chamados | Chamados | `Chamado` | Tipo, sugestão, ação final, quem decidiu |
@@ -427,13 +367,14 @@ pode corrigir; os blocos abaixo são só leitura.
 | Ação | Controle | Quem pode | Observações |
 |---|---|---|---|
 | Corrigir dados | botão | Atendente, Coordenador | Vai ao histórico (`RN-SL-020`); depois do despacho, avisa a terceirizada (`RN-SL-026`, `MSG-SL-011`) |
-| Cancelar a pedido da loja | botão | Atendente, Coordenador | Pede o motivo; avisa a terceirizada se já despachado |
+| Cancelar a pedido da loja | botão | Atendente, Coordenador | Pede o motivo; avisa a terceirizada se já despachado; em A confirmar, é como se recusa o número (`RN-SL-014`) |
+| Confirmar número da loja | botão | Atendente, Coordenador | Só em A confirmar; o pedido passa a Recebido e a loja recebe `MSG-SL-007` (`RN-SL-014`) |
 | Escolher terceirizada | botão | Coordenador | Só em Aguardando região (`RN-SL-018`) |
 | Abrir chamado | botão | Atendente, Coordenador | Ex.: comprovante que não convence; abre `TL-SL-013` |
 | Ver foto do comprovante | link | Atendente, Coordenador, Financeiro | Abre a foto guardada pelo SEALog |
 
 **Referências** — Enunciado §8 ("O registro incorreto"); `RN-SL-020`, `RN-SL-026`, `RN-SL-030`,
-`RN-SL-031`, `RN-SL-035`.
+`RN-SL-014`, `RN-SL-031`, `RN-SL-035`.
 
 ---
 
@@ -457,7 +398,7 @@ padrão (`RN-SL-030`). Ela vê só as próprias entregas (`RN-SL-053`).
 | Coluna | Rótulo | Origem | Observações |
 |---|---|---|---|
 | Código | Código | `Entrega.codigo` | O mesmo código que vai em todo retorno (`RN-SL-027`) |
-| Coleta | Loja e endereço de coleta | `Loja.nome`, `Loja.endereco_coleta` | — |
+| Coleta | Loja e endereço de coleta | `Entrega.nome_loja`, `Entrega.endereco_coleta` | — |
 | Destinatário | Destinatário e telefone | `Entrega.nome_destinatario`, `Entrega.telefone_destinatario` | — |
 | Endereço | Endereço completo | `Entrega.rua`, `Entrega.numero`, `Entrega.complemento`, `Entrega.bairro`, `Entrega.ponto_referencia` | — |
 | Volume | Tamanho e volumes | `Entrega.tamanho_volume`, `Entrega.qtd_volumes` | — |
@@ -509,7 +450,7 @@ outras entram (`RN-SL-029`).
 | Campo | Rótulo | Controle | Tipo | Tam. | Obrig. | Máscara | Validações | Origem no banco | Observações |
 |---|---|---|---|---|---|---|---|---|---|
 | `origem` | O que é a planilha | lista | texto | — | Sim | — | Pedidos de loja ou Retorno de terceirizada | `Importacao.origem` | A terceirizada só vê Retorno |
-| `origem_id` | Loja ou terceirizada | lista com busca | inteiro | — | Sim | — | ativa | `Importacao.origem_id` | Na terceirizada, preenchido pelo usuário |
+| `origem_id` | Terceirizada | lista com busca | inteiro | — | Em Retorno de terceirizada | — | ativa | `Importacao.origem_id` | Na terceirizada, preenchido pelo usuário; na planilha de pedidos de loja, vazio |
 | `arquivo` | Planilha | arquivo | arquivo | — | Sim | — | XLSX ou CSV | `Importacao.arquivo_url` | O original fica guardado |
 
 #### Associação de colunas
@@ -569,7 +510,7 @@ avisos que falharam aparecem no mesmo painel (`RN-SL-045`).
 |---|---|---|---|
 | Aberto em | Aberto em | `Chamado.criado_em` | Mais antigo primeiro |
 | Pedido | Código | `Entrega.codigo` | Abre `TL-SL-009` |
-| Loja | Loja | `Loja.nome` | — |
+| Loja | Loja | `Entrega.nome_loja` | — |
 | Tipo | Tipo | `Chamado.tipo` | — |
 | Sugestão | Ação sugerida | `Chamado.acao_sugerida` | Resumo |
 | Status | Status | `Chamado.status` | — |
@@ -606,7 +547,7 @@ aprovar, mudar ou recusar. O agente nunca decide (`RN-SL-037`). Quem aprova é o
 
 | Coluna | Rótulo | Origem | Observações |
 |---|---|---|---|
-| Pedido | Pedido e loja | `Entrega.codigo`, `Loja.nome` | Com o status e a terceirizada |
+| Pedido | Pedido e loja | `Entrega.codigo`, `Entrega.nome_loja` | Com o status e a terceirizada |
 | Relato | O que aconteceu | `Chamado.descricao` | — |
 | Conversa | Resumo da conversa | `Chamado.resumo_conversa` | Só na origem Loja |
 | Fotos | Fotos | `Chamado.fotos` | — |
@@ -665,7 +606,7 @@ os que já estão no galpão aguardando decisão (No galpão).
 | Coluna | Rótulo | Origem | Observações |
 |---|---|---|---|
 | Código | Código | `Entrega.codigo` | Abre `TL-SL-009` |
-| Loja | Loja | `Loja.nome` | — |
+| Loja | Loja | `Entrega.nome_loja` | — |
 | Motivo | Motivo da não entrega | `RetornoTerceirizada.motivo_nao_entrega` | — |
 | Terceirizada | Terceirizada | `Terceirizada.nome` | — |
 | Chamado | Sugestão do chamado | `Chamado.acao_sugerida` | Ajuda a decidir |
@@ -715,7 +656,7 @@ As entregas atrasadas ou com chamado num período, agrupadas por loja, com a con
 
 | Coluna | Rótulo | Origem | Observações |
 |---|---|---|---|
-| Loja | Loja | `Loja.nome` | Agrupa |
+| Loja | Loja | `Entrega.nome_loja` | Agrupa |
 | Afetadas | Entregas afetadas | contagem | Maior primeiro |
 | Entregas | Código, destinatário e situação | `Entrega.codigo`, `Entrega.nome_destinatario`, `Entrega.status` | — |
 | Último aviso | Último aviso | `Aviso.enviado_em` | Para não repetir |
@@ -751,7 +692,7 @@ define. Na terceirizada, entra só a entrega com comprovante aceito (`RN-SL-048`
 | Campo | Rótulo | Controle | Tipo | Tam. | Obrig. | Máscara | Validações | Origem no banco | Observações |
 |---|---|---|---|---|---|---|---|---|---|
 | `tipo` | Tipo | botões | texto | — | Sim | — | Cobrança de loja ou Pagamento de terceirizada | `Fechamento.tipo` | — |
-| `loja_id` | Loja | lista com busca | inteiro | — | Em cobrança | — | — | `Fechamento.loja_id` | Vazio gera um por loja |
+| `nome_loja` | Loja | lista com busca | texto | 120 | Em cobrança | — | — | `Fechamento.nome_loja` | Os nomes informados nos pedidos (`Q-SL-21`); vazio gera um por loja |
 | `terceirizada_id` | Terceirizada | lista | inteiro | — | Em pagamento | — | — | `Fechamento.terceirizada_id` | Vazio gera um por terceirizada |
 | `periodo` | Período | intervalo de datas | data | — | Sim | `dd/mm/aaaa` | início antes do fim; sem sobrepor fechamento fechado | `Fechamento.periodo_inicio`, `Fechamento.periodo_fim` | — |
 

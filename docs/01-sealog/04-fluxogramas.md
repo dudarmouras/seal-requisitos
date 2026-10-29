@@ -14,8 +14,8 @@ recusa e falha em `c 0.6`, desvio em `c 4.8` e `c 6.8`, passo de `1.3` (`CONVENC
 ## FLX-SL-01 — Ciclo de vida da entrega
 
 **Escopo:** do pedido recebido ao status final — entregue, devolvido à loja ou cancelado —, com a
-pendência de dados, o bairro fora da tabela e a volta ao galpão. Os status estão em
-`06-modelo-de-dados.md` §3.1. **HUs:** `HU-SL-001`, `HU-SL-004`, `HU-SL-008`, `HU-SL-010`, `HU-SL-011`, `HU-SL-013`, `HU-SL-016`, `HU-SL-018`, `HU-SL-019`.
+pendência de dados, o número de loja a confirmar, o bairro que nenhuma terceirizada atende e a volta
+ao galpão. Os status estão em `06-modelo-de-dados.md` §3.1. **HUs:** `HU-SL-001`, `HU-SL-004`, `HU-SL-007`, `HU-SL-009`, `HU-SL-010`, `HU-SL-011`, `HU-SL-013`, `HU-SL-016`, `HU-SL-018`, `HU-SL-019`.
 
 ```board
 {
@@ -23,27 +23,34 @@ pendência de dados, o bairro fora da tabela e a volta ao galpão. Os status est
     { "id": "inicio", "type": "dim", "label": "Pedido chega", "c": 2.6, "r": 0, "hu": ["HU-SL-001"], "huSide": "right" },
     { "id": "completo", "type": "decision", "label": "Dados obrigatórios completos?", "c": 2.6, "r": 1.3 },
     { "id": "pendente", "label": "Pendente de dados", "c": 0.6, "r": 1.3, "hu": ["HU-SL-004"], "huSide": "left" },
-    { "id": "recebido", "label": "Recebido", "c": 2.6, "r": 2.6 },
-    { "id": "regiao", "type": "decision", "label": "Bairro na tabela de regiões?", "c": 2.6, "r": 3.9, "hu": ["HU-SL-010"], "huSide": "left" },
-    { "id": "aguardando", "label": "Aguardando região", "c": 4.8, "r": 3.9, "hu": ["HU-SL-008"], "huSide": "right" },
-    { "id": "despachado", "label": "Despachado", "c": 2.6, "r": 5.2, "hu": ["HU-SL-011"], "huSide": "left" },
-    { "id": "canceladoLoja", "type": "dim", "label": "Cancelado pela loja", "c": 0.6, "r": 5.2 },
-    { "id": "coletado", "label": "Coletado", "c": 2.6, "r": 6.5, "hu": ["HU-SL-013"], "huSide": "left" },
-    { "id": "emRota", "label": "Em rota", "c": 2.6, "r": 7.8 },
-    { "id": "resultado", "type": "decision", "label": "Resultado da entrega?", "c": 2.6, "r": 9.1 },
-    { "id": "entregue", "type": "dim", "label": "Entregue", "c": 2.6, "r": 10.4, "hu": ["HU-SL-016"], "huSide": "left" },
-    { "id": "naoEntregue", "label": "Não entregue, com chamado", "c": 4.8, "r": 9.1, "hu": ["HU-SL-018"], "huSide": "right" },
-    { "id": "devolucao", "label": "Em devolução", "c": 4.8, "r": 10.4 },
-    { "id": "galpao", "label": "No galpão", "c": 4.8, "r": 11.7, "hu": ["HU-SL-019"], "huSide": "right" },
-    { "id": "decisao", "type": "decision", "label": "Decisão do coordenador?", "c": 4.8, "r": 13 },
-    { "id": "devolvido", "type": "dim", "label": "Devolvido à loja", "c": 4.8, "r": 14.3 },
-    { "id": "cancelado", "type": "dim", "label": "Cancelado", "c": 6.8, "r": 13 }
+    { "id": "numero", "type": "decision", "label": "Número da loja já confirmado?", "c": 2.6, "r": 2.6 },
+    { "id": "aConfirmar", "label": "A confirmar", "c": 4.8, "r": 2.6, "hu": ["HU-SL-009"], "huSide": "right" },
+    { "id": "recusado", "type": "dim", "label": "Cancelado: número não confirmado", "c": 6.8, "r": 2.6 },
+    { "id": "recebido", "label": "Recebido", "c": 2.6, "r": 3.9 },
+    { "id": "regiao", "type": "decision", "label": "Bairro atendido por alguma terceirizada?", "c": 2.6, "r": 5.2, "hu": ["HU-SL-010"], "huSide": "left" },
+    { "id": "aguardando", "label": "Aguardando região", "c": 4.8, "r": 5.2, "hu": ["HU-SL-007"], "huSide": "right" },
+    { "id": "despachado", "label": "Despachado", "c": 2.6, "r": 6.5, "hu": ["HU-SL-011"], "huSide": "left" },
+    { "id": "canceladoLoja", "type": "dim", "label": "Cancelado pela loja", "c": 0.6, "r": 6.5 },
+    { "id": "coletado", "label": "Coletado", "c": 2.6, "r": 7.8, "hu": ["HU-SL-013"], "huSide": "left" },
+    { "id": "emRota", "label": "Em rota", "c": 2.6, "r": 9.1 },
+    { "id": "resultado", "type": "decision", "label": "Resultado da entrega?", "c": 2.6, "r": 10.4 },
+    { "id": "entregue", "type": "dim", "label": "Entregue", "c": 2.6, "r": 11.7, "hu": ["HU-SL-016"], "huSide": "left" },
+    { "id": "naoEntregue", "label": "Não entregue, com chamado", "c": 4.8, "r": 10.4, "hu": ["HU-SL-018"], "huSide": "right" },
+    { "id": "devolucao", "label": "Em devolução", "c": 4.8, "r": 11.7 },
+    { "id": "galpao", "label": "No galpão", "c": 4.8, "r": 13, "hu": ["HU-SL-019"], "huSide": "right" },
+    { "id": "decisao", "type": "decision", "label": "Decisão do coordenador?", "c": 4.8, "r": 14.3 },
+    { "id": "devolvido", "type": "dim", "label": "Devolvido à loja", "c": 4.8, "r": 15.6 },
+    { "id": "cancelado", "type": "dim", "label": "Cancelado", "c": 6.8, "r": 14.3 }
   ],
   "edges": [
     { "from": "inicio", "to": "completo" },
     { "from": "completo", "to": "pendente", "label": "Não" },
-    { "from": "completo", "to": "recebido", "label": "Sim" },
+    { "from": "completo", "to": "numero", "label": "Sim" },
     { "from": "pendente", "to": "recebido", "label": "Loja completa", "fromSide": "bottom", "toSide": "left" },
+    { "from": "numero", "to": "recebido", "label": "Sim" },
+    { "from": "numero", "to": "aConfirmar", "label": "Não" },
+    { "from": "aConfirmar", "to": "recebido", "label": "Equipe confirma", "fromSide": "bottom", "toSide": "right" },
+    { "from": "aConfirmar", "to": "recusado", "label": "Equipe recusa" },
     { "from": "recebido", "to": "regiao" },
     { "from": "regiao", "to": "despachado", "label": "Sim" },
     { "from": "regiao", "to": "aguardando", "label": "Não" },
@@ -69,47 +76,44 @@ pendência de dados, o bairro fora da tabela e a volta ao galpão. Os status est
 
 ## FLX-SL-02 — Pedido pelo WhatsApp
 
-**Escopo:** da mensagem da loja ao pedido gravado e avisado, com o número não autorizado, o menu de
-três opções, a validação do formulário, o aviso de repetição e o pedido que a equipe registra.
-**HUs:** `HU-SL-001` a `HU-SL-005`, `HU-SL-010`, `HU-SL-017`.
+**Escopo:** da mensagem da loja ao pedido gravado e avisado, com o menu de duas opções, a validação
+do formulário, o aviso de repetição, o número de loja a confirmar e o pedido que a equipe registra.
+**HUs:** `HU-SL-001`, `HU-SL-003`, `HU-SL-004`, `HU-SL-009`, `HU-SL-010`.
 
 ```board
 {
   "nodes": [
     { "id": "inicio", "type": "dim", "label": "Loja manda mensagem", "c": 2.6, "r": 0 },
-    { "id": "numero", "type": "decision", "label": "Número autorizado?", "c": 2.6, "r": 1.3, "hu": ["HU-SL-005"], "huSide": "right" },
-    { "id": "recusa", "label": "Orienta a procurar o atendimento", "c": 0.6, "r": 1.3 },
-    { "id": "menu", "label": "Menu: novo, acompanhar, editar", "c": 2.6, "r": 2.6, "hu": ["HU-SL-001"], "huSide": "left" },
-    { "id": "opcao", "type": "decision", "label": "Qual opção?", "c": 2.6, "r": 3.9 },
-    { "id": "acompanhar", "label": "Mostra o status pelo código", "c": 4.8, "r": 3.9, "hu": ["HU-SL-002"], "huSide": "right" },
-    { "id": "editar", "label": "Edita ou cancela até a coleta", "c": 6.8, "r": 3.9, "hu": ["HU-SL-003"], "huSide": "right" },
-    { "id": "form", "label": "Preenche o formulário", "c": 2.6, "r": 5.2, "hu": ["HU-SL-001"], "huSide": "left" },
-    { "id": "equipe", "label": "Equipe registra o pedido fora do formulário", "c": 0.6, "r": 5.2, "hu": ["HU-SL-004"], "huSide": "left" },
-    { "id": "relato", "label": "Relatar problema", "c": 6.8, "r": 5.2, "hu": ["HU-SL-017"], "huSide": "right" },
-    { "id": "valida", "type": "decision", "label": "Dados obrigatórios completos?", "c": 2.6, "r": 6.5 },
-    { "id": "aponta", "label": "Aponta o que falta", "c": 4.8, "r": 6.5 },
-    { "id": "repetido", "type": "decision", "label": "Pedido igual já existe?", "c": 2.6, "r": 7.8 },
-    { "id": "confirmaRep", "label": "Pergunta se é outro pedido", "c": 4.8, "r": 7.8 },
+    { "id": "menu", "label": "Menu: novo pedido ou editar", "c": 2.6, "r": 1.3, "hu": ["HU-SL-001"], "huSide": "left" },
+    { "id": "opcao", "type": "decision", "label": "Qual opção?", "c": 2.6, "r": 2.6 },
+    { "id": "editar", "label": "Edita ou cancela até a coleta", "c": 4.8, "r": 2.6, "hu": ["HU-SL-003"], "huSide": "right" },
+    { "id": "form", "label": "Preenche o formulário, com o nome da loja", "c": 2.6, "r": 3.9, "hu": ["HU-SL-001"], "huSide": "left" },
+    { "id": "equipe", "label": "Equipe registra o pedido fora do formulário", "c": 0.6, "r": 3.9, "hu": ["HU-SL-004"], "huSide": "left" },
+    { "id": "valida", "type": "decision", "label": "Dados obrigatórios completos?", "c": 2.6, "r": 5.2 },
+    { "id": "aponta", "label": "Aponta o que falta", "c": 4.8, "r": 5.2 },
+    { "id": "repetido", "type": "decision", "label": "Pedido igual já existe?", "c": 2.6, "r": 6.5 },
+    { "id": "confirmaRep", "label": "Pergunta se é outro pedido", "c": 4.8, "r": 6.5 },
+    { "id": "numero", "type": "decision", "label": "Número da loja já confirmado?", "c": 2.6, "r": 7.8 },
+    { "id": "aConfirmar", "label": "Fica a confirmar até a equipe aprovar", "c": 4.8, "r": 7.8, "hu": ["HU-SL-009"], "huSide": "right" },
     { "id": "grava", "label": "Grava, gera o código e avisa a loja", "c": 2.6, "r": 9.1 },
     { "id": "fim", "type": "dim", "label": "Vai para o despacho", "c": 2.6, "r": 10.4, "hu": ["HU-SL-010"], "huSide": "left" }
   ],
   "edges": [
-    { "from": "inicio", "to": "numero" },
-    { "from": "numero", "to": "recusa", "label": "Não" },
-    { "from": "numero", "to": "menu", "label": "Sim" },
+    { "from": "inicio", "to": "menu" },
     { "from": "menu", "to": "opcao" },
     { "from": "opcao", "to": "form", "label": "Novo pedido" },
-    { "from": "opcao", "to": "acompanhar", "label": "Acompanhar" },
-    { "from": "opcao", "to": "editar", "label": "Editar", "fromSide": "top", "toSide": "top" },
-    { "from": "acompanhar", "to": "relato", "label": "Relatar problema", "fromSide": "bottom", "toSide": "left" },
+    { "from": "opcao", "to": "editar", "label": "Editar ou cancelar" },
     { "from": "equipe", "to": "valida", "label": "Mesmas validações", "fromSide": "bottom", "toSide": "left" },
     { "from": "form", "to": "valida" },
     { "from": "valida", "to": "aponta", "label": "Não" },
     { "from": "aponta", "to": "form", "label": "Loja corrige", "fromSide": "top", "toSide": "right" },
     { "from": "valida", "to": "repetido", "label": "Sim" },
     { "from": "repetido", "to": "confirmaRep", "label": "Sim" },
-    { "from": "confirmaRep", "to": "grava", "label": "É outro pedido", "fromSide": "bottom", "toSide": "right" },
-    { "from": "repetido", "to": "grava", "label": "Não" },
+    { "from": "confirmaRep", "to": "numero", "label": "É outro pedido", "fromSide": "bottom", "toSide": "right" },
+    { "from": "repetido", "to": "numero", "label": "Não" },
+    { "from": "numero", "to": "aConfirmar", "label": "Não" },
+    { "from": "aConfirmar", "to": "grava", "label": "Equipe aprova", "fromSide": "bottom", "toSide": "right" },
+    { "from": "numero", "to": "grava", "label": "Sim, ou pedido da equipe" },
     { "from": "grava", "to": "fim" }
   ]
 }
@@ -119,21 +123,21 @@ três opções, a validação do formulário, o aviso de repetição e o pedido 
 
 ## FLX-SL-03 — Despacho para a terceirizada
 
-**Escopo:** do pedido recebido à coleta pela terceirizada: a região, o bairro fora da tabela, o
-envio pela integração ou pelo portal, e a alteração depois do despacho. **HUs:** `HU-SL-008` a
-`HU-SL-012`, `HU-SL-014`.
+**Escopo:** do pedido recebido à coleta pela terceirizada: a região, o bairro que nenhuma
+terceirizada atende, o envio pela integração, pelo portal ou pela exportação, e a alteração depois
+do despacho. **HUs:** `HU-SL-007`, `HU-SL-009` a `HU-SL-012`, `HU-SL-014`.
 
 ```board
 {
   "nodes": [
     { "id": "inicio", "type": "dim", "label": "Pedido recebido", "c": 2.6, "r": 0 },
-    { "id": "regiao", "type": "decision", "label": "Bairro na tabela de regiões?", "c": 2.6, "r": 1.3, "hu": ["HU-SL-010"], "huSide": "left" },
-    { "id": "aguardando", "label": "Aguardando região", "c": 4.8, "r": 1.3, "hu": ["HU-SL-008"], "huSide": "right" },
-    { "id": "escolhe", "label": "Coordenador escolhe e pode incluir o bairro", "c": 4.8, "r": 2.6 },
+    { "id": "regiao", "type": "decision", "label": "Bairro atendido por alguma terceirizada?", "c": 2.6, "r": 1.3, "hu": ["HU-SL-010"], "huSide": "left" },
+    { "id": "aguardando", "label": "Aguardando região", "c": 4.8, "r": 1.3, "hu": ["HU-SL-007"], "huSide": "right" },
+    { "id": "escolhe", "label": "Coordenador escolhe e pode incluir o bairro nas regiões dela", "c": 4.8, "r": 2.6 },
     { "id": "terc", "label": "Define a terceirizada", "c": 2.6, "r": 2.6 },
     { "id": "forma", "type": "decision", "label": "Como a terceirizada recebe?", "c": 2.6, "r": 3.9, "hu": ["HU-SL-011"], "huSide": "left" },
     { "id": "api", "label": "Envia pela integração", "c": 4.8, "r": 3.9 },
-    { "id": "portal", "label": "Entra na lista do dia do portal", "c": 0.6, "r": 3.9, "hu": ["HU-SL-014"], "huSide": "left" },
+    { "id": "portal", "label": "Lista do dia no portal, ou exportação enviada pela equipe", "c": 0.6, "r": 3.9, "hu": ["HU-SL-014"], "huSide": "left" },
     { "id": "despachado", "label": "Despachado", "c": 2.6, "r": 5.2, "hu": ["HU-SL-009"], "huSide": "left" },
     { "id": "alteracao", "type": "decision", "label": "Loja ou equipe alterou?", "c": 2.6, "r": 6.5 },
     { "id": "avisa", "label": "Envia a alteração em destaque", "c": 4.8, "r": 6.5, "hu": ["HU-SL-012"], "huSide": "right" },
@@ -147,7 +151,7 @@ envio pela integração ou pelo portal, e a alteração depois do despacho. **HU
     { "from": "regiao", "to": "terc", "label": "Sim" },
     { "from": "terc", "to": "forma" },
     { "from": "forma", "to": "api", "label": "Integração" },
-    { "from": "forma", "to": "portal", "label": "Portal ou planilha" },
+    { "from": "forma", "to": "portal", "label": "Portal ou exportação" },
     { "from": "api", "to": "despachado", "fromSide": "bottom", "toSide": "right" },
     { "from": "portal", "to": "despachado", "fromSide": "bottom", "toSide": "left" },
     { "from": "despachado", "to": "alteracao" },

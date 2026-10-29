@@ -88,7 +88,7 @@ lista de perfis está para confirmação (`Q-SL-10`).
 | Cadastrar loja e autorizar números | — | — | Sim | — | — | `HU-SL-005` |
 | Manter dados comerciais da loja | — | Sim | Sim | — | — | `HU-SL-006` |
 | Cadastrar terceirizada | — | — | Sim | — | — | `HU-SL-007` |
-| Manter a tabela de regiões e resolver "Aguardando região" | — | — | Sim | — | — | `HU-SL-008`, `HU-SL-010` |
+| Manter a tabela de regiões e resolver "Aguardando região" | — | — | Sim | — | — | `HU-SL-007`, `HU-SL-010` |
 | Consultar a lista de entregas | — | Sim | Sim | Sim, só leitura | — | `HU-SL-009` |
 | Alterar dados da entrega | — | Sim | Sim | — | — | `HU-SL-012` |
 | Ver as entregas despachadas para si | — | — | — | — | Sim | `HU-SL-011` |

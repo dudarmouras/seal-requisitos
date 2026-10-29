@@ -16,21 +16,20 @@ encerramento são fixas.
 
 | ID | Texto exato | Tipo | Tela | Condição | História |
 |---|---|---|---|---|---|
-| `MSG-SL-001` | "Olá, {loja}! O que você quer fazer? [Novo pedido] [Acompanhar pedido] [Editar pedido]" | Menu | `TL-SL-002` | Mensagem de número autorizado | `HU-SL-001`, `HU-SL-002`, `HU-SL-003` |
-| `MSG-SL-002` | "Este número não está autorizado a fazer pedidos na SEALog. Fale com o atendimento de segunda a sexta, das 8h às 18h, e aos sábados, das 8h às 12h." | Erro | `TL-SL-002` | Número fora do cadastro ou de loja inativa | `HU-SL-001`, `HU-SL-005` |
+| `MSG-SL-001` | "Olá! O que você quer fazer? [Novo pedido] [Editar ou cancelar pedido]" | Menu | `TL-SL-002` | Mensagem de qualquer número | `HU-SL-001`, `HU-SL-003` |
+| `MSG-SL-002` | "SEALog: recebemos o pedido {código} para {destinatário}. Como é o primeiro pedido feito deste número, a equipe vai confirmar a loja, e avisamos aqui quando ele seguir para a entrega." | Aviso à loja | WhatsApp | Pedido de número ainda não confirmado | `HU-SL-001`, `HU-SL-009` |
 | `MSG-SL-003` | "Informe o número do endereço ou marque Sem número." | Validação | `TL-SL-003`, `TL-SL-004` | Número vazio sem a marca | `HU-SL-001`, `HU-SL-004` |
 | `MSG-SL-004` | "Informe o telefone com DDD." | Validação | `TL-SL-003`, `TL-SL-004` | Telefone sem 10 ou 11 dígitos | `HU-SL-001`, `HU-SL-004` |
 | `MSG-SL-005` | "Preencha {campo}." | Validação | `TL-SL-003`, `TL-SL-004` | Outro campo obrigatório vazio, inclusive o ponto de referência com "Sem número" e o complemento sem a marca "Sem complemento" | `HU-SL-001`, `HU-SL-004` |
 | `MSG-SL-006` | "Já existe um pedido para {destinatário} neste endereço em {data}. É outro pedido? [Sim, é outro] [Não, cancelar]" | Confirmação | `TL-SL-003`, `TL-SL-004` | Pedido igual já registrado | `HU-SL-001`, `HU-SL-004` |
-| `MSG-SL-007` | "SEALog: recebemos o pedido {código} para {destinatário}, com entrega prevista para {data}. Para acompanhar, mande uma mensagem e escolha Acompanhar pedido." | Aviso à loja | WhatsApp | Pedido recebido | `HU-SL-001`, `HU-SL-004` |
-| `MSG-SL-008` | "Pedido {código} para {destinatário}: {status} desde {data e hora}. {detalhe} [Relatar problema]" | Informativa | `TL-SL-002` | Acompanhar pedido | `HU-SL-002`, `HU-SL-017` |
-| `MSG-SL-009` | "Não encontramos o pedido {código} entre os pedidos da sua loja." | Erro | `TL-SL-002` | Código inexistente ou de outra loja | `HU-SL-002`, `HU-SL-003` |
+| `MSG-SL-007` | "SEALog: recebemos o pedido {código} para {destinatário}, com entrega prevista para {data}. Para alterar ou cancelar, mande uma mensagem e escolha Editar ou cancelar pedido." | Aviso à loja | WhatsApp | Pedido recebido, ou número confirmado pela equipe | `HU-SL-001`, `HU-SL-004`, `HU-SL-009` |
+| `MSG-SL-009` | "Não encontramos o pedido {código} entre os pedidos feitos por este número." | Erro | `TL-SL-002` | Código inexistente ou de pedido feito por outro número | `HU-SL-003`, `HU-SL-017` |
 | `MSG-SL-010` | "O pedido {código} já foi coletado e não pode mais ser alterado por aqui. Fale com o atendimento." | Erro | `TL-SL-002` | Edição depois da coleta | `HU-SL-003` |
 | `MSG-SL-011` | "SEALog: o pedido {código} foi alterado: {mudança}." | Aviso à loja | WhatsApp | Edição ou cancelamento confirmados | `HU-SL-003`, `HU-SL-012` |
 | `MSG-SL-012` | "Pedido {código} gravado como pendente. Falta: {campos}." | Informativa | `TL-SL-004` | Gravar como pendente | `HU-SL-004` |
 | `MSG-SL-013` | "SEALog: o pedido {código} para {destinatário} está quase pronto. Falta: {campos}. [Completar pedido]" | Aviso à loja | WhatsApp | Pedido pendente de dados | `HU-SL-004` |
-| `MSG-SL-014` | "O bairro {bairro} ({cidade}) não está na tabela de regiões. Escolha a terceirizada." | Validação | `TL-SL-007`, `TL-SL-009` | Pedido "Aguardando região" | `HU-SL-008`, `HU-SL-010` |
-| `MSG-SL-015` | "Já existe uma terceirizada ativa para {bairro} ({cidade}): {terceirizada}." | Validação | `TL-SL-007` | Segundo vínculo ativo para o mesmo bairro | `HU-SL-008` |
+| `MSG-SL-014` | "Nenhuma terceirizada atende o bairro {bairro} ({cidade}). Escolha a terceirizada." | Validação | `TL-SL-006`, `TL-SL-009` | Pedido "Aguardando região" | `HU-SL-007`, `HU-SL-010` |
+| `MSG-SL-015` | "Já existe uma terceirizada ativa para {bairro} ({cidade}): {terceirizada}." | Validação | `TL-SL-006` | Segundo vínculo ativo para o mesmo bairro | `HU-SL-007` |
 | `MSG-SL-016` | "O código {código} não foi despachado para {terceirizada}." | Erro | API, `TL-SL-010`, `TL-SL-011` | Retorno com código desconhecido ou de outra terceirizada | `HU-SL-013`, `HU-SL-014`, `HU-SL-015` |
 | `MSG-SL-017` | "Entregue exige foto, data e hora, nome de quem recebeu e identificação do entregador. Falta: {campos}." | Erro | API, `TL-SL-010`, `TL-SL-011` | Comprovante incompleto | `HU-SL-013`, `HU-SL-014`, `HU-SL-016` |
 | `MSG-SL-018` | "A entrega {código} está {status atual} e não pode passar para {situação}." | Erro | API, `TL-SL-010`, `TL-SL-011` | Situação fora do ciclo | `HU-SL-013`, `HU-SL-014`, `HU-SL-015` |
@@ -63,4 +62,4 @@ A API padrão (`INT-002`) responde com um código e uma das mensagens acima.
 | Comprovante incompleto, situação fora do ciclo, motivo ausente | 422 | `MSG-SL-017`, `MSG-SL-018`, `MSG-SL-019` |
 | Excesso de chamadas | 429 | — |
 
-**Referências** — Enunciado §2, §8; Encontro 1; Plano do agente; `RN-SL-001` a `RN-SL-054`.
+**Referências** — Enunciado §2, §8; Encontro 1; Plano do agente; `RN-SL-001` a `RN-SL-053`.

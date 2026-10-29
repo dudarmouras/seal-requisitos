@@ -1,10 +1,14 @@
 # SEALog — Histórias de usuário
 
-Vinte e quatro histórias, em sete módulos, na ordem do caminho de um pedido: a loja pede pelo
+Vinte histórias, em sete módulos, na ordem do caminho de um pedido: a loja pede pelo
 WhatsApp, o pedido vai sozinho para a terceirizada da região, a terceirizada devolve o status e o
 comprovante, e o que dá errado vira um chamado que uma pessoa da equipe decide. As regras citam o
 catálogo `RN-SL-*` de [`02-regras-de-negocio.md`](02-regras-de-negocio.md); o que ainda está em
 aberto é `Q-SL-*`, em [`09-divergencias-e-lacunas.md`](09-divergencias-e-lacunas.md).
+
+Os ids não são reaproveitados: `HU-SL-002` (acompanhar pelo SEALog), `HU-SL-005` e `HU-SL-006`
+(cadastro da loja) e `HU-SL-008` (tabela de regiões, que virou parte de `HU-SL-007`) foram retiradas
+em 29/10/2026, e a numeração tem esses vazios (`DIV-SL-10`).
 
 As fontes são o enunciado do desafio, o resumo dos gargalos, o Encontro 1 com o cliente
 (28/10/2026), em que a SEALog contou que terceirizou as entregas, o planejamento da equipe e o plano
@@ -16,8 +20,8 @@ da lista RF-01 a RF-20 da equipe que ela cobre ou substitui.
 
 | Módulo | HUs | Total |
 |---|---|---|
-| Entrada de pedidos (`entrada-pedidos`) | `HU-SL-001` a `HU-SL-004` | 4 |
-| Cadastros (`cadastros`) | `HU-SL-005` a `HU-SL-008` | 4 |
+| Entrada de pedidos (`entrada-pedidos`) | `HU-SL-001`, `HU-SL-003`, `HU-SL-004` | 3 |
+| Cadastros (`cadastros`) | `HU-SL-007` | 1 |
 | Despacho (`despacho`) | `HU-SL-009` a `HU-SL-012` | 4 |
 | Retorno da terceirizada (`retorno-terceirizada`) | `HU-SL-013` a `HU-SL-016` | 4 |
 | Ocorrências e devoluções (`ocorrencias`) | `HU-SL-017` a `HU-SL-021` | 5 |
@@ -45,12 +49,14 @@ da lista RF-01 a RF-20 da equipe que ela cobre ou substitui.
 
 **Descrição**
 
-A loja manda uma mensagem ao número de WhatsApp da SEALog, o mesmo que já usa. Se o número estiver
-autorizado para uma loja ativa, ela recebe o menu com três opções e escolhe "Novo pedido". Abre-se
-um formulário dentro do próprio WhatsApp, que já sabe de qual loja é o pedido.
+A loja manda uma mensagem ao número de WhatsApp da SEALog, o mesmo que já usa, e recebe o menu com
+duas opções: "Novo pedido" e "Editar ou cancelar pedido". A loja não tem cadastro nem senha. Ao
+escolher "Novo pedido", abre-se um formulário dentro do próprio WhatsApp, em que ela diz o nome da
+loja e de onde o pacote deve ser coletado.
 
-O formulário pede os dados que hoje a atendente confere à mão: nome e telefone do destinatário,
-endereço com número, complemento e bairro e cidade, tamanho aproximado do volume e a data desejada.
+O formulário pede também os dados que hoje a atendente confere à mão: nome e telefone do
+destinatário, endereço com número, complemento e bairro e cidade, tamanho aproximado do volume e a
+data desejada.
 Ele não envia enquanto faltar algum dado obrigatório e aponta cada campo que falta. Endereço sem
 número precisa da marca "Sem número" e de um ponto de referência. Se alguém além do destinatário
 puder receber — um vizinho, o porteiro —, a loja diz quem no próprio pedido.
@@ -58,86 +64,38 @@ puder receber — um vizinho, o porteiro —, a loja diz quem no próprio pedido
 Ao enviar, o pedido ganha o código SEALog, recebe a data prevista e a loja recebe a confirmação na
 conversa. Se já houver pedido igual, a loja é avisada antes e confirma se é outro.
 
+No primeiro pedido de um número de WhatsApp, o pedido fica "A confirmar": a equipe confere que a
+loja é cliente e o aprova, e só então ele segue para a terceirizada. A loja é avisada nos dois
+momentos. Depois da primeira confirmação, os pedidos desse número seguem direto.
+
 **Regras de negócio**
 
 | # | Regra | Catálogo |
 |---|---|---|
-| RN1 | Só um número autorizado de loja ativa recebe o menu; número desconhecido recebe a orientação de procurar o atendimento, e nada é registrado. | `RN-SL-003` |
-| RN2 | O menu tem três opções: novo pedido, acompanhar pedido e editar pedido. | `RN-SL-004` |
-| RN3 | São obrigatórios: nome e telefone do destinatário, rua, número, bairro, cidade, complemento ou a marca de que não há, tamanho aproximado do volume e data desejada; o formulário não envia sem eles. | `RN-SL-005`, `RN-SL-006` |
+| RN1 | A loja não tem cadastro: ela se identifica no formulário, pelo nome da loja. Qualquer número abre o menu de pedidos. | `RN-SL-003` |
+| RN2 | O menu tem duas opções: novo pedido e editar ou cancelar pedido. | `RN-SL-004` |
+| RN3 | São obrigatórios: nome da loja, endereço de coleta, nome e telefone do destinatário, rua, número, bairro, cidade, complemento ou a marca de que não há, tamanho aproximado do volume e data desejada; o formulário não envia sem eles. | `RN-SL-005`, `RN-SL-006`, `Q-SL-19` |
 | RN4 | O telefone tem DDD e 10 ou 11 dígitos; endereço sem número exige a marca "Sem número" e o ponto de referência. | `RN-SL-007`, `RN-SL-008` |
 | RN5 | A data prevista é o dia útil seguinte ou a data agendada pela loja. | `RN-SL-009` |
 | RN6 | Pedido igual a outro da mesma loja (mesmo destinatário, endereço e data) gera aviso, sem bloquear. | `RN-SL-010` |
 | RN7 | Quem pode receber além do destinatário é informado no pedido; sem isso, só o destinatário recebe. | `RN-SL-013` |
+| RN8 | O primeiro pedido de um número fica "A confirmar" até a equipe aprová-lo; confirmado o número, os pedidos seguintes dele seguem direto. | `RN-SL-014`, `Q-SL-18` |
 
 **Critérios de aceitação**
 
 | # | Cenário | Dado | Quando | Então |
 |---|---|---|---|---|
-| CA1 | Pedido completo | que meu número está autorizado e preenchi todos os campos obrigatórios | envio o formulário | o pedido recebe o código SEALog e eu recebo na conversa a confirmação com a data prevista. |
+| CA1 | Pedido completo | que meu número já foi confirmado e preenchi todos os campos obrigatórios | envio o formulário | o pedido recebe o código SEALog e eu recebo na conversa a confirmação com a data prevista. |
 | CA2 | Pedido incompleto | que estou pedindo para o Sr. Paulo e não sei o número da casa nem o telefone | tento enviar | o formulário não envia e aponta o número e o telefone como obrigatórios. |
 | CA3 | Endereço sem número de verdade | que marquei "Sem número" | tento enviar sem ponto de referência | o formulário pede o ponto de referência. |
-| CA4 | Número não autorizado | que escrevo de um número que não está cadastrado em nenhuma loja | mando a mensagem | recebo a orientação de falar com o atendimento, com o horário dele, e nenhum pedido é criado. |
+| CA4 | Número novo | que escrevo de um número que nunca fez pedido | envio o formulário completo | o pedido recebe o código e fica "A confirmar"; recebo o aviso de que a equipe vai confirmar, e o pedido só segue para a terceirizada depois disso. |
 | CA5 | Pessoa autorizada a receber | que o pedido é para o condomínio Mar Azul e pode ser deixado com Dona Lúcia | informo o nome dela no campo de quem pode receber | o pedido guarda a autorização e ela vai junto para a terceirizada. |
 | CA6 | Pedido repetido | que já pedi hoje uma entrega para o mesmo destinatário, endereço e data | envio de novo | sou avisada da repetição e só vira outro pedido se eu confirmar. |
 | CA7 | Fora do horário | que é sábado, 15h, e o atendimento já fechou | envio um pedido completo | o pedido é recebido da mesma forma. |
 
-**Integrações e APIs** — `INT-001` WhatsApp: menu, formulário dentro da conversa (resposta estruturada que o sistema lê) e confirmação ao fim.
+**Integrações e APIs** — `INT-001` WhatsApp: menu, formulário dentro da conversa (resposta estruturada que o sistema lê), confirmação ao fim e aviso de pedido a confirmar (`MSG-SL-002`).
 
 **Referências** — Enunciado §2 (pedido por um número de WhatsApp, dados conferidos), §8 (caso "Pedido com informações incompletas"); Encontro 1 [07:35], [08:38], [14:33], [35:39], [43:19]; Planejamento da equipe (RF-07; cliente continua no WhatsApp); Gargalos §1.
-
----
-
-### HU-SL-002 — Acompanhar o pedido pelo WhatsApp
-
-| | |
-|---|---|
-| **Módulo** | `entrada-pedidos` |
-| **Sistema** | SEALog |
-| **Atores** | Loja |
-| **Telas** | `TL-SL-002` Conversa do WhatsApp |
-| **Origem legada** | Hoje: a loja pergunta "cadê minha entrega?" ao Atendimento, que pergunta no grupo interno, o analista procura na planilha e, se ela está desatualizada, tenta falar com o motorista; a resposta leva de 20 minutos a mais de 2 horas. Depois da terceirização, a SEALog ainda depende de a terceirizada responder por WhatsApp ou planilha. Na lista da equipe: RF-07 |
-| **Prioridade** | Alta |
-
-**Como** loja cliente da SEALog
-**Gostaria de** ver na conversa do WhatsApp em que pé está o meu pedido
-**Para que** eu responda ao meu cliente na hora, sem esperar a atendente perguntar a ninguém.
-
-**Descrição**
-
-A loja escolhe "Acompanhar pedido" no menu e informa o código SEALog do pedido, ou escolhe entre os
-seus pedidos mais recentes. O sistema responde na hora com o status atual, a data e a hora do último
-registro e o detalhe que faz sentido para o status: a data prevista, a terceirizada que está com o
-pacote, o nome de quem recebeu depois da entrega, ou o motivo da não entrega.
-
-A resposta vem do registro único, alimentado pelo retorno da terceirizada, e funciona a qualquer
-hora, inclusive fora do horário do atendimento. A loja só vê os pedidos dela. Da mesma resposta, a
-loja pode relatar um problema com aquele pedido (`HU-SL-017`).
-
-**Regras de negócio**
-
-| # | Regra | Catálogo |
-|---|---|---|
-| RN1 | Acompanhar é uma das três opções do menu, e o pedido é identificado pelo código SEALog. | `RN-SL-004` |
-| RN2 | A loja vê só os pedidos dela; código de outra loja recebe a mesma resposta de código não encontrado. | `RN-SL-054` |
-| RN3 | A resposta mostra o status e a data e a hora do último registro, para que se saiba se a informação é atual. | `RN-SL-022` |
-| RN4 | O status considera a hora do fato informada pela terceirizada, não a hora em que o retorno chegou. | `RN-SL-035` |
-| RN5 | O relato de problema sai do acompanhamento do pedido, sem um quarto botão no menu. | `RN-SL-004`, `RN-SL-036` |
-
-**Critérios de aceitação**
-
-| # | Cenário | Dado | Quando | Então |
-|---|---|---|---|---|
-| CA1 | Pedido em rota | que a terceirizada informou que o pacote saiu para entrega às 10h15 | consulto o código | vejo "Em rota desde 10h15" e a data prevista. |
-| CA2 | Pedido entregue | que o pedido foi entregue com comprovante | consulto o código | vejo "Entregue", a data e a hora e o nome de quem recebeu. |
-| CA3 | Não entregue | que a terceirizada informou que não achou o endereço | consulto o código | vejo "Não entregue", o motivo e o botão para relatar problema. |
-| CA4 | Código de outra loja | que informo o código de um pedido de outra loja | peço o acompanhamento | recebo a mensagem de pedido não encontrado, sem nenhum dado do pedido. |
-| CA5 | Código inexistente | que digito um código errado | peço o acompanhamento | recebo a mensagem de pedido não encontrado e posso tentar de novo. |
-| CA6 | Fora do horário | que é sábado, 16h | consulto o código | recebo a resposta na hora, sem atendente. |
-
-**Integrações e APIs** — `INT-001` WhatsApp: opção do menu, pergunta do código e resposta com o status (`MSG-SL-008`, `MSG-SL-009`).
-
-**Referências** — Enunciado §2 (o caminho de "cadê minha entrega?"); Encontro 1 [08:38] (acompanhar pelo ID do pedido), [25:39]; Planejamento da equipe (RF-07); Gargalos §4.
 
 ---
 
@@ -158,7 +116,8 @@ loja pode relatar um problema com aquele pedido (`HU-SL-017`).
 
 **Descrição**
 
-A loja escolhe "Editar pedido" no menu e informa o código. Enquanto a terceirizada não registrou a
+A loja escolhe "Editar ou cancelar pedido" no menu e informa o código; só o número que fez o pedido
+pode mexer nele. Enquanto a terceirizada não registrou a
 coleta, abre-se o mesmo formulário do pedido, com os dados já preenchidos, e a loja muda o que
 precisar — endereço, telefone, data, quem pode receber — ou cancela o pedido. As validações são as
 mesmas do pedido novo.
@@ -172,7 +131,7 @@ pedido.
 
 | # | Regra | Catálogo |
 |---|---|---|
-| RN1 | A loja edita ou cancela pelo WhatsApp até a terceirizada registrar a coleta, e na edição altera só os itens que ainda não saíram para entrega. Pedir a alteração por código do produto ainda está em debate. | `RN-SL-011`, `Q-SL-04` |
+| RN1 | A loja edita ou cancela pelo WhatsApp até a terceirizada registrar a coleta, e só o pedido feito pelo mesmo número; na edição altera só os itens que ainda não saíram para entrega. Pedir a alteração por código do produto ainda está em debate. | `RN-SL-011`, `Q-SL-04` |
 | RN2 | A edição passa pelas mesmas validações do pedido novo. | `RN-SL-005`, `RN-SL-006` |
 | RN3 | A autorização de entrega a outra pessoa pode ser incluída ou retirada na edição. | `RN-SL-013` |
 | RN4 | Mudança depois do despacho vai na hora para a terceirizada, com o que mudou em destaque. | `RN-SL-026` |
@@ -187,6 +146,7 @@ pedido.
 | CA3 | Cancelar | que o pedido ainda não foi coletado | cancelo | o pedido fica Cancelado, a terceirizada é avisada e eu recebo a confirmação. |
 | CA4 | Edição inválida | que apaguei o telefone do destinatário | tento salvar | o formulário não salva e aponta o telefone como obrigatório. |
 | CA5 | Autorizar o porteiro | que o destinatário vai viajar | incluo o porteiro entre quem pode receber | a autorização fica no pedido e chega à terceirizada. |
+| CA6 | Pedido de outro número | que informo o código de um pedido feito por outro número | peço para editar | recebo a mensagem de pedido não encontrado, sem nenhum dado do pedido. |
 
 **Integrações e APIs** — `INT-001` WhatsApp, para o menu, o formulário e a confirmação (`MSG-SL-010`, `MSG-SL-011`); `INT-002` API padrão da terceirizada, para levar a alteração quando o pedido já foi despachado.
 
@@ -215,7 +175,9 @@ Nem toda loja vai usar o formulário desde o primeiro dia. Quando o pedido chega
 atendente o registra no painel, num formulário com os mesmos campos e as mesmas validações do
 WhatsApp, ou importa a planilha da loja: cada linha vira um pedido.
 
-Se faltar algum dado obrigatório, o pedido pode ser gravado assim mesmo, como "Pendente de dados",
+O atendente informa o nome da loja e o número de WhatsApp dela, para onde vão os avisos; como é a
+equipe quem registra, o pedido não passa pela confirmação do número. Se faltar algum dado
+obrigatório, o pedido pode ser gravado assim mesmo, como "Pendente de dados",
 com a lista do que falta. A loja recebe no WhatsApp um aviso com um botão para completar só o que
 falta; quando ela completa, o pedido passa a "Recebido" e segue sozinho para a terceirizada. O canal
 de origem fica registrado, e pedido igual a outro gera o mesmo aviso de repetição.
@@ -230,6 +192,7 @@ de origem fica registrado, e pedido igual a outro gera o mesmo aviso de repetiç
 | RN4 | O que faltar deixa o pedido "Pendente de dados", fora do despacho, e a loja recebe o formulário para completar só o que falta. | `RN-SL-012` |
 | RN5 | Na planilha da loja, cada linha vira um pedido; linha incompleta entra como pendente, não é descartada. | `RN-SL-012` |
 | RN6 | Pedido igual a outro da mesma loja gera aviso, sem bloquear. | `RN-SL-010` |
+| RN7 | O pedido registrado pela equipe não fica "A confirmar": o número informado pelo atendente vale como confirmado. | `RN-SL-014` |
 
 **Critérios de aceitação**
 
@@ -250,106 +213,7 @@ de origem fica registrado, e pedido igual a outro gera o mesmo aviso de repetiç
 
 ## Cadastros
 
-### HU-SL-005 — Cadastrar a loja e os números autorizados
-
-| | |
-|---|---|
-| **Módulo** | `cadastros` |
-| **Sistema** | SEALog |
-| **Atores** | Coordenador |
-| **Telas** | `TL-SL-005` Lojas e números autorizados |
-| **Origem legada** | Hoje: não há cadastro; a loja é reconhecida pelo nome na conversa, e qualquer número que escreva ao Atendimento pode pedir uma entrega. Na lista da equipe: RF-01 e RF-02 (a autenticação da loja passa a ser o número autorizado, sem senha) |
-| **Prioridade** | Alta |
-
-**Como** coordenador de operação
-**Gostaria de** cadastrar cada loja com os números de WhatsApp que podem pedir por ela
-**Para que** só quem é cliente faça pedido, e cada pedido saiba de que loja é sem perguntar.
-
-**Descrição**
-
-O coordenador cadastra a loja com os dados comerciais e um ou mais números de WhatsApp autorizados —
-o do dono, o do balcão. A partir daí, mensagem de um desses números abre o menu de pedidos já
-identificada; a loja não tem senha nem conta.
-
-Um número pode ser incluído ou retirado a qualquer momento, e a loja pode ser desativada; loja
-inativa não faz pedido novo. Cada inclusão e retirada fica no histórico, com quem fez e quando.
-
-**Regras de negócio**
-
-| # | Regra | Catálogo |
-|---|---|---|
-| RN1 | A loja é cadastrada pela equipe, com um ou mais números de WhatsApp autorizados. | `RN-SL-014` |
-| RN2 | Só número autorizado de loja ativa abre o menu de pedidos. | `RN-SL-003` |
-| RN3 | A loja não tem senha: é identificada pelo número e vê só os pedidos dela. | `RN-SL-054` |
-| RN4 | Um número autorizado pertence a uma só loja ativa. | `RN-SL-014` |
-| RN5 | Incluir ou tirar um número, e ativar ou desativar a loja, fica no histórico com quem fez. | `RN-SL-014` |
-
-**Critérios de aceitação**
-
-| # | Cenário | Dado | Quando | Então |
-|---|---|---|---|---|
-| CA1 | Loja nova | que a floricultura assinou com a SEALog | cadastro a loja com dois números | os dois números passam a receber o menu de pedidos, já com o nome da floricultura. |
-| CA2 | Número retirado | que um funcionário saiu da loja | retiro o número dele | a próxima mensagem desse número recebe a orientação de procurar o atendimento. |
-| CA3 | Número de outra loja | que o número já está autorizado para outra loja ativa | tento incluí-lo | o sistema recusa e diz a qual loja ele pertence. |
-| CA4 | Loja desativada | que desativei a loja | um número dela pede um pedido novo | recebe a orientação de procurar o atendimento, e nada é registrado. |
-| CA5 | Sem permissão | que entrei com o perfil Atendente | tento incluir um número | o sistema recusa. |
-
-**Integrações e APIs** — `INT-001` WhatsApp: o número de quem escreve é conferido contra os números autorizados (`MSG-SL-002`).
-
-**Referências** — Encontro 1 [08:38] (validação do número de origem); Planejamento da equipe (RF-01, RF-02; RBAC e Auth).
-
----
-
-### HU-SL-006 — Manter os dados comerciais da loja
-
-| | |
-|---|---|
-| **Módulo** | `cadastros` |
-| **Sistema** | SEALog |
-| **Atores** | Atendente, Coordenador |
-| **Telas** | `TL-SL-005` Lojas e números autorizados |
-| **Origem legada** | Hoje: endereço de coleta, contato e condição de cobrança de cada loja ficam na memória da equipe ou em planilhas soltas, e a mudança chega por mensagem. Na lista da equipe: RF-03 e RF-04 (com banco único, a sincronização deixa de ser um passo separado) |
-| **Prioridade** | Média |
-
-**Como** atendente
-**Gostaria de** manter atualizados os dados comerciais de cada loja
-**Para que** todo pedido novo saia com o endereço de coleta e o contato certos, sem eu repetir a informação.
-
-**Descrição**
-
-Os dados comerciais da loja — nome, documento, endereço de coleta, contato e condição de cobrança —
-ficam no cadastro e entram em todo pedido novo: o endereço de coleta vai no despacho para a
-terceirizada, e a condição de cobrança é usada no fechamento.
-
-Quando a loja muda de endereço ou de contato, a equipe atualiza o cadastro. A mudança vale a partir
-do pedido seguinte; pedidos já despachados continuam com o endereço que tinham. Tudo fica no
-histórico, com o valor anterior.
-
-**Regras de negócio**
-
-| # | Regra | Catálogo |
-|---|---|---|
-| RN1 | Os dados comerciais da loja ficam no cadastro e são usados em todo pedido novo. | `RN-SL-015` |
-| RN2 | A alteração vale a partir do pedido seguinte e fica no histórico, com o valor anterior. | `RN-SL-015` |
-| RN3 | O endereço de coleta vai no despacho para a terceirizada. | `RN-SL-024` |
-| RN4 | O valor cobrado da loja depende da tabela de preços da SEALog. | `RN-SL-047`, `Q-SL-08` |
-
-**Critérios de aceitação**
-
-| # | Cenário | Dado | Quando | Então |
-|---|---|---|---|---|
-| CA1 | Endereço de coleta novo | que a papelaria mudou de endereço | atualizo o cadastro | os pedidos seguintes saem com o endereço novo no despacho. |
-| CA2 | Pedido já despachado | que havia um pedido despachado antes da mudança | atualizo o endereço | o pedido despachado mantém o endereço antigo, e o histórico mostra a mudança no cadastro. |
-| CA3 | Campo obrigatório vazio | que apaguei o endereço de coleta | tento salvar | o sistema aponta o campo e não salva. |
-| CA4 | Histórico | que o contato da loja foi trocado | abro o histórico da loja | vejo quem trocou, quando e o contato anterior. |
-
-**Integrações e APIs** — Nenhuma. Cadastro interno; o endereço chega à terceirizada pelo despacho de `HU-SL-011`.
-
-**Referências** — Planejamento da equipe (RF-03, RF-04).
-
----
-
-### HU-SL-007 — Cadastrar a terceirizada
+### HU-SL-007 — Cadastrar a terceirizada e as regiões que ela atende
 
 | | |
 |---|---|
@@ -357,23 +221,28 @@ histórico, com o valor anterior.
 | **Sistema** | SEALog |
 | **Atores** | Coordenador |
 | **Telas** | `TL-SL-006` Terceirizadas |
-| **Origem legada** | Hoje: a SEALog terceirizou as entregas para duas empresas, uma por região; cada uma manda notícia do seu jeito, por planilha ou WhatsApp, e não há registro de quem atende o quê. Substitui, na lista da equipe, RF-05 e RF-06 (cadastro e análise de motoristas): o motorista agora é da terceirizada |
+| **Origem legada** | Hoje: a SEALog terceirizou as entregas para duas empresas, uma por região; cada uma manda notícia do seu jeito, por planilha ou WhatsApp, e não há registro de quem atende o quê; o coordenador e os analistas decidem de cabeça para qual das duas cada pedido vai. Substitui, na lista da equipe: RF-05 e RF-06 (cadastro e análise de motoristas), porque o motorista agora é da terceirizada, e RF-12 (distribuição por motorista) |
 | **Prioridade** | Alta |
 
 **Como** coordenador de operação
 **Gostaria de** cadastrar cada terceirizada com as regiões que atende e o jeito que ela devolve o status
-**Para que** o pedido chegue à empresa certa e o retorno dela entre no mesmo padrão, hoje e com qualquer empresa nova.
+**Para que** o pedido chegue à empresa certa sozinho e o retorno dela entre no mesmo padrão, hoje e com qualquer empresa nova.
 
 **Descrição**
 
-O coordenador cadastra a terceirizada com o nome, o documento, o contato para o despacho e a forma de
-retorno que ela vai usar: pela integração com o SEALog, pelo portal ou por planilha. A terceirizada
-recebe uma credencial própria — chave de integração ou usuário do portal — que só dá acesso às
-entregas despachadas para ela.
+O coordenador cadastra a terceirizada com o nome, o documento, o contato para o despacho, a forma de
+retorno que ela vai usar — pela integração com o SEALog, pelo portal ou por planilha — e as regiões
+que ela atende, cada uma um par de bairro e cidade. A terceirizada recebe uma credencial própria —
+chave de integração ou usuário do portal — que só dá acesso às entregas despachadas para ela.
 
-O padrão de retorno e de comprovação é o mesmo para todas, as duas de hoje e as que vierem. As
-regiões que cada uma atende são mantidas na tabela de regiões (`HU-SL-008`). Terceirizada inativa
-não recebe despacho novo.
+O padrão de retorno e de comprovação é o mesmo para todas, as duas de hoje e as que vierem. Um
+bairro tem uma só terceirizada ativa de cada vez, e as regiões são o que o sistema usa para
+despachar cada pedido sem ninguém no meio (`HU-SL-010`). Terceirizada inativa não recebe despacho
+novo.
+
+Quando chega pedido para um bairro que nenhuma terceirizada atende, ele fica "Aguardando região" e
+aparece ao coordenador, que escolhe a terceirizada e pode, no mesmo passo, incluir o bairro nas
+regiões dela para os próximos pedidos.
 
 **Regras de negócio**
 
@@ -383,6 +252,9 @@ não recebe despacho novo.
 | RN2 | Toda terceirizada, atual ou futura, segue o mesmo padrão de retorno e de comprovação. | `RN-SL-019` |
 | RN3 | Pela integração ou pelo portal, a terceirizada vê e altera só as entregas despachadas para ela. | `RN-SL-053` |
 | RN4 | Terceirizada inativa não recebe despacho novo. | `RN-SL-016` |
+| RN5 | As regiões ficam no cadastro da terceirizada, e só o coordenador as mantém; um bairro tem uma só terceirizada ativa de cada vez. | `RN-SL-017` |
+| RN6 | Pedido para bairro que nenhuma terceirizada atende fica "Aguardando região" e aparece ao coordenador, que pode incluir o bairro ao escolher. | `RN-SL-018` |
+| RN7 | Toda mudança nas regiões fica registrada, com quem fez e quando. | `RN-SL-017` |
 
 **Critérios de aceitação**
 
@@ -393,61 +265,15 @@ não recebe despacho novo.
 | CA3 | Empresa nova | que a SEALog contratou uma terceira empresa | cadastro e ligo os bairros dela | os pedidos desses bairros passam a ir para ela, com o mesmo padrão de retorno das outras. |
 | CA4 | Chave trocada | que a chave de uma terceirizada vazou | gero uma chave nova | a chave antiga deixa de funcionar na hora. |
 | CA5 | Inativar com região ativa | que a terceirizada ainda é a única de alguns bairros | tento inativá-la | o sistema avisa quais bairros ficariam sem terceirizada e pede que eu os passe a outra. |
+| CA6 | Bairro novo | que Piedade não está nas regiões de nenhuma terceirizada | incluo Piedade, Jaboatão, na empresa da zona sul | os pedidos seguintes para Piedade vão para ela. |
+| CA7 | Bairro repetido | que Boa Viagem já é atendido por uma terceirizada | tento incluí-lo em outra | o sistema recusa e diz qual terceirizada já atende o bairro. |
+| CA8 | Grafia diferente | que a loja escreveu "Gracas", sem acento | o pedido chega | o sistema reconhece o bairro Graças das regiões cadastradas. |
+| CA9 | Pedido sem região | que chegou pedido para um bairro que ninguém atende | abro o pedido | escolho a terceirizada e marco para incluir o bairro nas regiões dela. |
+| CA10 | Troca de terceirizada | que um bairro passou de uma empresa para a outra | mudo o bairro de lugar | só os pedidos novos vão para a nova; os já despachados continuam com a anterior. |
 
 **Integrações e APIs** — `INT-002` API padrão da terceirizada: o cadastro guarda o endereço da integração e a chave, só em forma irreversível.
 
-**Referências** — Encontro 1 [13:15], [15:19], [17:36], [27:54]; Planejamento da equipe (RF-05, RF-06, substituídos).
-
----
-
-### HU-SL-008 — Manter a tabela de regiões
-
-| | |
-|---|---|
-| **Módulo** | `cadastros` |
-| **Sistema** | SEALog |
-| **Atores** | Coordenador |
-| **Telas** | `TL-SL-007` Tabela de regiões |
-| **Origem legada** | Hoje: o coordenador e os analistas distribuem os pedidos de cabeça, pelo conhecimento das regiões; depois da terceirização, decidem para qual das duas empresas cada pedido vai. Substitui, na lista da equipe, RF-12 (distribuição por motorista) |
-| **Prioridade** | Alta |
-
-**Como** coordenador de operação
-**Gostaria de** manter a tabela que diz qual terceirizada atende cada bairro
-**Para que** o pedido vá sozinho para a empresa certa, sem eu distribuir à mão.
-
-**Descrição**
-
-A tabela de regiões liga cada par de bairro e cidade a uma terceirizada. É o que o sistema usa para
-despachar cada pedido sem ninguém no meio (`HU-SL-010`). O coordenador inclui, muda ou desativa
-linhas; um bairro tem uma só terceirizada ativa de cada vez.
-
-Quando chega pedido para um bairro que não está na tabela, ele fica "Aguardando região" e aparece ao
-coordenador, que escolhe a terceirizada e pode, no mesmo passo, incluir o bairro na tabela para os
-próximos pedidos.
-
-**Regras de negócio**
-
-| # | Regra | Catálogo |
-|---|---|---|
-| RN1 | Cada par de bairro e cidade aponta para uma terceirizada, e só o coordenador mantém a tabela. | `RN-SL-017` |
-| RN2 | Um bairro tem uma só terceirizada ativa de cada vez. | `RN-SL-017` |
-| RN3 | Pedido para bairro fora da tabela fica "Aguardando região" e aparece ao coordenador. | `RN-SL-018` |
-| RN4 | Ao escolher a terceirizada de um pedido aguardando região, o coordenador pode incluir o bairro na tabela. | `RN-SL-018` |
-| RN5 | Toda mudança na tabela fica registrada, com quem fez e quando. | `RN-SL-017` |
-
-**Critérios de aceitação**
-
-| # | Cenário | Dado | Quando | Então |
-|---|---|---|---|---|
-| CA1 | Bairro novo | que Piedade não está na tabela | incluo Piedade, Jaboatão, para a empresa da zona sul | os pedidos seguintes para Piedade vão para ela. |
-| CA2 | Bairro repetido | que Boa Viagem já aponta para uma terceirizada | tento ligar Boa Viagem a outra | o sistema recusa e diz qual terceirizada já atende o bairro. |
-| CA3 | Grafia diferente | que a loja escreveu "Gracas", sem acento | o pedido chega | o sistema reconhece o bairro Graças da tabela. |
-| CA4 | Pedido sem região | que chegou pedido para um bairro fora da tabela | abro a tabela | vejo o pedido aguardando, escolho a terceirizada e marco para incluir o bairro. |
-| CA5 | Troca de terceirizada | que um bairro passou de uma empresa para a outra | mudo a linha | só os pedidos novos vão para a nova; os já despachados continuam com a anterior. |
-
-**Integrações e APIs** — Nenhuma. A tabela é interna; o despacho que a usa está em `HU-SL-010` e `HU-SL-011`.
-
-**Referências** — Encontro 1 [15:19] (duas empresas, uma por região); Enunciado §2 (distribuição pelo conhecimento das regiões); Planejamento da equipe (RF-12, substituído).
+**Referências** — Encontro 1 [13:15], [15:19] (duas empresas, uma por região), [17:36], [27:54]; Enunciado §2 (distribuição pelo conhecimento das regiões); Planejamento da equipe (RF-05, RF-06, RF-12, substituídos).
 
 ---
 
@@ -471,13 +297,15 @@ próximos pedidos.
 **Descrição**
 
 A lista de entregas substitui as planilhas do dia. Ela se organiza pela data prevista e se usa como
-uma planilha: filtro por data, loja, bairro, terceirizada e status, busca pelo código, pelo nome ou
+uma planilha: filtro por data, nome da loja, bairro, terceirizada e status, busca pelo código, pelo nome ou
 pelo telefone do destinatário. Cada linha mostra a data e a hora do último registro, para que se
 saiba se a informação é atual, e a entrega despachada sem retorno há mais tempo que o combinado fica
 sinalizada.
 
 Ao abrir uma entrega, a equipe vê os dados do pedido, a terceirizada, o comprovante, os chamados, os
-avisos enviados e o histórico de tudo o que mudou, com quem mudou e quando. A lista pode ser
+avisos enviados e o histórico de tudo o que mudou, com quem mudou e quando. O pedido de um número
+novo aparece como "A confirmar": a equipe confere que a loja é cliente e o confirma ali mesmo, e o
+pedido segue para a terceirizada. A lista pode ser
 exportada para planilha com as mesmas colunas e filtros, mas nada exportado volta ao sistema.
 
 **Regras de negócio**
@@ -490,6 +318,7 @@ exportada para planilha com as mesmas colunas e filtros, mas nada exportado volt
 | RN4 | Entrega despachada sem retorno fica sinalizada quando passa do prazo estimado pela terceirizada. | `RN-SL-034`, `Q-SL-13` |
 | RN5 | A lista pode ser exportada para planilha com as mesmas colunas e filtros; nada exportado volta. | `RN-SL-050` |
 | RN6 | O perfil Financeiro vê a lista sem poder alterá-la. | `RN-SL-051` |
+| RN7 | O pedido de um número novo fica "A confirmar" até a equipe confirmá-lo ou cancelá-lo; a confirmação fica no histórico. | `RN-SL-014` |
 
 **Critérios de aceitação**
 
@@ -501,6 +330,7 @@ exportada para planilha com as mesmas colunas e filtros, mas nada exportado volt
 | CA4 | Filtro do dia | que quero as entregas de amanhã de uma terceirizada | filtro por data prevista e terceirizada | vejo só essas, e posso exportá-las. |
 | CA5 | Lista vazia | que filtrei uma combinação sem entregas | peço a exportação | o sistema informa que não há entregas e não gera arquivo. |
 | CA6 | Financeiro só lê | que entrei com o perfil Financeiro | abro uma entrega | vejo tudo, mas não há ação de alterar. |
+| CA7 | Confirmar número novo | que um pedido de um número que nunca pediu está "A confirmar" | confirmo que a loja é cliente | o pedido passa a "Recebido", segue para a terceirizada e a loja é avisada. |
 
 **Integrações e APIs** — `INT-003` Planilhas, para a exportação.
 
@@ -515,7 +345,7 @@ exportada para planilha com as mesmas colunas e filtros, mas nada exportado volt
 | **Módulo** | `despacho` |
 | **Sistema** | SEALog |
 | **Atores** | Sistema, Coordenador |
-| **Telas** | `TL-SL-007` Tabela de regiões, `TL-SL-009` Detalhe da entrega |
+| **Telas** | `TL-SL-006` Terceirizadas, `TL-SL-009` Detalhe da entrega |
 | **Origem legada** | Hoje: o coordenador e os analistas decidem, pedido a pedido, para quem cada entrega vai, pelo conhecimento das regiões, sem ferramenta. Na lista da equipe: RF-12, agora por terceirizada e não por motorista |
 | **Prioridade** | Alta |
 
@@ -525,31 +355,33 @@ exportada para planilha com as mesmas colunas e filtros, mas nada exportado volt
 
 **Descrição**
 
-Assim que o pedido fica "Recebido", o sistema procura o bairro e a cidade do destinatário na tabela
-de regiões e o despacha para a terceirizada correspondente. Ninguém distribui à mão.
+Assim que o pedido fica "Recebido", o sistema procura o bairro e a cidade do destinatário nas
+regiões cadastradas nas terceirizadas e o despacha para a que atende o bairro. Ninguém distribui à
+mão.
 
-Se o bairro não está na tabela, o pedido fica "Aguardando região" e aparece ao coordenador. Ele
-escolhe a terceirizada, e o pedido segue; se quiser, inclui o bairro na tabela no mesmo passo. Se a
+Se nenhuma terceirizada atende o bairro, o pedido fica "Aguardando região" e aparece ao coordenador.
+Ele escolhe a terceirizada, e o pedido segue; se quiser, inclui o bairro nas regiões dela no mesmo
+passo. Se a
 terceirizada da região estiver inativa, o pedido também cai para o coordenador.
 
 **Regras de negócio**
 
 | # | Regra | Catálogo |
 |---|---|---|
-| RN1 | O pedido recebido vai sozinho para a terceirizada da região, pela tabela de regiões. | `RN-SL-023` |
+| RN1 | O pedido recebido vai sozinho para a terceirizada da região, pelas regiões cadastradas nas terceirizadas. | `RN-SL-023` |
 | RN2 | Cada bairro tem uma só terceirizada ativa. | `RN-SL-017` |
-| RN3 | Bairro fora da tabela deixa o pedido "Aguardando região", para o coordenador escolher. | `RN-SL-018` |
-| RN4 | Pedido "Pendente de dados" não é distribuído. | `RN-SL-012` |
-| RN5 | A distribuição fica no histórico da entrega, com a terceirizada e se foi pela tabela ou pelo coordenador. | `RN-SL-020` |
+| RN3 | Bairro que nenhuma terceirizada atende deixa o pedido "Aguardando região", para o coordenador escolher. | `RN-SL-018` |
+| RN4 | Pedido "Pendente de dados" ou "A confirmar" não é distribuído. | `RN-SL-012`, `RN-SL-014` |
+| RN5 | A distribuição fica no histórico da entrega, com a terceirizada e se foi pelas regiões ou pelo coordenador. | `RN-SL-020` |
 
 **Critérios de aceitação**
 
 | # | Cenário | Dado | Quando | Então |
 |---|---|---|---|---|
-| CA1 | Bairro na tabela | que Graças aponta para a empresa da zona norte | chega um pedido para Graças | ele é despachado para essa empresa sem ninguém intervir. |
-| CA2 | Bairro fora da tabela | que um pedido chegou para um bairro novo | o sistema tenta distribuir | o pedido fica "Aguardando região" e aparece ao coordenador. |
-| CA3 | Coordenador escolhe | que há um pedido aguardando região | escolho a terceirizada e marco para incluir o bairro | o pedido é despachado e o bairro entra na tabela. |
-| CA4 | Pedido pendente | que um pedido está pendente de dados | o sistema procura pedidos a distribuir | o pedido não é despachado até ser completado. |
+| CA1 | Bairro atendido | que Graças é atendido pela empresa da zona norte | chega um pedido para Graças | ele é despachado para essa empresa sem ninguém intervir. |
+| CA2 | Bairro sem terceirizada | que um pedido chegou para um bairro novo | o sistema tenta distribuir | o pedido fica "Aguardando região" e aparece ao coordenador. |
+| CA3 | Coordenador escolhe | que há um pedido aguardando região | escolho a terceirizada e marco para incluir o bairro | o pedido é despachado e o bairro entra nas regiões dela. |
+| CA4 | Pedido pendente | que um pedido está pendente de dados ou a confirmar | o sistema procura pedidos a distribuir | o pedido não é despachado até ser completado ou confirmado. |
 | CA5 | Terceirizada inativa | que a terceirizada do bairro foi inativada | chega um pedido para esse bairro | o pedido fica aguardando o coordenador. |
 
 **Integrações e APIs** — Nenhuma. A distribuição é interna; o envio à terceirizada está em `HU-SL-011`.
@@ -575,8 +407,8 @@ terceirizada da região estiver inativa, o pedido também cai para o coordenador
 
 **Descrição**
 
-Despachado o pedido, a terceirizada recebe a solicitação com o código SEALog, o endereço de coleta da
-loja, o destinatário com telefone e endereço completo, o tamanho do volume, a data prevista, as
+Despachado o pedido, a terceirizada recebe a solicitação com o código SEALog, o endereço de coleta
+informado no pedido, o destinatário com telefone e endereço completo, o tamanho do volume, a data prevista, as
 observações e quem pode receber além do destinatário. A terceirizada com integração recebe pelo
 sistema dela; a outra vê a solicitação na lista do dia do portal.
 
@@ -704,7 +536,7 @@ ciclo — e diz por quê; o mesmo retorno mandado duas vezes é gravado uma vez 
 
 | # | Cenário | Dado | Quando | Então |
 |---|---|---|---|---|
-| CA1 | Entregue completo | que mando entregue com foto, hora, nome de quem recebeu e entregador | o retorno chega | a entrega fica "Entregue" com o comprovante, e a loja vê isso no acompanhamento. |
+| CA1 | Entregue completo | que mando entregue com foto, hora, nome de quem recebeu e entregador | o retorno chega | a entrega fica "Entregue" com o comprovante, e a equipe vê isso na lista de entregas. |
 | CA2 | Sem foto | que mando entregue sem a foto | o retorno chega | ele é recusado com a lista do que falta, e a entrega continua como estava. |
 | CA3 | Não achou o endereço | que o entregador não achou o endereço às 9h40 | mando não entregue com o motivo | a entrega fica "Não entregue", abre-se um chamado e a loja é avisada na hora, como devia ter sido no caso do buquê de sábado. |
 | CA4 | Código de outra empresa | que mando um código despachado para outra terceirizada | o retorno chega | ele é recusado com a mensagem de que o código não foi despachado para mim. |
@@ -891,8 +723,9 @@ que conta no pagamento da terceirizada.
 
 **Descrição**
 
-No acompanhamento de um pedido, a loja toca em "Relatar problema". Quem conversa com ela é o agente
-de ocorrências: ele confirma o pedido pelo código, entende o tipo de problema — atraso, não entregue,
+A loja escreve ao número da SEALog para relatar um problema e informa o código do pedido; como ela
+chega ao agente, já que o menu não tem acompanhamento, está em aberto (`Q-SL-20`). Quem conversa com
+ela é o agente de ocorrências: ele confirma o pedido pelo código, entende o tipo de problema — atraso, não entregue,
 avaria, entregue no endereço errado ou outro —, pede uma descrição e, se houver avaria, uma foto.
 
 Com o relato, o agente consulta o protocolo de atendimento da SEALog e escreve uma ação sugerida.
@@ -904,7 +737,7 @@ relato e as fotos; os dados pessoais do destinatário não passam por ele.
 
 | # | Regra | Catálogo |
 |---|---|---|
-| RN1 | A loja relata o problema a partir do acompanhamento do pedido. | `RN-SL-004`, `RN-SL-036` |
+| RN1 | A loja relata o problema pelo WhatsApp, informando o código de um pedido feito pelo mesmo número; o relato não é uma opção do menu. | `RN-SL-004`, `RN-SL-036`, `Q-SL-20` |
 | RN2 | O agente identifica o pedido pelo código, classifica o tipo, pede descrição e, se houver avaria, foto. | `RN-SL-036` |
 | RN3 | O agente compara o relato com o protocolo de atendimento e escreve uma ação sugerida. Por enquanto não há protocolo escrito: a sugestão se apoia nos dados do pedido e do relato. | `RN-SL-037`, `Q-SL-05` |
 | RN4 | O agente não decide nem responde a decisão à loja. | `RN-SL-037` |
@@ -918,7 +751,7 @@ relato e as fotos; os dados pessoais do destinatário não passam por ele.
 | CA1 | Avaria | que a caixa chegou amassada | relato o problema e mando a foto | recebo a confirmação de que uma pessoa vai analisar, e o chamado aparece no painel com a foto e a sugestão. |
 | CA2 | Avaria sem foto | que relatei avaria | o agente pede a foto e eu não mando | o chamado é aberto mesmo assim, marcado sem foto. |
 | CA3 | Atraso | que a entrega era para hoje às 10h e não chegou | relato atraso | o chamado é aberto com o tipo atraso e a situação atual do pedido. |
-| CA4 | Pedido de outra loja | que informo o código de um pedido que não é meu | tento relatar | recebo a mensagem de pedido não encontrado, e nenhum chamado é aberto. |
+| CA4 | Pedido de outro número | que informo o código de um pedido feito por outro número | tento relatar | recebo a mensagem de pedido não encontrado, e nenhum chamado é aberto. |
 | CA5 | Sem promessa | que pergunto ao agente se vou receber reembolso | ele responde | ele diz que a equipe vai analisar e responder, sem prometer nada. |
 | CA6 | Fora do horário | que é domingo | relato um problema | o chamado é aberto e fica Pendente para a equipe no próximo turno. |
 
@@ -1155,7 +988,8 @@ afetadas e a situação de cada uma. A lista também pode ser exportada para pla
 
 **Descrição**
 
-O financeiro escolhe a loja e o período, e o sistema monta o fechamento com as entregas que chegaram
+O financeiro escolhe a loja, pelo nome informado nos pedidos e confirmado pela equipe, e o período, e
+o sistema monta o fechamento com as entregas que chegaram
 a um status final, cada uma com código, data, destinatário, bairro, status e valor. O valor vem da
 tabela de preços da SEALog.
 
@@ -1167,7 +1001,7 @@ exportado para planilha.
 
 | # | Regra | Catálogo |
 |---|---|---|
-| RN1 | A cobrança é calculada das entregas registradas, por loja e período, nunca de planilha. | `RN-SL-047` |
+| RN1 | A cobrança é calculada das entregas registradas, por loja e período, nunca de planilha; sem cadastro, a loja é a do nome informado nos pedidos. | `RN-SL-047`, `Q-SL-21` |
 | RN2 | O valor depende da tabela de preços da SEALog. | `RN-SL-047`, `Q-SL-08` |
 | RN3 | O fechamento é conferido antes de fechado; fechado não muda, e correção vira ajuste no seguinte. | `RN-SL-049` |
 | RN4 | O fechamento pode ser exportado para planilha. | `RN-SL-050` |
@@ -1263,7 +1097,7 @@ financeiro. A terceirizada entra no portal com usuário próprio. O perfil defin
 a permissão vale no servidor: o que a tela não mostra também não pode ser feito por outro caminho.
 
 Depois de cinco tentativas seguidas sem sucesso, a entrada fica bloqueada por um tempo. A loja não
-entra no painel: ela é reconhecida pelo número de WhatsApp autorizado.
+entra no painel nem tem senha: ela faz o pedido pelo WhatsApp.
 
 **Regras de negócio**
 
@@ -1273,7 +1107,7 @@ entra no painel: ela é reconhecida pelo número de WhatsApp autorizado.
 | RN2 | A permissão é conferida no servidor, não só escondida na tela. | `RN-SL-051` |
 | RN3 | Depois de cinco tentativas seguidas sem sucesso, a entrada fica bloqueada por um tempo; a duração e o desbloqueio estão para confirmação. | `RN-SL-052`, `Q-SL-17` |
 | RN4 | A terceirizada entra com usuário próprio e vê só as entregas despachadas para ela. | `RN-SL-053` |
-| RN5 | A loja não tem senha: é identificada pelo número de WhatsApp autorizado. | `RN-SL-054` |
+| RN5 | A loja não tem senha nem cadastro: o primeiro pedido de um número é confirmado pela equipe. | `RN-SL-014` |
 
 **Critérios de aceitação**
 
@@ -1282,9 +1116,9 @@ entra no painel: ela é reconhecida pelo número de WhatsApp autorizado.
 | CA1 | Entrada certa | que sou atendente | entro com usuário e senha certos | vejo o menu do atendente. |
 | CA2 | Senha errada | que errei a senha | tento entrar | vejo a mensagem de usuário ou senha incorretos, sem dizer qual dos dois errou. |
 | CA3 | Bloqueio | que errei a senha cinco vezes seguidas | tento a sexta | a entrada está bloqueada e a mensagem diz por quanto tempo e a quem recorrer. |
-| CA4 | Tela fora do perfil | que sou do financeiro | tento abrir a tabela de regiões | o sistema recusa e informa que meu perfil não tem acesso. |
+| CA4 | Tela fora do perfil | que sou do financeiro | tento abrir o cadastro de terceirizadas | o sistema recusa e informa que meu perfil não tem acesso. |
 | CA5 | Terceirizada | que entro no portal como terceirizada | abro a lista | vejo só as entregas despachadas para a minha empresa. |
 
-**Integrações e APIs** — Nenhuma. Acesso interno do painel e do portal; a identificação da loja pelo número está em `HU-SL-005`.
+**Integrações e APIs** — Nenhuma. Acesso interno do painel e do portal; o primeiro pedido de cada número de WhatsApp é confirmado pela equipe, como está em `HU-SL-001`.
 
 **Referências** — Planejamento da equipe (RBAC e Auth; RF-02; RNF-01); Encontro 1 [24:38] (todos veem tudo no grupo).

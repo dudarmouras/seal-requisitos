@@ -34,7 +34,7 @@ a origem não traz, ela é **meta proposta** da equipe e vale até a SEALog conf
 | `RF-SL-05` | Cadastrar a loja e os números de WhatsApp autorizados a pedir em nome dela | Cadastros | RF-01, RF-02 | `HU-SL-005` | `RN-SL-003`, `RN-SL-014`, `RN-SL-054` |
 | `RF-SL-06` | Manter os dados comerciais da loja, usados em todo pedido novo, com histórico de alteração | Cadastros | RF-03, RF-04 | `HU-SL-006` | `RN-SL-015` |
 | `RF-SL-07` | Cadastrar a terceirizada, as regiões que atende, a forma de retorno e a credencial própria | Cadastros | — | `HU-SL-007` | `RN-SL-016`, `RN-SL-019`, `RN-SL-053` |
-| `RF-SL-08` | Manter a tabela de regiões, que liga cada bairro e cidade a uma terceirizada | Cadastros | — | `HU-SL-008` | `RN-SL-017`, `RN-SL-018` |
+| `RF-SL-08` | Manter a tabela de regiões, que liga cada bairro e cidade a uma terceirizada | Cadastros | — | `HU-SL-007` | `RN-SL-017`, `RN-SL-018` |
 
 ### 1.3 Despacho
 

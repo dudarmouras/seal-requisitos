@@ -108,8 +108,8 @@ aplicativo do motorista e a montagem de rotas, está nas alternativas descartada
 | **Contexto** | São duas terceirizadas, cada uma numa região (Encontro 1 [15:19]). Hoje o coordenador e os analistas distribuem de cabeça (Enunciado §2) |
 | **Decisão** | Uma tabela liga cada bairro e cidade a uma terceirizada. O pedido recebido vai sozinho para a terceirizada do bairro de entrega. Bairro fora da tabela fica "Aguardando região" e vai ao coordenador, que escolhe e pode incluir o bairro na tabela |
 | **Alternativas descartadas** | Roteamento por IA, do planejamento inicial da equipe: era pensado para distribuir entre motoristas próprios; com duas empresas por região, uma tabela resolve, sem custo nem dado sensível enviado a um modelo. Distribuição manual pelo coordenador: é o gargalo de hoje |
-| **Consequências** | O coordenador mantém a tabela (`HU-SL-008`). Uma terceira terceirizada entra só com cadastro e linhas na tabela (`RNF-SL-15`) |
-| **Referências** | `RN-SL-017`, `RN-SL-018`, `RN-SL-023`, `HU-SL-008`, `HU-SL-010` |
+| **Consequências** | O coordenador mantém a tabela (`HU-SL-007`). Uma terceira terceirizada entra só com cadastro e linhas na tabela (`RNF-SL-15`) |
+| **Referências** | `RN-SL-017`, `RN-SL-018`, `RN-SL-023`, `HU-SL-007`, `HU-SL-010` |
 
 ### DEC-SL-06 — Retorno pela API padrão, com portal e planilha traduzida
 

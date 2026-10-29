@@ -1,13 +1,15 @@
 # SEALog — Modelo de dados
 
-Modelo lógico proposto: quatorze entidades e os domínios fechados que elas usam. Não há banco
+Modelo lógico proposto: treze entidades e os domínios fechados que elas usam. A `ENT-SL-001` (Loja)
+foi retirada em 29/10/2026, porque a loja não tem cadastro (`DIV-SL-10`); o id não é reaproveitado. Não há banco
 legado — hoje os dados estão em planilhas e no WhatsApp —, e por isso as entidades saem das
 histórias e das telas, não de um DDL. Tipos são lógicos (texto, inteiro, data); o banco é
 relacional (`DEC-SL-12`).
 
 A entidade central é a **Entrega**: o registro único que falta hoje (Gargalos §8). Um pedido é uma
 entrega; tudo o mais — histórico, retornos da terceirizada, comprovante, chamados, avisos — pendura
-nela. A loja e a terceirizada são os dois cadastros que a cercam, ligados pela tabela de regiões.
+nela. A loja não tem cadastro: o nome dela vem no pedido, e o número de WhatsApp que pediu é confirmado
+pela equipe. O único cadastro que cerca a entrega é o da terceirizada, com as regiões que ela atende.
 
 ---
 
@@ -15,10 +17,9 @@ nela. A loja e a terceirizada são os dois cadastros que a cercam, ligados pela 
 
 | ID | Entidade | Natureza | Observação |
 |---|---|---|---|
-| `ENT-SL-001` | Loja | Cadastro | Cliente da SEALog; faz pedidos pelo WhatsApp |
-| `ENT-SL-002` | Número autorizado | Cadastro | Número de WhatsApp que pode pedir em nome de uma loja |
-| `ENT-SL-003` | Terceirizada | Cadastro | Empresa que coleta e entrega numa região |
-| `ENT-SL-004` | Região | Cadastro | Par bairro e cidade, com a terceirizada que o atende |
+| `ENT-SL-002` | Número de WhatsApp | Movimento | Número que fez pedido, com o nome da loja informado e a confirmação da equipe |
+| `ENT-SL-003` | Terceirizada | Cadastro | Empresa que coleta e entrega numa região, com as regiões que atende |
+| `ENT-SL-004` | Região | Cadastro | Par bairro e cidade, parte do cadastro da terceirizada que o atende |
 | `ENT-SL-005` | Entrega | Movimento | O pedido; uma por pedido |
 | `ENT-SL-006` | Evento da entrega | Histórico | Toda mudança de status e de dado, com autor e hora |
 | `ENT-SL-007` | Comprovante | Movimento | Foto, recebedor e entregador da entrega concluída |
@@ -32,30 +33,19 @@ nela. A loja e a terceirizada são os dois cadastros que a cercam, ligados pela 
 
 ## 2. Dicionário de dados
 
-### `ENT-SL-001` — Loja
+### `ENT-SL-002` — Número de WhatsApp
 
-| Atributo | Tipo | Obrig. | Descrição |
-|---|---|---|---|
-| `id` | inteiro | Sim | Identificador |
-| `nome` | texto (120) | Sim | Nome do estabelecimento |
-| `documento` | texto (14) | Sim | CNPJ ou CPF, só dígitos |
-| `endereco_coleta` | texto (250) | Sim | Onde a terceirizada coleta; vai no despacho (`RN-SL-024`) |
-| `bairro_coleta` / `cidade_coleta` | texto (80) | Sim | — |
-| `contato_nome` | texto (120) | Sim | Responsável pela conta |
-| `condicao_cobranca` | texto (200) | Não | Referência à tabela de preços (`Q-SL-08`) |
-| `ativa` | booleano | Sim | Loja inativa não faz pedido novo (`RN-SL-014`) |
-| `criado_em` / `atualizado_em` | data e hora | Sim | — |
-
-### `ENT-SL-002` — Número autorizado
+Não é um cadastro feito pela equipe: nasce no primeiro pedido de um número e vale a partir da
+confirmação (`RN-SL-014`).
 
 | Atributo | Tipo | Obrig. | Descrição |
 |---|---|---|---|
 | `id` | inteiro | Sim | — |
-| `loja_id` | inteiro | Sim | Liga a `ENT-SL-001` |
-| `telefone_whatsapp` | texto (13) | Sim | Com DDI e DDD, só dígitos; único entre lojas ativas |
-| `nome_pessoa` | texto (120) | Não | Quem usa o número na loja |
-| `ativo` | booleano | Sim | — |
-| `autorizado_por` / `autorizado_em` | inteiro / data e hora | Sim | Usuário da equipe |
+| `telefone_whatsapp` | texto (13) | Sim | Com DDI e DDD, só dígitos; único |
+| `nome_loja` | texto (120) | Sim | Nome da loja, como veio no primeiro pedido |
+| `situacao` | texto | Sim | A confirmar ou Confirmado |
+| `confirmado_por` / `confirmado_em` | inteiro / data e hora | Ao confirmar | Usuário da equipe |
+| `criado_em` | data e hora | Sim | Hora do primeiro pedido |
 
 ### `ENT-SL-003` — Terceirizada
 
@@ -70,7 +60,11 @@ nela. A loja e a terceirizada são os dois cadastros que a cercam, ligados pela 
 | `contato_nome` / `contato_telefone` | texto | Sim | Para o despacho e as alterações |
 | `ativa` | booleano | Sim | Terceirizada inativa não recebe despacho |
 
+As regiões que a terceirizada atende ficam no cadastro dela, na entidade abaixo.
+
 ### `ENT-SL-004` — Região
+
+Parte do cadastro da terceirizada (`HU-SL-007`); não tem tabela à parte para o coordenador.
 
 | Atributo | Tipo | Obrig. | Descrição |
 |---|---|---|---|
@@ -86,8 +80,10 @@ nela. A loja e a terceirizada são os dois cadastros que a cercam, ligados pela 
 |---|---|---|---|
 | `id` | inteiro | Sim | Identificador |
 | `codigo` | texto (12) | Sim | Código SEALog, gerado no registro; único; identifica o pacote (`RN-SL-027`) |
-| `loja_id` | inteiro | Sim | Liga a `ENT-SL-001` |
-| `numero_origem` | texto (13) | Não | Número autorizado que fez o pedido; vazio quando a equipe registrou |
+| `nome_loja` | texto (120) | Sim | Nome da loja, informado no pedido (`RN-SL-003`) |
+| `numero_origem` | texto (13) | Sim | Número de WhatsApp da loja: o de quem pediu, ou o que a equipe informou; liga a `ENT-SL-002` |
+| `endereco_coleta` | texto (250) | Para confirmar | Onde a terceirizada coleta; vai no despacho (`RN-SL-024`, `Q-SL-19`) |
+| `bairro_coleta` / `cidade_coleta` | texto (80) | Para confirmar | — |
 | `canal_origem` | texto | Sim | Domínio §3.2 |
 | `status` | texto | Sim | Domínio §3.1 |
 | `nome_destinatario` | texto (120) | Para confirmar | — |
@@ -97,7 +93,7 @@ nela. A loja e a terceirizada são os dois cadastros que a cercam, ligados pela 
 | `sem_numero` | booleano | Sim | Torna `ponto_referencia` obrigatório |
 | `complemento` | texto (80) | Para confirmar, salvo `sem_complemento` | Apartamento, bloco, sala |
 | `sem_complemento` | booleano | Sim | Marca de que o endereço não tem complemento |
-| `bairro` / `cidade` | texto (80) | Para confirmar | Definem a região (`RN-SL-023`) |
+| `bairro` / `cidade` | texto (80) | Para confirmar | Definem a terceirizada, pelas regiões (`RN-SL-023`) |
 | `ponto_referencia` | texto (150) | Com `sem_numero` | — |
 | `tamanho_volume` | texto | Para confirmar | Domínio §3.5 |
 | `qtd_volumes` | inteiro | Sim | 1 ou mais |
@@ -190,7 +186,7 @@ logística (`DIV-SL-04`).
 | `id` | inteiro | Sim | — |
 | `entrega_id` | inteiro | Não | Vazio no aviso em lote, que lista várias |
 | `destino` | texto | Sim | Loja ou Terceirizada |
-| `destino_id` | inteiro | Sim | — |
+| `destino_id` | inteiro | Sim | O número de WhatsApp (`ENT-SL-002`) ou a terceirizada |
 | `tipo` | texto | Sim | Domínio §3.9 |
 | `texto` | texto | Sim | Texto enviado |
 | `enviado_em` | data e hora | Sim | — |
@@ -203,7 +199,7 @@ logística (`DIV-SL-04`).
 |---|---|---|---|
 | `id` | inteiro | Sim | — |
 | `origem` | texto | Sim | Pedidos de loja ou Retorno de terceirizada |
-| `origem_id` | inteiro | Sim | A loja ou a terceirizada |
+| `origem_id` | inteiro | Em Retorno de terceirizada | A terceirizada; vazio na planilha de loja |
 | `arquivo_url` | texto | Sim | A planilha original, guardada |
 | `mapa_colunas` | texto | Sim | Que coluna da planilha virou que campo do padrão |
 | `linhas_total` / `linhas_aceitas` / `linhas_recusadas` | inteiro | Sim | — |
@@ -229,7 +225,7 @@ logística (`DIV-SL-04`).
 |---|---|---|---|
 | `id` | inteiro | Sim | — |
 | `tipo` | texto | Sim | Cobrança de loja ou Pagamento de terceirizada |
-| `loja_id` / `terceirizada_id` | inteiro | Um dos dois, conforme o tipo | — |
+| `nome_loja` / `terceirizada_id` | texto / inteiro | Um dos dois, conforme o tipo | A loja é a do nome informado nos pedidos (`Q-SL-21`) |
 | `periodo_inicio` / `periodo_fim` | data | Sim | — |
 | `situacao` | texto | Sim | Domínio §3.11 |
 | `total` | decimal (10,2) | Sim | Soma dos itens |
@@ -253,8 +249,9 @@ logística (`DIV-SL-04`).
 | Valor | Quando | Próximos |
 |---|---|---|
 | Pendente de dados | Registrada pela equipe sem algum dado obrigatório | Recebido, Cancelado |
-| Recebido | Todos os dados obrigatórios; código gerado e loja avisada | Despachado, Aguardando região, Cancelado |
-| Aguardando região | Bairro fora da tabela de regiões (`RN-SL-018`) | Despachado, Cancelado |
+| A confirmar | Pedido completo de um número novo; código gerado e loja avisada (`RN-SL-014`) | Recebido, Cancelado |
+| Recebido | Todos os dados obrigatórios e número confirmado; loja avisada | Despachado, Aguardando região, Cancelado |
+| Aguardando região | Bairro que nenhuma terceirizada atende (`RN-SL-018`) | Despachado, Cancelado |
 | Despachado | Enviado à terceirizada da região | Coletado, Cancelado |
 | Coletado | A terceirizada informou a coleta na loja | Em rota, Não entregue |
 | Em rota | A terceirizada informou a saída para entrega | Entregue, Não entregue |
@@ -263,7 +260,7 @@ logística (`DIV-SL-04`).
 | Em devolução | A terceirizada informou que devolveu ao galpão | No galpão |
 | No galpão | Chegada registrada pela equipe (`RN-SL-041`) | Despachado (nova tentativa), Devolvido à loja, Cancelado |
 | Devolvido à loja | Pacote devolvido | — (final) |
-| Cancelado | A pedido da loja | — (final) |
+| Cancelado | A pedido da loja, ou número não confirmado pela equipe | — (final) |
 
 O ciclo está desenhado em `FLX-SL-01`. "Status final" (`RN-SL-047`, `RN-SL-048`) é Entregue,
 Devolvido à loja ou Cancelado. A decisão de guardar o pacote mantém a entrega No galpão.
@@ -333,6 +330,7 @@ Pendente, Em atendimento, Concluído (`RN-SL-039`).
 
 | Valor | Destino | Quando |
 |---|---|---|
+| Pedido a confirmar | Loja | Pedido de número novo (`RN-SL-014`) |
 | Pedido recebido | Loja | Pedido confirmado |
 | Completar pedido | Loja | Pedido pendente de dados |
 | Pedido alterado | Loja | Edição ou cancelamento |
@@ -345,10 +343,10 @@ Pendente, Em atendimento, Concluído (`RN-SL-039`).
 ### 3.10 Perfil
 
 Atendente, Coordenador e Financeiro, da equipe da SEALog (`RN-SL-051`; `Q-SL-10`), e Terceirizada,
-do portal (`RN-SL-053`). A loja não tem perfil: entra pelo número autorizado (`RN-SL-054`).
+do portal (`RN-SL-053`). A loja não tem perfil, cadastro nem senha: faz o pedido pelo WhatsApp, e a equipe confirma o número no primeiro pedido (`RN-SL-014`).
 
 ### 3.11 Situação do fechamento
 
 Rascunho, Em conferência, Fechado (`RN-SL-049`).
 
-**Referências** — Enunciado §2, §8; Encontro 1; Plano do agente; `RN-SL-001` a `RN-SL-054`.
+**Referências** — Enunciado §2, §8; Encontro 1; Plano do agente; `RN-SL-001` a `RN-SL-053`.

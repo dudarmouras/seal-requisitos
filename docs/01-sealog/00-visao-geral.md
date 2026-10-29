@@ -76,7 +76,7 @@ A arquitetura proposta — baseada em APIs, com banco relacional único — est�
 | # | Módulo | Slug | Escopo | HUs | Telas |
 |---|---|---|---|---|---|
 | 1 | Entrada de pedidos | `entrada-pedidos` | Menu e formulário no WhatsApp, acompanhar, editar, e o pedido que chega fora do formulário | `HU-SL-001` a `HU-SL-004` | `TL-SL-002` a `TL-SL-004` |
-| 2 | Cadastros | `cadastros` | Lojas e números autorizados, dados comerciais, terceirizadas e tabela de regiões | `HU-SL-005` a `HU-SL-008` | `TL-SL-005` a `TL-SL-007` |
+| 2 | Cadastros | `cadastros` | Lojas e números autorizados, dados comerciais, terceirizadas e tabela de regiões | `HU-SL-005` a `HU-SL-007` | `TL-SL-005` a `TL-SL-007` |
 | 3 | Despacho | `despacho` | Lista única de entregas, distribuição pela região, envio à terceirizada e alterações | `HU-SL-009` a `HU-SL-012` | `TL-SL-008`, `TL-SL-009` |
 | 4 | Retorno da terceirizada | `retorno-terceirizada` | Status pela API, pelo portal ou por planilha, e o comprovante padrão | `HU-SL-013` a `HU-SL-016` | `TL-SL-010`, `TL-SL-011` |
 | 5 | Ocorrências e devoluções | `ocorrencias` | Relato pelo WhatsApp com o agente, chamados, devolução no galpão, avisos à loja e afetados por loja | `HU-SL-017` a `HU-SL-021` | `TL-SL-012` a `TL-SL-015` |
