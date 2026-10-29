@@ -701,8 +701,8 @@ function main() {
   for (const hu of hus) citar(hu.docId, hu.screensRefs.join(" "));
   for (const ep of endpoints) citar(`${ep.method} ${ep.route}`, ep.hus.join(" "));
 
-  // Chave repetida passa no JSON e só estoura na carga, com o banco a meio caminho.
-  // Falha aqui, com a mesma chave das tabelas de supabase/schema.sql.
+  // Chave repetida quebraria o índice do app (huById, screenById etc.) em silêncio.
+  // Falha aqui.
   const repetidas = [
     ["endpoints", endpoints, (e) => `${e.system} ${e.method} ${e.key}`],
     ["contracts", contracts, (c) => `${c.system} ${c.int ?? ""} ${c.name}`],
@@ -715,7 +715,7 @@ function main() {
     return lista.map(chave).filter((k) => vistas.has(k) || !vistas.add(k)).map((k) => `${tabela}: ${k}`);
   });
   if (repetidas.length) {
-    throw new Error(`chave repetida — a carga no banco falharia:\n  - ${repetidas.join("\n  - ")}`);
+    throw new Error(`chave repetida — o app indexaria só a última:\n  - ${repetidas.join("\n  - ")}`);
   }
 
   const data = { systems, modules, hus, boards, screens, integrations, documents, artifacts, endpoints, contracts };

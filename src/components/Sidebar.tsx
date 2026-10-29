@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, NavLink, useLocation, useMatch } from "react-router-dom";
 import { porExtenso, useData } from "../lib/data";
-import { useAuth } from "../lib/auth";
 import { PAGINAS_PRODUTO } from "../lib/produto";
 
 const maiuscula = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
@@ -11,7 +10,6 @@ const moduleKey = (system: string, module: string) => `${system}:${module}`;
 
 export default function Sidebar({ onOpenSearch }: { onOpenSearch: () => void }) {
   const { systems, modules, hus, huById } = useData();
-  const { usuario, sair } = useAuth();
   const location = useLocation();
   const huMatch = useMatch("/hu/:huId");
   const systemMatch = useMatch("/sistema/:systemId/*");
@@ -165,13 +163,6 @@ export default function Sidebar({ onOpenSearch }: { onOpenSearch: () => void }) 
           );
         })}
       </nav>
-
-      <div className="sidebar-foot">
-        <span title={usuario ?? undefined}>{usuario}</span>
-        <button type="button" className="btn-ghost" onClick={sair}>
-          Sair
-        </button>
-      </div>
     </aside>
   );
 }

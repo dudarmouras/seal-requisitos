@@ -8,14 +8,12 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "data:gerar": "node scripts/gerar-requisitos-json.mjs",
-    "data:carregar": "node scripts/carregar-banco.mjs",
-    "data:sync": "npm run data:gerar && npm run data:carregar",
+    "data:sync": "npm run data:gerar && npm run data:conferir",
     "data:placar": "node scripts/medir-placar.mjs",
     "data:conferir": "node scripts/conferir-md-vs-json.mjs"
   },
   "dependencies": {
     "@react-pdf/renderer": "^4.9.0",
-    "@supabase/supabase-js": "^2.47.10",
     "@xyflow/react": "^12.11.2",
     "mermaid": "^11.4.1",
     "react": "^18.3.1",
@@ -26,7 +24,6 @@
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
     "@vitejs/plugin-react": "^4.3.4",
-    "pg": "^8.13.1",
     "typescript": "^5.7.2",
     "vite": "^6.0.7"
   }

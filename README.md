@@ -67,10 +67,8 @@ fontes/                        inventário dos documentos de origem
 src/                           aplicativo de requisitos (Vite + React + TypeScript)
 scripts/
 ├── gerar-requisitos-json.mjs  docs/ → data/requisitos.json
-├── carregar-banco.mjs         data/requisitos.json → Postgres
 ├── conferir-md-vs-json.mjs    a página mostra tudo o que o Markdown declara
 └── medir-placar.mjs           placar de estrutura e medição de jargão
-supabase/schema.sql            schema app_requisitos_seal (dez tabelas + RLS)
 ```
 
 Cada pasta de sistema contém os mesmos dez documentos:
@@ -125,16 +123,16 @@ com descrição, regras e critérios, ligada aos fluxogramas e às telas em que 
 em PDF.
 
 ```
-docs/*.md  →  data/requisitos.json  →  Postgres (Supabase)  →  app (React)
-   ↑ fonte      npm run data:gerar      npm run data:carregar
+docs/*.md  →  data/requisitos.json  →  app (React, estático)
+   ↑ fonte      npm run data:gerar
      da verdade
 ```
 
 ```bash
 npm install
-npm run data:gerar                 # docs/ → data/requisitos.json
-VITE_LOCAL_DATA=1 npm run dev      # modo local: lê o JSON
+npm run data:sync      # docs/ → data/requisitos.json, e confere Markdown × JSON
+npm run dev
 ```
 
-Sem a chave do Supabase em `.env.local` (modelo em [`.env.example`](.env.example)), o app cai no
-modo local sozinho. Detalhes de arquitetura e convenções do app: [`CLAUDE.md`](CLAUDE.md).
+Não há banco nem login: o app é um site estático que lê o JSON. Detalhes de arquitetura e
+convenções do app: [`CLAUDE.md`](CLAUDE.md).

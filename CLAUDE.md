@@ -26,17 +26,18 @@ O enunciado completo do desafio ainda não chegou (`Q-GERAL-01`). Quando chegar,
 ## A cadeia de dados
 
 ```
-docs/*.md  →  data/requisitos.json  →  Postgres (Supabase)  →  app (React)
-   ↑ fonte      scripts/gerar-        scripts/carregar-        src/lib/data.tsx
-     da         requisitos-json.mjs   banco.mjs
+docs/*.md  →  data/requisitos.json  →  app (React, estático)
+   ↑ fonte      scripts/gerar-          src/lib/data.tsx
+     da         requisitos-json.mjs
      verdade
 ```
 
-**O Markdown em `docs/` é sempre a fonte da verdade.** O JSON é derivado dele; o banco é uma
-projeção do JSON. Nunca edite `data/requisitos.json` nem o banco à mão.
+**O Markdown em `docs/` é sempre a fonte da verdade.** O JSON é derivado dele e entra no bundle
+do app. Nunca edite `data/requisitos.json` à mão. **Não há banco nem login** (decisão de
+29/10/2026): o app é um site estático que lê o JSON.
 
-Depois de mexer em `docs/`, rode `npm run data:gerar` e `npm run data:conferir`; `npm run
-data:sync` também recarrega o banco (trunca e reescreve as tabelas numa transação).
+Depois de mexer em `docs/`, rode `npm run data:sync` (gera o JSON e confere Markdown × JSON) e
+commite o `data/requisitos.json` junto com o Markdown.
 
 **O app leva o Markdown inteiro.** HU, fluxograma e tela são lidos campo a campo; os arquivos de
 cada sistema e da visão geral também entram **integrais** na leitura integral
@@ -49,12 +50,10 @@ que define cada um (`/id/<id>`). A leitura integral está em
 
 | Ação | Comando |
 |---|---|
-| Desenvolvimento (modo local, lendo o JSON) | `VITE_LOCAL_DATA=1 npm run dev` |
-| Desenvolvimento contra o banco | `npm run dev` |
+| Desenvolvimento | `npm run dev` |
 | Build | `npm run build` |
 | `docs/` → `data/requisitos.json` | `npm run data:gerar` |
-| `data/requisitos.json` → banco | `npm run data:carregar` |
-| Os dois acima em sequência | `npm run data:sync` |
+| Gerar e conferir em sequência | `npm run data:sync` |
 | Placar de estrutura + medição de jargão | `npm run data:placar` |
 | Conferir que a página mostra tudo o que o Markdown declara | `npm run data:conferir` |
 
@@ -75,27 +74,6 @@ decisões (`/decisoes`, `DEC-SL-*`), requisitos funcionais e não funcionais (`/
 `RF-SL-*`, `RNF-SL-*`), backlog e priorização (`/backlog`, `BL-SL-*`), arquitetura
 (`/arquitetura`), infraestrutura e custos (`/infraestrutura`), adoção gradual (`/adocao`) e
 escalabilidade (`/escalabilidade`).
-
-## Banco
-
-- Schema **`app_requisitos_seal`**, definido em [`supabase/schema.sql`](supabase/schema.sql)
-  (reexecutável). Ainda não há projeto Supabase do SEAL: sem a chave, o app roda em modo local.
-- Dez tabelas: `systems`, `modules`, `hus`, `boards`, `screens`, `integrations`, `documents`,
-  `artifacts`, `endpoints` e `contracts`. O PostgREST devolve no máximo mil linhas por resposta; o
-  app pagina (`selectAll` em `src/lib/data.tsx`).
-- **RLS:** leitura liberada ao role `anon`. O app tem só uma **tela de login de conta única**
-  ([`src/lib/auth.tsx`](src/lib/auth.tsx)), que barra a interface no navegador mas não a API.
-  Escrita só por `service_role` / conexão direta.
-- Para a API REST enxergar o schema, ele precisa estar exposto (`pgrst.db_schemas` no
-  `schema.sql`, e Project Settings → Data API → **Exposed schemas**). `PGRST106` é schema não
-  exposto; `PGRST205` é schema cache velho (`notify pgrst, 'reload schema'`).
-
-## Configuração
-
-`.env.local` (nunca versionado; modelo em `.env.example`): `DATABASE_URL` para os scripts de carga;
-`VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY` para o app. Sem `VITE_SUPABASE_ANON_KEY` o app entra
-em **modo local** automaticamente e lê `data/requisitos.json` — o mesmo que `VITE_LOCAL_DATA=1`
-força. A conta única de acesso está em `src/lib/auth.tsx`.
 
 ## Convenções do app
 
@@ -147,4 +125,4 @@ A página do sistema tem **Baixar requisitos** e **Baixar fluxogramas**, gerados
 ## Git
 
 - Branch padrão: `main`. Remote: `origin` (`github.com/dudarmouras/sial-requisitos`).
-- Antes de commitar, confira que `.env.local` continua fora do versionado.
+- Commitar é liberado neste repositório.

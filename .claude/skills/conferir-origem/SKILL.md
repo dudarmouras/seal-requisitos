@@ -103,7 +103,7 @@ node scripts/medir-placar.mjs --sistema=sl --detalhe
 - **Id nunca é renumerado.** Acréscimo vai no fim da faixa.
 - **Índice e total de `02-regras-de-negocio.md`** acompanham qualquer `RN-*` acrescentada.
 - **Fluxograma é bloco ` ```board `**, com coordenada em coluna e linha (`c`/`r`), não pixel.
-- **`data/requisitos.json` e o banco nunca são editados à mão.**
+- **`data/requisitos.json` nunca é editado à mão.**
 - **A página da HU tem a estrutura da SIAL e nada além:** não mostra Atores, Origem legada nem
   Referências, que continuam no Markdown.
 - Sem emoji, sem linguagem de marketing, número e limite sempre explícitos.
@@ -122,8 +122,8 @@ npm run build                                         # só se tocou em src/
 - Jargão a zero.
 - A tabela de cobertura lista todas as seções da fonte.
 
-**Não rode `npm run data:carregar` nem `data:sync`** por conta própria: eles truncam e reescrevem
-o banco. A recarga é decisão do usuário.
+Rode `npm run data:sync` no fim (gera e confere) e deixe o `data/requisitos.json` regenerado junto
+com o Markdown.
 
 ## 7. Entregar pendente
 
