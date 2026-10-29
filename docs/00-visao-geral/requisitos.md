@@ -142,6 +142,6 @@ a origem não traz, ela é **meta proposta** da equipe e vale até a SEALog conf
 
 | ID | Requisito | Categoria | Meta | Como verificar | Origem |
 |---|---|---|---|---|---|
-| `RNF-SL-18` | O custo cabe numa empresa pequena em expansão | Custo | Custo mensal dos serviços de mensagem, automação e IA entre R$ 360 e R$ 820 no patamar inicial, mais servidor e banco; revisão mensal contra o volume | Fatura mensal dividida pelas entregas do mês | Encontro 1 [29:03], [30:33]; Plano do agente; ver `infraestrutura-e-custos` |
+| `RNF-SL-18` | O custo cabe numa empresa pequena em expansão | Custo | Custo mensal dos serviços de mensagem, automação e IA entre R$ 360 e R$ 820 no patamar inicial, mais R$ 315 a R$ 450 de servidor, banco e painel (total de R$ 675 a R$ 1.270, cerca de R$ 0,06 a R$ 0,12 por entrega); revisão mensal contra o volume | Fatura mensal dividida pelas entregas do mês | Encontro 1 [29:03], [30:33]; Plano do agente; ver `infraestrutura-e-custos` |
 | `RNF-SL-19` | Uma equipe pequena consegue manter | Manutenibilidade | Um back end só, por APIs, servindo WhatsApp, painel, portal e agente; publicação automática | Revisão da arquitetura | Planejamento da equipe (arquitetura baseada em APIs); meta proposta |
 | `RNF-SL-20` | Falhas aparecem antes de a loja reclamar | Observabilidade | Aviso que falhou e entrega sem retorno vão para o painel; erros das integrações registrados | Conferência do painel durante o piloto | `RN-SL-034`, `RN-SL-045` |

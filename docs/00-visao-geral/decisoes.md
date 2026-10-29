@@ -38,6 +38,7 @@ aplicativo do motorista e a montagem de rotas, está nas alternativas descartada
 | `DEC-SL-13` | Painel interno web responsivo, que abre no celular e no computador | Arquitetura | Proposta |
 | `DEC-SL-14` | Agente de ocorrências em n8n, com GPT-4o | Infraestrutura | Proposta |
 | `DEC-SL-15` | WhatsApp pela plataforma oficial da Meta | Infraestrutura | Proposta |
+| `DEC-SL-21` | Back end em Python com FastAPI, banco no Supabase e painel em React | Infraestrutura | Tomada |
 | `DEC-SL-16` | Adoção gradual, uma terceirizada e poucas lojas por vez | Adoção | Tomada |
 | `DEC-SL-17` | Escalar por gatilho medido, não por antecipação | Escalabilidade | Tomada |
 
@@ -282,6 +283,19 @@ aplicativo do motorista e a montagem de rotas, está nas alternativas descartada
 | **Alternativas descartadas** | Automação não oficial do WhatsApp: risco de bloqueio do número. SMS ou e-mail: a loja não está lá |
 | **Consequências** | Custo por mensagem iniciada pela empresa; a resposta dentro da janela de atendimento aberta pela loja não é cobrada, a conferir na tabela vigente. Se a SEALog já tem conta comercial e quem paga está em `Q-SL-12` |
 | **Referências** | `INT-001`, `RN-SL-043`, `DIV-SL-05`, `Q-SL-12` |
+
+### DEC-SL-21 — Back end em Python com FastAPI, banco no Supabase e painel em React
+
+| | |
+|---|---|
+| **Status** | Tomada |
+| **Data** | 29/10/2026 |
+| **Tema** | Infraestrutura |
+| **Contexto** | `DEC-SL-19` deixou a stack em aberto. O retorno da terceirizada chega também em planilha no formato modelo (`DEC-SL-06`), e o mesmo back end recebe o webhook do WhatsApp (`DEC-SL-15`). A SEALog pediu custo controlado (Encontro 1 [29:03]) |
+| **Decisão** | O back end é um serviço em Python com FastAPI, que expõe as APIs de `DEC-SL-12`, recebe o WhatsApp e lê a planilha modelo. O banco PostgreSQL e os arquivos (fotos e planilhas) ficam no Supabase. O painel e o portal são uma aplicação React, ou Next.js, que chama só o FastAPI |
+| **Alternativas descartadas** | Outra linguagem no back end: a vantagem do Python é a leitura de planilhas. Painel falando direto com o banco: a permissão deixaria de valer no servidor (`RNF-SL-11`). Servidor próprio com o banco instalado: backup e manutenção ficariam com a equipe, desproporcional a uma empresa pequena |
+| **Consequências** | Onde cada parte roda e quanto custa está em `infraestrutura-e-custos`. A chave de serviço do Supabase fica só no back end. Trocar a stack muda esta decisão e as páginas de arquitetura e custos, e nenhum requisito (`DEC-SL-19`) |
+| **Referências** | `DEC-SL-12`, `DEC-SL-13`, `DEC-SL-19`, `RNF-SL-11`, `RNF-SL-19` |
 
 ## Decisões de adoção e escala
 

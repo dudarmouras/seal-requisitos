@@ -22,7 +22,7 @@ Escalar aqui tem três sentidos:
 | **Banco** | Uma instância, a menor que atende | Instância maior e cópia só de leitura para buscas, afetados e exportações | Dados separados por galpão; histórico antigo arquivado |
 | **Fotos** | Armazenamento padrão | Fotos antigas movidas para armazenamento mais barato | Regra de guarda aplicada sozinha, pelo prazo combinado (`Q-SL-16`) |
 | **Agente** | Plano de entrada do n8n | Plano maior, pelo número de execuções | Mesmo agente; o protocolo ganha regras por região |
-| **Custo de referência** | R$ 360 a R$ 820 por mês em serviços, mais servidor e banco | Cresce sobretudo no WhatsApp | Idem |
+| **Custo de referência** | R$ 360 a R$ 820 por mês em serviços, mais R$ 315 a R$ 450 de servidor, banco e painel | Cresce sobretudo no WhatsApp | Idem |
 
 O preço de cada item está em [`infraestrutura-e-custos.md`](infraestrutura-e-custos.md). A
 passagem de um patamar ao outro não exige reescrever o sistema: os módulos são separados por dentro

@@ -8169,7 +8169,7 @@
       "system": "geral",
       "file": "arquitetura",
       "title": "SEALog — Arquitetura do sistema",
-      "intro": "A arquitetura proposta para o SEALog depois da terceirização. Responde a três perguntas: quais são\nas partes, como conversam, e por que esta forma e não outra. Os requisitos não dependem dela\n(`DEC-SL-19`); a escolha final de servidor e de banco gerenciado está **a confirmar pela equipe**\nde back end e infraestrutura.\n\n---",
+      "intro": "A arquitetura proposta para o SEALog depois da terceirização. Responde a três perguntas: quais são\nas partes, como conversam, e por que esta forma e não outra. Os requisitos não dependem dela\n(`DEC-SL-19`); a stack do back end e do banco foi escolhida em `DEC-SL-21`, e onde cada parte\nroda está em [`infraestrutura-e-custos.md`](infraestrutura-e-custos.md).\n\n---",
       "sections": [
         {
           "anchor": "1-principios",
@@ -8282,10 +8282,11 @@
           "anchor": "6-stack-proposta",
           "level": 2,
           "title": "6. Stack proposta",
-          "body": "| Camada | Proposta | Por quê | Situação |\n|---|---|---|---|\n| Canal da loja | Plataforma oficial do WhatsApp da Meta, com formulários do WhatsApp | A loja já está lá; a via oficial não arrisca o número (`DEC-SL-15`) | Proposta |\n| Back end | Serviço único, organizado pelos sete módulos, expondo APIs REST e atualização em tempo real por websocket | Arquitetura baseada em APIs, decidida pela equipe (`DEC-SL-12`) | Linguagem e servidor a confirmar pela equipe |\n| Banco | PostgreSQL | O dado é relacional e o histórico precisa de integridade | Onde hospedar a confirmar pela equipe |\n| Arquivos | Armazenamento de objetos para fotos e planilhas | A foto é o dado que mais cresce | A confirmar pela equipe |\n| Painel e portal | Aplicação web responsiva, um código para os dois | Abre no celular e no computador sem instalar nada (`DEC-SL-13`) | Proposta |\n| Agente de ocorrências | n8n Cloud com o nó de agente de IA e o modelo GPT-4o | Orquestração pronta para WhatsApp e HTTP; modelo com bom raciocínio sobre regras (`DEC-SL-14`) | Proposta |\n\nA infraestrutura e os custos estão em [`infraestrutura-e-custos.md`](infraestrutura-e-custos.md);\ncomo ela cresce, em [`escalabilidade.md`](escalabilidade.md).",
+          "body": "| Camada | Proposta | Por quê | Situação |\n|---|---|---|---|\n| Canal da loja | Plataforma oficial do WhatsApp da Meta, com formulários do WhatsApp | A loja já está lá; a via oficial não arrisca o número (`DEC-SL-15`) | Proposta |\n| Back end | Serviço único em Python com FastAPI, organizado pelos sete módulos, expondo APIs REST e atualização em tempo real por websocket | Arquitetura baseada em APIs (`DEC-SL-12`); o Python lê a planilha modelo da terceirizada | Decidida (`DEC-SL-21`); servidor em `infraestrutura-e-custos` |\n| Banco | PostgreSQL gerenciado no Supabase | O dado é relacional e o histórico precisa de integridade | Decidido (`DEC-SL-21`); região a confirmar |\n| Arquivos | Armazenamento de arquivos do Supabase, para fotos e planilhas | A foto é o dado que mais cresce; fica na mesma conta do banco | Decidido (`DEC-SL-21`); cópia das fotos a confirmar |\n| Painel e portal | Aplicação web responsiva em React (ou Next.js), um código para os dois, que chama só o back end | Abre no celular e no computador sem instalar nada (`DEC-SL-13`) | Proposta; hospedagem em `infraestrutura-e-custos` |\n| Agente de ocorrências | n8n Cloud com o nó de agente de IA e o modelo GPT-4o | Orquestração pronta para WhatsApp e HTTP; modelo com bom raciocínio sobre regras (`DEC-SL-14`) | Proposta |\n\nA infraestrutura e os custos estão em [`infraestrutura-e-custos.md`](infraestrutura-e-custos.md);\ncomo ela cresce, em [`escalabilidade.md`](escalabilidade.md).",
           "ids": [
             "DEC-SL-15",
             "DEC-SL-12",
+            "DEC-SL-21",
             "DEC-SL-13",
             "DEC-SL-14"
           ]
@@ -8498,7 +8499,7 @@
           "anchor": "indice",
           "level": 2,
           "title": "Índice",
-          "body": "| ID | Decisão | Tema | Status |\n|---|---|---|---|\n| `DEC-SL-01` | Um registro único por entrega, fonte da verdade da operação | Produto | Tomada |\n| `DEC-SL-02` | A loja continua no WhatsApp, com menu de três opções e formulário obrigatório | Produto | Tomada |\n| `DEC-SL-03` | A loja não tem senha: é identificada pelo número autorizado | Produto | Tomada |\n| `DEC-SL-04` | A entrega é das terceirizadas; o SEALog não constrói nada para o motorista | Produto | Tomada |\n| `DEC-SL-05` | Distribuição por regra fixa de região | Produto | Tomada |\n| `DEC-SL-06` | Retorno pela API padrão, com portal e planilha traduzida | Produto | Tomada |\n| `DEC-SL-07` | Um padrão único de comprovante para toda terceirizada | Produto | Tomada |\n| `DEC-SL-08` | O pacote é identificado só pelo código SEALog, sem etiqueta | Produto | Tomada |\n| `DEC-SL-09` | O não entregue volta ao galpão, e uma pessoa decide entre quatro destinos | Produto | Tomada |\n| `DEC-SL-10` | A IA é um agente de ocorrências que sugere; a decisão é humana | Produto | Tomada |\n| `DEC-SL-11` | Avisos pelo WhatsApp, não por e-mail | Produto | Tomada |\n| `DEC-SL-18` | Política de tentativas, guarda no galpão, preço e pagamento | Produto | Em aberto |\n| `DEC-SL-19` | Requisitos independentes de stack; arquitetura isolada como proposta | Método | Tomada |\n| `DEC-SL-20` | Priorização em MoSCoW, com releases guiadas pelos casos do enunciado | Método | Tomada |\n| `DEC-SL-12` | Arquitetura baseada em APIs, sobre um banco relacional único | Arquitetura | Tomada |\n| `DEC-SL-13` | Painel interno web responsivo, que abre no celular e no computador | Arquitetura | Proposta |\n| `DEC-SL-14` | Agente de ocorrências em n8n, com GPT-4o | Infraestrutura | Proposta |\n| `DEC-SL-15` | WhatsApp pela plataforma oficial da Meta | Infraestrutura | Proposta |\n| `DEC-SL-16` | Adoção gradual, uma terceirizada e poucas lojas por vez | Adoção | Tomada |\n| `DEC-SL-17` | Escalar por gatilho medido, não por antecipação | Escalabilidade | Tomada |\n\n---",
+          "body": "| ID | Decisão | Tema | Status |\n|---|---|---|---|\n| `DEC-SL-01` | Um registro único por entrega, fonte da verdade da operação | Produto | Tomada |\n| `DEC-SL-02` | A loja continua no WhatsApp, com menu de três opções e formulário obrigatório | Produto | Tomada |\n| `DEC-SL-03` | A loja não tem senha: é identificada pelo número autorizado | Produto | Tomada |\n| `DEC-SL-04` | A entrega é das terceirizadas; o SEALog não constrói nada para o motorista | Produto | Tomada |\n| `DEC-SL-05` | Distribuição por regra fixa de região | Produto | Tomada |\n| `DEC-SL-06` | Retorno pela API padrão, com portal e planilha traduzida | Produto | Tomada |\n| `DEC-SL-07` | Um padrão único de comprovante para toda terceirizada | Produto | Tomada |\n| `DEC-SL-08` | O pacote é identificado só pelo código SEALog, sem etiqueta | Produto | Tomada |\n| `DEC-SL-09` | O não entregue volta ao galpão, e uma pessoa decide entre quatro destinos | Produto | Tomada |\n| `DEC-SL-10` | A IA é um agente de ocorrências que sugere; a decisão é humana | Produto | Tomada |\n| `DEC-SL-11` | Avisos pelo WhatsApp, não por e-mail | Produto | Tomada |\n| `DEC-SL-18` | Política de tentativas, guarda no galpão, preço e pagamento | Produto | Em aberto |\n| `DEC-SL-19` | Requisitos independentes de stack; arquitetura isolada como proposta | Método | Tomada |\n| `DEC-SL-20` | Priorização em MoSCoW, com releases guiadas pelos casos do enunciado | Método | Tomada |\n| `DEC-SL-12` | Arquitetura baseada em APIs, sobre um banco relacional único | Arquitetura | Tomada |\n| `DEC-SL-13` | Painel interno web responsivo, que abre no celular e no computador | Arquitetura | Proposta |\n| `DEC-SL-14` | Agente de ocorrências em n8n, com GPT-4o | Infraestrutura | Proposta |\n| `DEC-SL-15` | WhatsApp pela plataforma oficial da Meta | Infraestrutura | Proposta |\n| `DEC-SL-21` | Back end em Python com FastAPI, banco no Supabase e painel em React | Infraestrutura | Tomada |\n| `DEC-SL-16` | Adoção gradual, uma terceirizada e poucas lojas por vez | Adoção | Tomada |\n| `DEC-SL-17` | Escalar por gatilho medido, não por antecipação | Escalabilidade | Tomada |\n\n---",
           "ids": [
             "DEC-SL-01",
             "DEC-SL-02",
@@ -8518,6 +8519,7 @@
             "DEC-SL-13",
             "DEC-SL-14",
             "DEC-SL-15",
+            "DEC-SL-21",
             "DEC-SL-16",
             "DEC-SL-17"
           ]
@@ -8801,6 +8803,22 @@
           ]
         },
         {
+          "anchor": "DEC-SL-21",
+          "level": 3,
+          "title": "DEC-SL-21 — Back end em Python com FastAPI, banco no Supabase e painel em React",
+          "body": "| | |\n|---|---|\n| **Status** | Tomada |\n| **Data** | 29/10/2026 |\n| **Tema** | Infraestrutura |\n| **Contexto** | `DEC-SL-19` deixou a stack em aberto. O retorno da terceirizada chega também em planilha no formato modelo (`DEC-SL-06`), e o mesmo back end recebe o webhook do WhatsApp (`DEC-SL-15`). A SEALog pediu custo controlado (Encontro 1 [29:03]) |\n| **Decisão** | O back end é um serviço em Python com FastAPI, que expõe as APIs de `DEC-SL-12`, recebe o WhatsApp e lê a planilha modelo. O banco PostgreSQL e os arquivos (fotos e planilhas) ficam no Supabase. O painel e o portal são uma aplicação React, ou Next.js, que chama só o FastAPI |\n| **Alternativas descartadas** | Outra linguagem no back end: a vantagem do Python é a leitura de planilhas. Painel falando direto com o banco: a permissão deixaria de valer no servidor (`RNF-SL-11`). Servidor próprio com o banco instalado: backup e manutenção ficariam com a equipe, desproporcional a uma empresa pequena |\n| **Consequências** | Onde cada parte roda e quanto custa está em `infraestrutura-e-custos`. A chave de serviço do Supabase fica só no back end. Trocar a stack muda esta decisão e as páginas de arquitetura e custos, e nenhum requisito (`DEC-SL-19`) |\n| **Referências** | `DEC-SL-12`, `DEC-SL-13`, `DEC-SL-19`, `RNF-SL-11`, `RNF-SL-19` |",
+          "ids": [
+            "DEC-SL-21",
+            "DEC-SL-19",
+            "DEC-SL-06",
+            "DEC-SL-15",
+            "DEC-SL-12",
+            "RNF-SL-11",
+            "DEC-SL-13",
+            "RNF-SL-19"
+          ]
+        },
+        {
           "anchor": "decisoes-de-adocao-e-escala",
           "level": 2,
           "title": "Decisões de adoção e escala",
@@ -8913,7 +8931,7 @@
           "anchor": "1-patamares",
           "level": 2,
           "title": "1. Patamares",
-          "body": "| | Patamar 1 | Patamar 2 | Patamar 3 |\n|---|---|---|---|\n| **Operação** | Até cerca de 400 entregas por dia e duas terceirizadas — a meta do mês que vem | Até alguns milhares de entregas por dia, com mais terceirizadas e regiões | Mais de uma cidade ou de um galpão |\n| **Back end** | Um serviço, com os sete módulos por dentro | O mesmo, com as tarefas em segundo plano num processo próprio | Integração das terceirizadas e envio de avisos separados em serviços próprios |\n| **Banco** | Uma instância, a menor que atende | Instância maior e cópia só de leitura para buscas, afetados e exportações | Dados separados por galpão; histórico antigo arquivado |\n| **Fotos** | Armazenamento padrão | Fotos antigas movidas para armazenamento mais barato | Regra de guarda aplicada sozinha, pelo prazo combinado (`Q-SL-16`) |\n| **Agente** | Plano de entrada do n8n | Plano maior, pelo número de execuções | Mesmo agente; o protocolo ganha regras por região |\n| **Custo de referência** | R$ 360 a R$ 820 por mês em serviços, mais servidor e banco | Cresce sobretudo no WhatsApp | Idem |\n\nO preço de cada item está em [`infraestrutura-e-custos.md`](infraestrutura-e-custos.md). A\npassagem de um patamar ao outro não exige reescrever o sistema: os módulos são separados por dentro\ndesde o começo (`DEC-SL-12`), e é por essas costuras que ele se divide.",
+          "body": "| | Patamar 1 | Patamar 2 | Patamar 3 |\n|---|---|---|---|\n| **Operação** | Até cerca de 400 entregas por dia e duas terceirizadas — a meta do mês que vem | Até alguns milhares de entregas por dia, com mais terceirizadas e regiões | Mais de uma cidade ou de um galpão |\n| **Back end** | Um serviço, com os sete módulos por dentro | O mesmo, com as tarefas em segundo plano num processo próprio | Integração das terceirizadas e envio de avisos separados em serviços próprios |\n| **Banco** | Uma instância, a menor que atende | Instância maior e cópia só de leitura para buscas, afetados e exportações | Dados separados por galpão; histórico antigo arquivado |\n| **Fotos** | Armazenamento padrão | Fotos antigas movidas para armazenamento mais barato | Regra de guarda aplicada sozinha, pelo prazo combinado (`Q-SL-16`) |\n| **Agente** | Plano de entrada do n8n | Plano maior, pelo número de execuções | Mesmo agente; o protocolo ganha regras por região |\n| **Custo de referência** | R$ 360 a R$ 820 por mês em serviços, mais R$ 315 a R$ 450 de servidor, banco e painel | Cresce sobretudo no WhatsApp | Idem |\n\nO preço de cada item está em [`infraestrutura-e-custos.md`](infraestrutura-e-custos.md). A\npassagem de um patamar ao outro não exige reescrever o sistema: os módulos são separados por dentro\ndesde o começo (`DEC-SL-12`), e é por essas costuras que ele se divide.",
           "ids": [
             "Q-SL-16",
             "DEC-SL-12"
@@ -9004,13 +9022,33 @@
       "system": "geral",
       "file": "infraestrutura-e-custos",
       "title": "SEALog — Infraestrutura e custos",
-      "intro": "Quanto custa rodar o SEALog na arquitetura proposta em [`arquitetura.md`](arquitetura.md). A SEALog\né uma empresa pequena em expansão, não deu um número de orçamento e pediu custo controlado\n(Encontro 1 [29:03]); foi o custo da frota própria que a levou a terceirizar (Encontro 1 [30:33]).\n\n> **Sobre os valores.** As faixas vêm do plano do agente de ocorrências (29/10/2026), em reais, com\n> a cotação do dia. Fornecedores mudam preço com frequência: **confira antes de contratar.** Não há\n> estimativa de servidor e banco: a escolha é da equipe de infraestrutura.\n\n---",
+      "intro": "Quanto custa rodar o SEALog na arquitetura proposta em [`arquitetura.md`](arquitetura.md), com a\nstack escolhida em `DEC-SL-21`. A SEALog é uma empresa pequena em expansão, não deu um número de\norçamento e pediu custo controlado (Encontro 1 [29:03]); foi o custo da frota própria que a levou a\nterceirizar (Encontro 1 [30:33]). A meta do mês que vem é de cerca de 400 entregas por dia\n(Encontro 1 [23:40]): numa operação de segunda a sábado, são perto de **10.400 entregas por mês**,\no número usado aqui para o custo por entrega.\n\n> **Sobre os valores.** As faixas de WhatsApp, automação e modelo de linguagem vêm do plano do agente\n> de ocorrências (29/10/2026). As de servidor, banco, arquivos e painel foram levantadas em\n> 29/10/2026 nos planos de entrada de cada fornecedor, em dólar, e convertidas a **R$ 5,50 por\n> dólar**: uma margem sobre os R$ 5,22 da última cotação que conferimos (28/09/2026). Fornecedores\n> mudam preço e o dólar oscila: **confira antes de contratar.** Imposto sobre compra em dólar não\n> está incluído.\n\n---",
       "sections": [
         {
-          "anchor": "1-custos",
+          "anchor": "1-a-stack-e-onde-cada-parte-roda",
           "level": 2,
-          "title": "1. Custos",
-          "body": "Sem o agente de consulta de status, que ficou fora por enquanto (`DEC-SL-10`).\n\n| Item | Fornecedor e plano | O que inclui | Custo estimado | Quando muda |\n|---|---|---|---|---|\n| WhatsApp | Plataforma oficial da Meta | Menu, formulário, acompanhamento, avisos e a conversa do agente | **R$ 150 a R$ 450 por mês**, pela estimativa de 3.000 conversas a R$ 0,05 a R$ 0,15 cada | A Meta cobra por mensagem de modelo enviada pela empresa — os avisos — e não cobra a resposta dentro da janela de atendimento aberta pela loja; a conferir na tabela vigente. Quem paga: `Q-SL-12` |\n| Automação do agente | n8n Cloud | Assinatura da plataforma, sem servidor para manter | **R$ 120 a R$ 250 por mês** (20 a 40 euros) | Varia com o euro e com o limite de execuções do plano |\n| Modelo de linguagem do agente | OpenAI, GPT-4o | Cerca de 1.000 atendimentos de ocorrência por mês, cerca de 4.000 trocas de mensagem | **R$ 90 a R$ 120 por mês** (16 a 22 dólares) | Cresce com o número de ocorrências, não de entregas |\n| **Subtotal dos serviços** | | | **R$ 360 a R$ 820 por mês** | |\n| Servidor do back end | — | — | **Não estimado** | Depende da escolha da equipe de infraestrutura |\n| Banco e armazenamento de fotos | — | — | **Não estimado** | Depende da escolha da equipe de infraestrutura e do prazo de guarda das fotos (`Q-SL-16`) |\n| Desenvolvimento | — | Agente de ocorrências: 10 a 14 dias úteis, com o mapeamento do protocolo | **Não estimado em reais** | O esforço relativo de cada item está no backlog |\n\n**O que pesa.** O WhatsApp é a maior parcela e a única que cresce com as entregas. A forma mais\nsimples de reduzi-la é avisar por loja, não por entrega, nos dias de muitas ocorrências\n(`RN-SL-044`). O modelo de linguagem cresce com as ocorrências: quanto melhor o pedido na entrada e\no padrão de comprovante, menos ocorrência e menos custo.",
+          "title": "1. A stack e onde cada parte roda",
+          "body": "| Parte | Tecnologia | Onde roda | Por quê |\n|---|---|---|---|\n| Back end e WhatsApp | Python com FastAPI: APIs REST, webhook da Meta e leitura da planilha modelo da terceirizada | Render, serviço web | O Python lê planilha com bibliotecas maduras; um serviço só atende as quatro portas (`DEC-SL-12`, `DEC-SL-21`) |\n| Banco | PostgreSQL gerenciado | Supabase | O dado é relacional; backup diário e janela de recuperação já vêm no plano |\n| Fotos e planilhas | Armazenamento de arquivos | Supabase | Mesma conta do banco; endereço temporário para o painel ver a foto |\n| Painel e portal | React (ou Next.js), um código para os dois, que chama só o FastAPI | Render, site estático; ou Vercel | `DEC-SL-13`; painel interno, sem necessidade de página montada no servidor |\n| Tempo real do painel | WebSocket ou eventos enviados pelo FastAPI, numa instância no patamar 1 | Mesmo serviço do back end | `RNF-SL-09` |\n| Tarefas em segundo plano | Fila numa tabela do banco, lida por um laço do próprio serviço; processo próprio só no patamar 2 | Mesmo serviço do back end | Avisos com nova tentativa e despacho sem pagar fila à parte (`DEC-SL-17`) |\n| Agente de ocorrências | n8n Cloud com GPT-4o; chama a rota de chamados do FastAPI com chave fixa | n8n Cloud | `DEC-SL-14` |\n| Canal da loja | Plataforma oficial da Meta; o webhook chega ao FastAPI | Meta | `DEC-SL-15` |\n| Publicação | GitHub com testes automáticos e publicação por gatilho | GitHub Actions | `RNF-SL-19` |\n\n**Duas regras que protegem os requisitos.**\n\n1. **A chave de serviço do Supabase existe só no back end.** O painel nunca fala direto com o banco:\n   toda ação passa pelo FastAPI, que confere o perfil (`RNF-SL-11`) e grava o histórico\n   (`RNF-SL-14`). A conexão do back end usa o pooler de conexões do Supabase.\n2. **Cada ambiente tem o seu banco.** Homologação e produção não compartilham dados nem chaves;\n   dados reais não vão para a homologação.\n\n**Região dos dados (a decidir).** O Render não tem região no Brasil (Oregon, Ohio, Virgínia,\nFrankfurt e Singapura); o Supabase tem São Paulo.\n\n| Opção | Ganho | Custo |\n|---|---|---|\n| A. Back end e banco na Virgínia | Menor latência entre os dois; cada tela faz várias consultas | Dados pessoais fora do Brasil: pede base legal e cláusulas de transferência internacional (LGPD, `RNF-SL-13`) |\n| B. Banco em São Paulo e back end nos EUA | Dados no Brasil | Cada consulta cruza o continente; telas mais lentas (`RNF-SL-08`) |\n| C. Back end em provedor com região no Brasil | Dados no Brasil e baixa latência | Provedor mais complexo, sem cotação aqui |\n\nA proposta é começar pela **A**, registrar a transferência na política de privacidade e migrar se a\nSEALog exigir dados no Brasil: o banco não muda de região no mesmo lugar, a migração é por cópia e\nrestauração. A escolha fica com a equipe e com a SEALog.\n\n---",
+          "ids": [
+            "DEC-SL-12",
+            "DEC-SL-21",
+            "DEC-SL-13",
+            "RNF-SL-09",
+            "DEC-SL-17",
+            "DEC-SL-14",
+            "DEC-SL-15",
+            "RNF-SL-19",
+            "RNF-SL-11",
+            "RNF-SL-14",
+            "RNF-SL-13",
+            "RNF-SL-08"
+          ]
+        },
+        {
+          "anchor": "2-custos",
+          "level": 2,
+          "title": "2. Custos",
+          "body": "Patamar 1 (até cerca de 400 entregas por dia e duas terceirizadas), sem o agente de consulta de\nstatus, que ficou fora por enquanto (`DEC-SL-10`).\n\n| Item | Fornecedor e plano | O que inclui | Custo estimado | Quando muda |\n|---|---|---|---|---|\n| WhatsApp | Plataforma oficial da Meta | Menu, formulário, acompanhamento, avisos e a conversa do agente | **R$ 150 a R$ 450 por mês**, pela estimativa de 3.000 conversas a R$ 0,05 a R$ 0,15 cada | A Meta cobra por mensagem de modelo enviada pela empresa — os avisos — e não cobra a resposta dentro da janela de atendimento aberta pela loja; a conferir na tabela vigente. Quem paga: `Q-SL-12` |\n| Automação do agente | n8n Cloud | Assinatura da plataforma, sem servidor para manter | **R$ 120 a R$ 250 por mês** (20 a 40 euros) | Varia com o euro e com o limite de execuções do plano |\n| Modelo de linguagem do agente | OpenAI, GPT-4o | Cerca de 1.000 atendimentos de ocorrência por mês, cerca de 4.000 trocas de mensagem | **R$ 90 a R$ 120 por mês** (16 a 22 dólares) | Cresce com o número de ocorrências, não de entregas |\n| **Subtotal dos serviços** | | | **R$ 360 a R$ 820 por mês** | |\n| Banco, arquivos e backup | Supabase Pro | Banco de 8 GB, 100 GB de arquivos, 250 GB de tráfego, backup diário guardado por 7 dias, tempo real | **R$ 140 a R$ 165 por mês** (25 a 30 dólares) | Banco acima de 8 GB (0,125 dólar por GB), arquivos acima de 100 GB (0,021 dólar por GB), computação maior |\n| Servidor do back end | Render, serviço web Standard (1 CPU, 2 GB) | O FastAPI, o webhook, as tarefas e o tempo real | **R$ 140 por mês** (25 dólares) | Gatilhos de `escalabilidade`. O plano Starter (512 MB, 7 dólares) existe, mas a leitura de planilha pede memória: não serve para produção |\n| Homologação | Render, serviço web Starter | Cópia do back end para testar versões antes da produção | **R$ 40 por mês** (7 dólares) | Pode ser desligada fora dos ciclos de teste |\n| Painel e portal | Render, site estático, ou Vercel Pro | O código React, servido por CDN | **R$ 0** no site estático do Render; **R$ 110 por mês** (20 dólares) na Vercel | O plano gratuito da Vercel não permite uso comercial; o site estático dispensa o plano pago |\n| **Subtotal de infraestrutura** | | | **R$ 315 a R$ 450 por mês** | |\n| **Total mensal** | | | **R$ 675 a R$ 1.270** | Cerca de **R$ 0,06 a R$ 0,12 por entrega**, a 10.400 entregas por mês |\n| Monitoramento externo, domínio e cópia das fotos em segundo fornecedor | — | — | **Não estimado** | Planos gratuitos costumam bastar para o monitor; confirmar o uso comercial. A cópia custa centavos por GB |\n| Desenvolvimento | — | Agente de ocorrências: 10 a 14 dias úteis, com o mapeamento do protocolo | **Não estimado em reais** | O esforço relativo de cada item está no backlog |\n\n**As fotos não pesam no custo.** São cerca de 10.400 por mês. Comprimidas no envio para perto de\n500 KB, dão cerca de 5 GB por mês e levam uns 20 meses para encher os 100 GB do plano; sem\ncompressão, perto de 15 GB por mês e uns 7 meses. Depois disso, 100 GB a mais custam cerca de\n2 dólares por mês. O que decide a guarda é a LGPD (`Q-SL-16`), não o preço.\n\n**O que pesa.** Com cerca de 10.400 entregas por mês, a infraestrutura é quase **custo fixo**:\nquanto mais entregas, menor o custo por entrega. O WhatsApp continua sendo a maior parcela e a única\nque cresce com as entregas. A faixa dele parte de 3.000 conversas por mês; se cada entrega gerar um\naviso à loja, são cerca de 10.400 mensagens, mais de três vezes esse volume. A forma mais simples de\nsegurar a conta é avisar por loja, não por entrega, nos dias de muitas ocorrências (`RN-SL-044`). O\nmodelo de linguagem cresce com as ocorrências: quanto melhor o pedido na entrada e o padrão de\ncomprovante, menos ocorrência e menos custo.",
           "ids": [
             "DEC-SL-10",
             "Q-SL-12",
@@ -9019,16 +9057,39 @@
           ]
         },
         {
-          "anchor": "2-operacao",
+          "anchor": "3-se-passar-do-patamar-1",
           "level": 2,
-          "title": "2. Operação",
-          "body": "| Rotina | Como | Atende |\n|---|---|---|\n| Cópia de segurança | Diária e automática do banco e das fotos; restauração testada antes da virada | `RNF-SL-06` |\n| Publicação de versão | Automática a cada versão aprovada, primeiro em homologação; nunca entre 7h e 19h de segunda a sábado | `RNF-SL-04` |\n| Monitoramento | Número de WhatsApp e integração da terceirizada vigiados; avisos que falharam e entregas sem retorno no painel | `RNF-SL-04`, `RNF-SL-20` |\n| Troca de chaves | O coordenador troca a chave de uma terceirizada sem afetar a outra; a chave do agente é trocada a cada saída de quem a conhecia | `RNF-SL-12` |\n| Revisão de custo | Mensal: fatura de cada serviço dividida pelas entregas do mês | `RNF-SL-18` |",
+          "title": "3. Se passar do patamar 1",
+          "body": "Cada subida de custo tem o gatilho de [`escalabilidade.md`](escalabilidade.md): só se paga o patamar\nseguinte quando o indicador cruza o limite.\n\n| Gatilho | Mudança | Custo indicativo |\n|---|---|---|\n| Processamento do banco acima de 70% por 3 dias | Supabase com computação Medium no lugar da Small | Cerca de **+R$ 250 por mês** (60 dólares contra 15) |\n| Fila de avisos atrasada | Processo próprio para as tarefas, no Render | **R$ 40** (Starter) a **R$ 140** (Standard) por mês |\n| Back end sem folga de processamento ou memória | Render Pro (2 CPU, 4 GB) | Cerca de **+R$ 330 por mês** (85 dólares contra 25) |\n| Fotos acima de 100 GB | Mover as antigas; aplicar o prazo de guarda | 0,021 dólar por GB por mês |\n| Buscas lentas depois de rever índices | Cópia só de leitura do banco | Não cotado |",
+          "ids": []
+        },
+        {
+          "anchor": "4-operacao",
+          "level": 2,
+          "title": "4. Operação",
+          "body": "| Rotina | Como | Atende |\n|---|---|---|\n| Cópia de segurança | Banco: backup diário automático do Supabase, guardado por 7 dias; a recuperação a qualquer instante é opcional e paga, e não é exigida. Fotos: o backup do banco não leva os arquivos, então uma tarefa agendada copia as fotos para um segundo armazenamento. Restauração testada antes da virada | `RNF-SL-06` |\n| Publicação de versão | A cada versão aprovada, a pipeline roda os testes e publica na homologação. A produção só recebe a versão por gatilho manual, nunca entre 7h e 19h de segunda a sábado | `RNF-SL-04`, `RNF-SL-19` |\n| Mudanças no banco | Migrações versionadas, aplicadas antes da versão do back end e sempre testadas na homologação | `RNF-SL-14`, `RNF-SL-17` |\n| Monitoramento | Monitor externo na rota de saúde do back end e no webhook; estado do número de WhatsApp na Meta; registro de erros das integrações; avisos que falharam e entregas sem retorno no painel | `RNF-SL-04`, `RNF-SL-20` |\n| Segredos e chaves | Chaves em variáveis de ambiente do Render, nunca no código. O coordenador troca a chave de uma terceirizada sem afetar a outra; a chave do agente e a de serviço do Supabase são trocadas a cada saída de quem as conhecia | `RNF-SL-12` |\n| Contas dos fornecedores | Meta, n8n, OpenAI, Supabase e Render ficam em nome da SEALog, com dois responsáveis; a equipe de software entra como acesso, não como dona | `Q-SL-12` |\n| Teto de gasto | Alerta de orçamento ou limite de gasto ligado onde o fornecedor oferece (Supabase, Vercel, OpenAI), para um pico de uso não virar fatura | `RNF-SL-18` |\n| Revisão de custo | Mensal: fatura de cada serviço dividida pelas entregas do mês | `RNF-SL-18` |",
           "ids": [
             "RNF-SL-06",
             "RNF-SL-04",
+            "RNF-SL-19",
+            "RNF-SL-14",
+            "RNF-SL-17",
             "RNF-SL-20",
             "RNF-SL-12",
+            "Q-SL-12",
             "RNF-SL-18"
+          ]
+        },
+        {
+          "anchor": "5-a-confirmar",
+          "level": 2,
+          "title": "5. A confirmar",
+          "body": "| Item | Proposta | Quem decide |\n|---|---|---|\n| Região dos dados | Opção A da seção 1 | Equipe e SEALog |\n| Hospedagem do painel | Site estático no Render, a não ser que o Next.js precise de página montada no servidor | Equipe de front end |\n| Login do painel e do portal | Módulo de acesso do back end (`RNF-SL-10`, `RNF-SL-11`); o Supabase Auth é uma opção | Equipe de back end |\n| Cópia das fotos | Segundo armazenamento de outro fornecedor, por tarefa agendada | Equipe de infraestrutura |\n| Prazo de guarda das fotos | `Q-SL-16` | SEALog |\n| Conta comercial do WhatsApp e quem paga | `Q-SL-12` | SEALog |",
+          "ids": [
+            "RNF-SL-10",
+            "RNF-SL-11",
+            "Q-SL-16",
+            "Q-SL-12"
           ]
         }
       ]
@@ -9427,7 +9488,7 @@
           "anchor": "2-6-custo-e-manutencao",
           "level": 3,
           "title": "2.6 Custo e manutenção",
-          "body": "| ID | Requisito | Categoria | Meta | Como verificar | Origem |\n|---|---|---|---|---|---|\n| `RNF-SL-18` | O custo cabe numa empresa pequena em expansão | Custo | Custo mensal dos serviços de mensagem, automação e IA entre R$ 360 e R$ 820 no patamar inicial, mais servidor e banco; revisão mensal contra o volume | Fatura mensal dividida pelas entregas do mês | Encontro 1 [29:03], [30:33]; Plano do agente; ver `infraestrutura-e-custos` |\n| `RNF-SL-19` | Uma equipe pequena consegue manter | Manutenibilidade | Um back end só, por APIs, servindo WhatsApp, painel, portal e agente; publicação automática | Revisão da arquitetura | Planejamento da equipe (arquitetura baseada em APIs); meta proposta |\n| `RNF-SL-20` | Falhas aparecem antes de a loja reclamar | Observabilidade | Aviso que falhou e entrega sem retorno vão para o painel; erros das integrações registrados | Conferência do painel durante o piloto | `RN-SL-034`, `RN-SL-045` |",
+          "body": "| ID | Requisito | Categoria | Meta | Como verificar | Origem |\n|---|---|---|---|---|---|\n| `RNF-SL-18` | O custo cabe numa empresa pequena em expansão | Custo | Custo mensal dos serviços de mensagem, automação e IA entre R$ 360 e R$ 820 no patamar inicial, mais R$ 315 a R$ 450 de servidor, banco e painel (total de R$ 675 a R$ 1.270, cerca de R$ 0,06 a R$ 0,12 por entrega); revisão mensal contra o volume | Fatura mensal dividida pelas entregas do mês | Encontro 1 [29:03], [30:33]; Plano do agente; ver `infraestrutura-e-custos` |\n| `RNF-SL-19` | Uma equipe pequena consegue manter | Manutenibilidade | Um back end só, por APIs, servindo WhatsApp, painel, portal e agente; publicação automática | Revisão da arquitetura | Planejamento da equipe (arquitetura baseada em APIs); meta proposta |\n| `RNF-SL-20` | Falhas aparecem antes de a loja reclamar | Observabilidade | Aviso que falhou e entrega sem retorno vão para o painel; erros das integrações registrados | Conferência do painel durante o piloto | `RN-SL-034`, `RN-SL-045` |",
           "ids": [
             "RNF-SL-18",
             "RNF-SL-19",
@@ -10843,6 +10904,37 @@
       "cites": [
         "BL-SL-01",
         "BL-SL-32"
+      ]
+    },
+    {
+      "id": "DEC-SL-21",
+      "kind": "DEC",
+      "system": "geral",
+      "file": "decisoes",
+      "anchor": "DEC-SL-21",
+      "title": "Back end em Python com FastAPI, banco no Supabase e painel em React",
+      "text": "| | |\n|---|---|\n| **Status** | Tomada |\n| **Data** | 29/10/2026 |\n| **Tema** | Infraestrutura |\n| **Contexto** | `DEC-SL-19` deixou a stack em aberto. O retorno da terceirizada chega também em planilha no formato modelo (`DEC-SL-06`), e o mesmo back end recebe o webhook do WhatsApp (`DEC-SL-15`). A SEALog pediu custo controlado (Encontro 1 [29:03]) |\n| **Decisão** | O back end é um serviço em Python com FastAPI, que expõe as APIs de `DEC-SL-12`, recebe o WhatsApp e lê a planilha modelo. O banco PostgreSQL e os arquivos (fotos e planilhas) ficam no Supabase. O painel e o portal são uma aplicação React, ou Next.js, que chama só o FastAPI |\n| **Alternativas descartadas** | Outra linguagem no back end: a vantagem do Python é a leitura de planilhas. Painel falando direto com o banco: a permissão deixaria de valer no servidor (`RNF-SL-11`). Servidor próprio com o banco instalado: backup e manutenção ficariam com a equipe, desproporcional a uma empresa pequena |\n| **Consequências** | Onde cada parte roda e quanto custa está em `infraestrutura-e-custos`. A chave de serviço do Supabase fica só no back end. Trocar a stack muda esta decisão e as páginas de arquitetura e custos, e nenhum requisito (`DEC-SL-19`) |\n| **Referências** | `DEC-SL-12`, `DEC-SL-13`, `DEC-SL-19`, `RNF-SL-11`, `RNF-SL-19` |",
+      "via": "secao",
+      "fields": {
+        "Status": "Tomada",
+        "Data": "29/10/2026",
+        "Tema": "Infraestrutura",
+        "Contexto": "`DEC-SL-19` deixou a stack em aberto. O retorno da terceirizada chega também em planilha no formato modelo (`DEC-SL-06`), e o mesmo back end recebe o webhook do WhatsApp (`DEC-SL-15`). A SEALog pediu custo controlado (Encontro 1 [29:03])",
+        "Decisão": "O back end é um serviço em Python com FastAPI, que expõe as APIs de `DEC-SL-12`, recebe o WhatsApp e lê a planilha modelo. O banco PostgreSQL e os arquivos (fotos e planilhas) ficam no Supabase. O painel e o portal são uma aplicação React, ou Next.js, que chama só o FastAPI",
+        "Alternativas descartadas": "Outra linguagem no back end: a vantagem do Python é a leitura de planilhas. Painel falando direto com o banco: a permissão deixaria de valer no servidor (`RNF-SL-11`). Servidor próprio com o banco instalado: backup e manutenção ficariam com a equipe, desproporcional a uma empresa pequena",
+        "Consequências": "Onde cada parte roda e quanto custa está em `infraestrutura-e-custos`. A chave de serviço do Supabase fica só no back end. Trocar a stack muda esta decisão e as páginas de arquitetura e custos, e nenhum requisito (`DEC-SL-19`)",
+        "Referências": "`DEC-SL-12`, `DEC-SL-13`, `DEC-SL-19`, `RNF-SL-11`, `RNF-SL-19`"
+      },
+      "severity": null,
+      "hasOutcome": null,
+      "cites": [
+        "DEC-SL-19",
+        "DEC-SL-06",
+        "DEC-SL-15",
+        "DEC-SL-12",
+        "RNF-SL-11",
+        "DEC-SL-13",
+        "RNF-SL-19"
       ]
     },
     {
@@ -14438,12 +14530,12 @@
       "file": "requisitos",
       "anchor": "2-6-custo-e-manutencao",
       "title": "O custo cabe numa empresa pequena em expansão",
-      "text": "**Categoria:** Custo\n\n**Meta:** Custo mensal dos serviços de mensagem, automação e IA entre R$ 360 e R$ 820 no patamar inicial, mais servidor e banco; revisão mensal contra o volume\n\n**Como verificar:** Fatura mensal dividida pelas entregas do mês\n\n**Origem:** Encontro 1 [29:03], [30:33]; Plano do agente; ver `infraestrutura-e-custos`",
+      "text": "**Categoria:** Custo\n\n**Meta:** Custo mensal dos serviços de mensagem, automação e IA entre R$ 360 e R$ 820 no patamar inicial, mais R$ 315 a R$ 450 de servidor, banco e painel (total de R$ 675 a R$ 1.270, cerca de R$ 0,06 a R$ 0,12 por entrega); revisão mensal contra o volume\n\n**Como verificar:** Fatura mensal dividida pelas entregas do mês\n\n**Origem:** Encontro 1 [29:03], [30:33]; Plano do agente; ver `infraestrutura-e-custos`",
       "via": "tabela",
       "fields": {
         "Requisito": "O custo cabe numa empresa pequena em expansão",
         "Categoria": "Custo",
-        "Meta": "Custo mensal dos serviços de mensagem, automação e IA entre R$ 360 e R$ 820 no patamar inicial, mais servidor e banco; revisão mensal contra o volume",
+        "Meta": "Custo mensal dos serviços de mensagem, automação e IA entre R$ 360 e R$ 820 no patamar inicial, mais R$ 315 a R$ 450 de servidor, banco e painel (total de R$ 675 a R$ 1.270, cerca de R$ 0,06 a R$ 0,12 por entrega); revisão mensal contra o volume",
         "Como verificar": "Fatura mensal dividida pelas entregas do mês",
         "Origem": "Encontro 1 [29:03], [30:33]; Plano do agente; ver `infraestrutura-e-custos`"
       },

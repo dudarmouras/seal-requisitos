@@ -2,8 +2,8 @@
 
 A arquitetura proposta para o SEALog depois da terceirização. Responde a três perguntas: quais são
 as partes, como conversam, e por que esta forma e não outra. Os requisitos não dependem dela
-(`DEC-SL-19`); a escolha final de servidor e de banco gerenciado está **a confirmar pela equipe**
-de back end e infraestrutura.
+(`DEC-SL-19`); a stack do back end e do banco foi escolhida em `DEC-SL-21`, e onde cada parte
+roda está em [`infraestrutura-e-custos.md`](infraestrutura-e-custos.md).
 
 ---
 
@@ -201,10 +201,10 @@ sequenceDiagram
 | Camada | Proposta | Por quê | Situação |
 |---|---|---|---|
 | Canal da loja | Plataforma oficial do WhatsApp da Meta, com formulários do WhatsApp | A loja já está lá; a via oficial não arrisca o número (`DEC-SL-15`) | Proposta |
-| Back end | Serviço único, organizado pelos sete módulos, expondo APIs REST e atualização em tempo real por websocket | Arquitetura baseada em APIs, decidida pela equipe (`DEC-SL-12`) | Linguagem e servidor a confirmar pela equipe |
-| Banco | PostgreSQL | O dado é relacional e o histórico precisa de integridade | Onde hospedar a confirmar pela equipe |
-| Arquivos | Armazenamento de objetos para fotos e planilhas | A foto é o dado que mais cresce | A confirmar pela equipe |
-| Painel e portal | Aplicação web responsiva, um código para os dois | Abre no celular e no computador sem instalar nada (`DEC-SL-13`) | Proposta |
+| Back end | Serviço único em Python com FastAPI, organizado pelos sete módulos, expondo APIs REST e atualização em tempo real por websocket | Arquitetura baseada em APIs (`DEC-SL-12`); o Python lê a planilha modelo da terceirizada | Decidida (`DEC-SL-21`); servidor em `infraestrutura-e-custos` |
+| Banco | PostgreSQL gerenciado no Supabase | O dado é relacional e o histórico precisa de integridade | Decidido (`DEC-SL-21`); região a confirmar |
+| Arquivos | Armazenamento de arquivos do Supabase, para fotos e planilhas | A foto é o dado que mais cresce; fica na mesma conta do banco | Decidido (`DEC-SL-21`); cópia das fotos a confirmar |
+| Painel e portal | Aplicação web responsiva em React (ou Next.js), um código para os dois, que chama só o back end | Abre no celular e no computador sem instalar nada (`DEC-SL-13`) | Proposta; hospedagem em `infraestrutura-e-custos` |
 | Agente de ocorrências | n8n Cloud com o nó de agente de IA e o modelo GPT-4o | Orquestração pronta para WhatsApp e HTTP; modelo com bom raciocínio sobre regras (`DEC-SL-14`) | Proposta |
 
 A infraestrutura e os custos estão em [`infraestrutura-e-custos.md`](infraestrutura-e-custos.md);
