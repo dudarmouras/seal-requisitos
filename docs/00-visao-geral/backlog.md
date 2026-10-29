@@ -82,10 +82,10 @@ dia a dia. Cada uma corresponde a uma fase da adoção gradual.
 
 | ID | Ordem | Camada | Item | HUs | MoSCoW | Release | Valor | Esforço | Depende de | Por quê |
 |---|---|---|---|---|---|---|---|---|---|---|
-| `BL-SL-19` | 26 | Negócio | Protocolo de atendimento escrito com a SEALog, se a SEALog quiser escrevê-lo | — | Must | R2 | Alto | M | — | Sem protocolo escrito, o agente se apoia nos dados do pedido e do relato (`Q-SL-05`) |
+| `BL-SL-19` | 26 | Negócio | Protocolo de atendimento escrito com a SEALog, se a SEALog quiser escrevê-lo | — | Could | R2 | Alto | M | — | Sem protocolo escrito, o agente se apoia nos dados do pedido e do relato (`Q-SL-05`) |
 | `BL-SL-20` | 27 | Front | Painel de chamados | `HU-SL-018` | Must | R2 | Alto | M | `BL-SL-13` | Nenhuma ocorrência tratada fora do painel; resolve o caso "O buquê de sábado" |
 | `BL-SL-40` | 28 | Agente | Chamado aberto pela API para o agente de ocorrências, com chave própria | — | Must | R2 | Alto | M | `BL-SL-20`, `BL-SL-34` | O agente abre e lê chamados só pela API, nunca direto no banco (`RNF-SL-11`) |
-| `BL-SL-23` | 29 | Agente | Relato de problema com o agente de ocorrências | `HU-SL-017` | Must | R2 | Alto | G | `BL-SL-19`, `BL-SL-40` | A loja relata a qualquer hora e o chamado chega com sugestão (`DEC-SL-10`) |
+| `BL-SL-23` | 29 | Agente | Relato de problema com o agente de ocorrências | `HU-SL-017` | Could | R2 | Alto | G | `BL-SL-40` | A loja relata a qualquer hora e o chamado é registrado; a sugestão de protocolo vem pelo `BL-SL-19`, de prioridade baixa (`DEC-SL-10`) |
 | `BL-SL-22` | 30 | Back | Devolução no galpão e decisão | `HU-SL-019` | Must | R2 | Alto | M | `BL-SL-20` | Os quatro destinos registrados (`DEC-SL-09`) |
 | `BL-SL-21` | 31 | Canal | Aviso automático à loja | `HU-SL-020` | Must | R2 | Alto | P | `BL-SL-05`, `BL-SL-20` | A loja sabe do problema antes do consumidor (`DEC-SL-11`) |
 | `BL-SL-24` | 32 | Back | Entregas afetadas por loja e aviso em lote | `HU-SL-021` | Must | R2 | Alto | M | `BL-SL-21` | Resolve o caso "A segunda-feira de chuva": um aviso por loja em vez de 120 mensagens |
