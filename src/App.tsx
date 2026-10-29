@@ -54,6 +54,7 @@ function Shell() {
         <Route path="/decisoes" element={<DecisoesPage />} />
         <Route path="/requisitos" element={<RequisitosPage />} />
         <Route path="/backlog" element={<BacklogPage />} />
+        <Route path="/tecnicas" element={<DocPage key="tecnicas" systemId="geral" file="tecnicas-de-priorizacao" />} />
         <Route path="/arquitetura" element={<DocPage key="arquitetura" systemId="geral" file="arquitetura" />} />
         <Route path="/infraestrutura" element={<DocPage key="infra" systemId="geral" file="infraestrutura-e-custos" />} />
         <Route path="/adocao" element={<DocPage key="adocao" systemId="geral" file="adocao-gradual" />} />

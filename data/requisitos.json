@@ -6170,7 +6170,7 @@
           "anchor": "1-entrada-de-pedidos",
           "level": 2,
           "title": "1. Entrada de pedidos",
-          "body": "| ID | Regra | Referência |\n|---|---|---|\n| `RN-SL-001` | Todo pedido tem um registro único no sistema, criado no momento em que é recebido, com um código SEALog gerado pelo sistema. Nenhum pedido existe só numa conversa ou numa planilha. | Proposta — resolve Gargalos §2 (digitação manual, planilhas divergentes) e §8 (causa comum); Planejamento da equipe (substituir planilha por banco) |\n| `RN-SL-002` | O pedido chega pelo número de WhatsApp da SEALog, o mesmo de hoje. A loja não instala aplicativo nem cria conta. | Enunciado §2 (pedidos por um número de WhatsApp); Encontro 1 [07:35]; Planejamento da equipe (cliente continua no WhatsApp) |\n| `RN-SL-003` | Só um número de WhatsApp autorizado de uma loja ativa abre o menu de pedidos. Número desconhecido recebe a orientação de procurar o atendimento, com o horário dele, e nada é registrado. | Encontro 1 [08:38] (validação do número de origem); Proposta |\n| `RN-SL-004` | O menu do WhatsApp tem três opções: novo pedido, acompanhar pedido e editar pedido. O relato de problema sai do acompanhamento do pedido, para manter os três botões. | Encontro 1 [08:38], [14:33]; Proposta |\n| `RN-SL-005` | O pedido tem estes dados obrigatórios: nome e telefone do destinatário; rua, número, bairro e cidade; complemento, ou a marca de que não há; tamanho aproximado do volume; e data desejada. Ponto de referência e observações são opcionais, salvo no caso de `RN-SL-008`. | Enunciado §2 (dados que a equipe confere); Proposta |\n| `RN-SL-006` | O formulário do WhatsApp não envia o pedido sem os dados obrigatórios. Cada campo que falta é apontado antes do envio. | Encontro 1 [07:35], [35:39] (formulário que impede registro incompleto); resolve Gargalos §1 e o caso \"Pedido com informações incompletas\" (Enunciado §8) |\n| `RN-SL-007` | O telefone do destinatário tem DDD e número, com 10 ou 11 dígitos. | Proposta — resolve Gargalos §1 (pedido sem telefone) |\n| `RN-SL-008` | O número do endereço é obrigatório. Endereço sem número só é aceito com a marca \"Sem número\", e nesse caso o ponto de referência passa a ser obrigatório. | Enunciado §8 (Sr. Paulo: sem número, \"perto da farmácia\"); Proposta |\n| `RN-SL-009` | O prazo padrão é o dia útil seguinte ao pedido; a loja pode agendar outra data. A data prevista da entrega sai dessa regra. O horário a partir do qual o pedido passa para o dia útil seguinte não está na origem (`Q-SL-01`). | Enunciado §2 (prazo padrão); `Q-SL-01` |\n| `RN-SL-010` | Ao receber o pedido, o sistema avisa se já existe pedido da mesma loja para o mesmo destinatário, endereço e data. O aviso não bloqueia: a loja confirma se é outro pedido. | Proposta — resolve Gargalos §2 (registros diferentes da mesma entrega) |\n| `RN-SL-011` | A loja edita ou cancela o pedido pelo WhatsApp até a terceirizada registrar a coleta. Depois disso, a mudança só se faz pelo atendimento. O limite está para confirmação (`Q-SL-04`). | Encontro 1 [08:38] (editar pedido); Proposta; `Q-SL-04` |\n| `RN-SL-012` | O pedido que chega fora do formulário — áudio, mensagem livre, ligação ou planilha da loja — é registrado pela equipe com as mesmas validações. O que faltar deixa o pedido \"Pendente de dados\", e a loja recebe no WhatsApp o formulário para completar só o que falta. O canal de origem fica registrado. | Enunciado §2 (texto, áudio e planilhas próprias); Proposta |\n| `RN-SL-013` | Entrega a vizinho, porteiro ou outra pessoa que não o destinatário só vale com autorização prévia da loja, registrada no pedido com o nome de quem pode receber. A loja autoriza no formulário do pedido ou depois, pela edição. | Encontro 1 [43:19]; Enunciado §8 (Cond. MarAzul, \"deixar com Dona Lúcia\") |",
+          "body": "| ID | Regra | Referência |\n|---|---|---|\n| `RN-SL-001` | Todo pedido tem um registro único no sistema, criado no momento em que é recebido, com um código SEALog gerado pelo sistema. Nenhum pedido existe só numa conversa ou numa planilha. | Proposta — resolve Gargalos §2 (digitação manual, planilhas divergentes) e §8 (causa comum); Planejamento da equipe (substituir planilha por banco) |\n| `RN-SL-002` | O pedido chega pelo número de WhatsApp da SEALog, o mesmo de hoje. A loja não instala aplicativo nem cria conta. | Enunciado §2 (pedidos por um número de WhatsApp); Encontro 1 [07:35]; Planejamento da equipe (cliente continua no WhatsApp) |\n| `RN-SL-003` | Só um número de WhatsApp autorizado de uma loja ativa abre o menu de pedidos. Número desconhecido recebe a orientação de procurar o atendimento, com o horário dele, e nada é registrado. | Encontro 1 [08:38] (validação do número de origem); Proposta |\n| `RN-SL-004` | O menu do WhatsApp tem três opções: novo pedido, acompanhar pedido e editar pedido. O relato de problema sai do acompanhamento do pedido, para manter os três botões. | Encontro 1 [08:38], [14:33]; Proposta |\n| `RN-SL-005` | O pedido tem estes dados obrigatórios: nome e telefone do destinatário; rua, número, bairro e cidade; complemento, ou a marca de que não há; tamanho aproximado do volume; e data desejada. Ponto de referência e observações são opcionais, salvo no caso de `RN-SL-008`. | Enunciado §2 (dados que a equipe confere); Proposta |\n| `RN-SL-006` | O formulário do WhatsApp não envia o pedido sem os dados obrigatórios. Cada campo que falta é apontado antes do envio. | Encontro 1 [07:35], [35:39] (formulário que impede registro incompleto); resolve Gargalos §1 e o caso \"Pedido com informações incompletas\" (Enunciado §8) |\n| `RN-SL-007` | O telefone do destinatário tem DDD e número, com 10 ou 11 dígitos. | Proposta — resolve Gargalos §1 (pedido sem telefone) |\n| `RN-SL-008` | O número do endereço é obrigatório. Endereço sem número só é aceito com a marca \"Sem número\", e nesse caso o ponto de referência passa a ser obrigatório. | Enunciado §8 (Sr. Paulo: sem número, \"perto da farmácia\"); Proposta |\n| `RN-SL-009` | O prazo padrão é o dia útil seguinte ao pedido; a loja pode agendar outra data. Pedido feito depois das 18h conta como feito no dia útil seguinte. A data prevista da entrega sai dessa regra. | Enunciado §2 (prazo padrão); resposta da SEALog a `Q-SL-01` (corte às 18h) |\n| `RN-SL-010` | Ao receber o pedido, o sistema avisa se já existe pedido da mesma loja para o mesmo destinatário, endereço e data. O aviso não bloqueia: a loja confirma se é outro pedido. | Proposta — resolve Gargalos §2 (registros diferentes da mesma entrega) |\n| `RN-SL-011` | A loja edita ou cancela o pedido pelo WhatsApp até a terceirizada registrar a coleta. Depois disso, a mudança só se faz pelo atendimento. Na edição, a loja altera só os itens que ainda não saíram para entrega. Pedir a alteração por código do produto ainda está em debate (`Q-SL-04`). | Encontro 1 [08:38] (editar pedido); Proposta; `Q-SL-04` |\n| `RN-SL-012` | O pedido que chega fora do formulário — áudio, mensagem livre, ligação ou planilha da loja — é registrado pela equipe com as mesmas validações. O que faltar deixa o pedido \"Pendente de dados\", e a loja recebe no WhatsApp o formulário para completar só o que falta. O canal de origem fica registrado. | Enunciado §2 (texto, áudio e planilhas próprias); Proposta |\n| `RN-SL-013` | Entrega a vizinho, porteiro ou outra pessoa que não o destinatário só vale com autorização prévia da loja, registrada no pedido com o nome de quem pode receber. A loja autoriza no formulário do pedido ou depois, pela edição. | Encontro 1 [43:19]; Enunciado §8 (Cond. MarAzul, \"deixar com Dona Lúcia\") |",
           "ids": [
             "RN-SL-001",
             "RN-SL-002",
@@ -6207,7 +6207,7 @@
           "anchor": "3-despacho",
           "level": 2,
           "title": "3. Despacho",
-          "body": "| ID | Regra | Referência |\n|---|---|---|\n| `RN-SL-020` | Há uma única lista de entregas, a mesma para toda a equipe. Não existe cópia por analista. Toda alteração de dado ou de status fica no histórico da entrega, com quem alterou, quando e o valor anterior. | Proposta — resolve Gargalos §2 (planilhas divergentes) e o caso \"O registro incorreto\" (Enunciado §8) |\n| `RN-SL-021` | O status da entrega segue o ciclo de [`06-modelo-de-dados.md`](06-modelo-de-dados.md) §3.1 e o fluxograma `FLX-SL-01`. Mudança fora do ciclo é recusada, venha da equipe ou da terceirizada. | Proposta — resolve Gargalos §8 |\n| `RN-SL-022` | A lista se organiza pela data prevista de entrega e mostra, em cada linha, a data e a hora do último registro, para que se saiba se a informação é atual. | Planejamento da equipe (RF-08); Proposta — resolve Gargalos §4 (planilha desatualizada) |\n| `RN-SL-023` | O pedido recebido vai sozinho para a terceirizada da região do endereço de entrega, pela tabela de regiões. Ninguém distribui à mão. | Encontro 1 [15:19]; Proposta |\n| `RN-SL-024` | O despacho envia à terceirizada o código SEALog, o endereço de coleta da loja, o destinatário com telefone e endereço completo, o tamanho do volume, a data prevista, as observações e quem pode receber além do destinatário. Sai pela API, quando a terceirizada a usa, ou entra na lista do dia do portal. | Encontro 1 [15:19]; Proposta |\n| `RN-SL-025` | A coleta na loja é feita pela terceirizada. Hoje a coleta acontece entre 14h e 18h e a loja pode levar o volume ao galpão até 17h; se essas janelas valem para a terceirizada está em `Q-SL-02`. | Encontro 1 [15:19], [17:36]; Enunciado §2 (janelas de hoje); `Q-SL-02` |\n| `RN-SL-026` | Alteração ou cancelamento depois do despacho vai para a terceirizada na hora, pelo mesmo caminho do despacho, com o que mudou em destaque. A terceirizada confirma que recebeu. | Planejamento da equipe (RF-20); Proposta |\n| `RN-SL-027` | O pacote é identificado só pelo código SEALog, sem etiqueta impressa pela SEALog. A terceirizada informa esse código em todo retorno, e retorno com código que não foi despachado para ela é recusado. | Planejamento da equipe (identificação própria, sem etiqueta à mão); Proposta |",
+          "body": "| ID | Regra | Referência |\n|---|---|---|\n| `RN-SL-020` | Há uma única lista de entregas, a mesma para toda a equipe. Não existe cópia por analista. Toda alteração de dado ou de status fica no histórico da entrega, com quem alterou, quando e o valor anterior. | Proposta — resolve Gargalos §2 (planilhas divergentes) e o caso \"O registro incorreto\" (Enunciado §8) |\n| `RN-SL-021` | O status da entrega segue o ciclo de [`06-modelo-de-dados.md`](06-modelo-de-dados.md) §3.1 e o fluxograma `FLX-SL-01`. Mudança fora do ciclo é recusada, venha da equipe ou da terceirizada. | Proposta — resolve Gargalos §8 |\n| `RN-SL-022` | A lista se organiza pela data prevista de entrega e mostra, em cada linha, a data e a hora do último registro, para que se saiba se a informação é atual. | Planejamento da equipe (RF-08); Proposta — resolve Gargalos §4 (planilha desatualizada) |\n| `RN-SL-023` | O pedido recebido vai sozinho para a terceirizada da região do endereço de entrega, pela tabela de regiões. Ninguém distribui à mão. | Encontro 1 [15:19]; Proposta |\n| `RN-SL-024` | O despacho envia à terceirizada o código SEALog, o endereço de coleta da loja, o destinatário com telefone e endereço completo, o tamanho do volume, a data prevista, as observações e quem pode receber além do destinatário. Sai pela API, quando a terceirizada a usa, ou entra na lista do dia do portal. | Encontro 1 [15:19]; Proposta |\n| `RN-SL-025` | A coleta na loja é feita só pela terceirizada, hoje entre 14h e 18h. A loja não leva o volume ao galpão da SEALog. | Encontro 1 [15:19], [17:36]; Enunciado §2 (janelas de hoje); resposta da SEALog a `Q-SL-02` |\n| `RN-SL-026` | Alteração ou cancelamento depois do despacho vai para a terceirizada na hora, pelo mesmo caminho do despacho, com o que mudou em destaque. A terceirizada confirma que recebeu. | Planejamento da equipe (RF-20); Proposta |\n| `RN-SL-027` | O pacote é identificado só pelo código SEALog, sem etiqueta impressa pela SEALog. A terceirizada informa esse código em todo retorno, e retorno com código que não foi despachado para ela é recusado. | Planejamento da equipe (identificação própria, sem etiqueta à mão); Proposta |",
           "ids": [
             "RN-SL-020",
             "RN-SL-021",
@@ -6225,7 +6225,7 @@
           "anchor": "4-retorno-da-terceirizada",
           "level": 2,
           "title": "4. Retorno da terceirizada",
-          "body": "| ID | Regra | Referência |\n|---|---|---|\n| `RN-SL-028` | A terceirizada informa cinco situações: Coletado, Em rota, Entregue, Não entregue e Devolvido ao galpão. Cada retorno traz a data e a hora do fato. | Encontro 1 [25:39] (status com horário); Proposta |\n| `RN-SL-029` | O retorno chega pela API padrão do SEALog, que é o caminho preferencial; pelo portal, para a terceirizada sem integração; ou por planilha, que a plataforma traduz para o mesmo padrão, linha a linha. Linha que não se traduz é recusada com o motivo, e as outras entram. | Encontro 1 [13:15], [23:17]; Proposta |\n| `RN-SL-030` | Entregue só é aceito com o comprovante padrão: foto da entrega, data e hora, nome de quem recebeu e identificação do entregador. Sem algum desses itens, o retorno é recusado e a entrega continua como estava. | Encontro 1 [26:53], [40:16], [42:33] (padrão de comprovação a propor); Proposta |\n| `RN-SL-031` | Se quem recebeu não é o destinatário nem uma pessoa autorizada no pedido (`RN-SL-013`), o Entregue é aceito, mas abre um chamado de recebedor não autorizado para o atendimento. | Encontro 1 [43:19]; Proposta |\n| `RN-SL-032` | Não entregue exige um motivo da lista de [`06-modelo-de-dados.md`](06-modelo-de-dados.md) §3.3 e abre um chamado. | Enunciado §2 (atraso, endereço, ausência, recusa); Planejamento da equipe (RF-14); Proposta |\n| `RN-SL-033` | O mesmo retorno recebido duas vezes — mesmo código, mesma situação e mesma hora do fato — é gravado uma vez só. | Proposta |\n| `RN-SL-034` | Entrega despachada sem retorno da terceirizada há mais tempo que o limite combinado fica sinalizada na lista. O limite não está na origem (`Q-SL-13`). | Proposta — resolve Gargalos §3 (atualizações em lote ou só no problema); `Q-SL-13` |\n| `RN-SL-035` | O status considera a hora do fato informada pela terceirizada, não a hora em que o retorno chegou. As duas ficam registradas. | Proposta — resolve Gargalos §3 (motorista que avisa no fim do dia) |",
+          "body": "| ID | Regra | Referência |\n|---|---|---|\n| `RN-SL-028` | A terceirizada informa cinco situações: Coletado, Em rota, Entregue, Não entregue e Devolvido ao galpão. Cada retorno traz a data e a hora do fato. | Encontro 1 [25:39] (status com horário); Proposta |\n| `RN-SL-029` | O retorno chega pela API padrão do SEALog, que é o caminho preferencial; pelo portal, para a terceirizada sem integração; ou por planilha, que a plataforma traduz para o mesmo padrão, linha a linha. Linha que não se traduz é recusada com o motivo, e as outras entram. | Encontro 1 [13:15], [23:17]; Proposta |\n| `RN-SL-030` | Entregue só é aceito com o comprovante padrão: foto da entrega, data e hora, nome de quem recebeu e identificação do entregador. Sem algum desses itens, o retorno é recusado e a entrega continua como estava. | Encontro 1 [26:53], [40:16], [42:33] (padrão de comprovação a propor); Proposta |\n| `RN-SL-031` | Se quem recebeu não é o destinatário nem uma pessoa autorizada no pedido (`RN-SL-013`), o Entregue é aceito, mas abre um chamado de recebedor não autorizado para o atendimento. | Encontro 1 [43:19]; Proposta |\n| `RN-SL-032` | Não entregue exige um motivo da lista de [`06-modelo-de-dados.md`](06-modelo-de-dados.md) §3.3 e abre um chamado. | Enunciado §2 (atraso, endereço, ausência, recusa); Planejamento da equipe (RF-14); Proposta |\n| `RN-SL-033` | O mesmo retorno recebido duas vezes — mesmo código, mesma situação e mesma hora do fato — é gravado uma vez só. | Proposta |\n| `RN-SL-034` | Entrega despachada sem retorno fica sinalizada na lista quando passa do prazo estimado pela terceirizada. Enquanto estiver dentro do prazo, não há alerta. | Proposta — resolve Gargalos §3 (atualizações em lote ou só no problema); resposta da SEALog a `Q-SL-13` |\n| `RN-SL-035` | O status considera a hora do fato informada pela terceirizada, não a hora em que o retorno chegou. As duas ficam registradas. | Proposta — resolve Gargalos §3 (motorista que avisa no fim do dia) |",
           "ids": [
             "RN-SL-028",
             "RN-SL-029",
@@ -9522,6 +9522,87 @@
             "RN-SL-034",
             "RN-SL-045"
           ]
+        }
+      ]
+    },
+    {
+      "system": "geral",
+      "file": "tecnicas-de-priorizacao",
+      "title": "SEALog — Técnicas de priorização",
+      "intro": "Como a equipe decide o que entra primeiro no backlog (`DEC-SL-20`), e por quê. Cada técnica\nresponde a uma pergunta diferente; nenhuma decide sozinha. O resultado está em\n[`backlog.md`](backlog.md).\n\n---",
+      "sections": [
+        {
+          "anchor": "1-as-tecnicas-em-uso",
+          "level": 2,
+          "title": "1. As técnicas em uso",
+          "body": "| Técnica | Pergunta que responde | Onde aparece no backlog |\n|---|---|---|\n| **MoSCoW** | A release funciona sem este item? | Coluna `MoSCoW` |\n| **Valor para o cliente** | Quanto isto muda a vida da loja, da terceirizada e do consumidor? | Coluna `Valor` |\n| **Esforço** | Quanto custa construir? | Coluna `Esforço` |\n| **Matriz valor × esforço** | O que dá mais retorno por dia de trabalho? | Quadro no alto da página do backlog |\n| **Dependência** | O que precisa existir antes? | Coluna `Depende de` |\n| **Release por caso do enunciado** | Que caso inteiro a SEALog passa a ter resolvido? | Seção Releases |\n| **Prioridade da história** | Quanto esta história pesa para quem a usa? | Selo Alta ou Média na linha do item |",
+          "ids": []
+        },
+        {
+          "anchor": "2-moscow",
+          "level": 2,
+          "title": "2. MoSCoW",
+          "body": "Quatro classes, aplicadas a cada release e não ao produto inteiro: um item pode ser Must na R1 e\nShould na R2.\n\n| Classe | Regra de uso | Exemplo no backlog |\n|---|---|---|\n| **Must** | Sem ele a release não resolve o caso a que se propõe | Pedido pelo WhatsApp com formulário obrigatório (`BL-SL-06`) |\n| **Should** | Importante, mas há contorno enquanto não sai | Editar ou cancelar o pedido pelo WhatsApp (`BL-SL-17`): até lá, a loja pede ao atendimento |\n| **Could** | Entra se sobrar tempo, sem prejudicar a release | Manutenção dos dados comerciais da loja (`BL-SL-25`) |\n| **Won't** | Fora desta versão, de propósito, com o motivo escrito | Aplicativo do motorista (`BL-SL-29`): o motorista é da terceirizada (`DEC-SL-04`) |\n\n**Como evitar o erro comum.** Se tudo é Must, a classe não prioriza nada. Por isso todo Must tem de\napontar o caso do enunciado que ele resolve, ou o item de que outro Must depende. Um item que\nninguém consegue justificar assim cai para Should.",
+          "ids": [
+            "BL-SL-06",
+            "BL-SL-17",
+            "BL-SL-25",
+            "BL-SL-29",
+            "DEC-SL-04"
+          ]
+        },
+        {
+          "anchor": "3-valor-e-esforco",
+          "level": 2,
+          "title": "3. Valor e esforço",
+          "body": "**Valor** mede o efeito para o cliente, em três níveis.\n\n| Nível | Critério |\n|---|---|\n| **Alto** | Resolve um dos casos do enunciado ou a causa comum a vários |\n| **Médio** | Tira trabalho manual da equipe ou da terceirizada |\n| **Baixo** | Conforto: melhora, mas ninguém para sem ele |\n\n**Esforço** é uma estimativa por tamanho, não por hora, porque ainda não há equipe de construção\ndefinida: **P** são dias, **M** uma a duas semanas, **G** mais de duas semanas ou dependente de\nterceiro.\n\nA **matriz valor × esforço** cruza os dois. O canto de muito valor e pouco esforço entra primeiro;\nmuito valor e muito esforço pede começar cedo; pouco valor e muito esforço fica para depois ou fora.\n\n| | Esforço P | Esforço M | Esforço G |\n|---|---|---|---|\n| **Valor alto** | Faça já | Faça na ordem das dependências | Comece cedo, porque leva tempo |\n| **Valor médio** | Faça se couber | Pergunte se há contorno | Adie |\n| **Valor baixo** | Faça se sobrar | Adie | Deixe fora |",
+          "ids": []
+        },
+        {
+          "anchor": "4-dependencia-e-ordem-de-entrega",
+          "level": 2,
+          "title": "4. Dependência e ordem de entrega",
+          "body": "A ordem final não é a do valor puro: um item não pode ser construído antes do que ele usa. A coluna\n`Depende de` forma uma sequência, e a coluna `Ordem` é o resultado de combinar as duas coisas.\n\nDois casos mostram por que a ordem muda:\n\n- **Prazo de terceiro.** A conta do WhatsApp Business e os modelos de mensagem (`BL-SL-05`) são\n  aprovados pela Meta, com prazo que a equipe não controla. O item é G e vem primeiro: quanto antes\n  começa, menos tempo a R1 espera.\n- **Fundação sem valor visível.** A base técnica (`BL-SL-33`) não resolve caso nenhum, mas nenhuma\n  tela ou canal roda sem ela. Entra em segundo, porque quase tudo depende dela.",
+          "ids": [
+            "BL-SL-05",
+            "BL-SL-33"
+          ]
+        },
+        {
+          "anchor": "5-releases-por-caso-do-enunciado",
+          "level": 2,
+          "title": "5. Releases por caso do enunciado",
+          "body": "Em vez de entregar \"todas as telas de um módulo\", cada release resolve casos inteiros, para que a\nSEALog sinta a diferença no dia a dia.\n\n| Release | Casos que resolve |\n|---|---|\n| **R1** | \"Pedido com informações incompletas\" e \"O registro incorreto\" |\n| **R2** | \"O buquê de sábado\" e \"A segunda-feira de chuva\" |\n| **R3** | A cobrança e o pagamento saindo do registro |\n\nCada release corresponde a uma fase da [adoção gradual](adocao-gradual.md): só se avança quando o\ncritério de saída da fase é cumprido.",
+          "ids": []
+        },
+        {
+          "anchor": "6-quando-a-ordem-diverge-da-prioridade-da-historia",
+          "level": 2,
+          "title": "6. Quando a ordem diverge da prioridade da história",
+          "body": "Cada história de usuário tem uma prioridade (Alta ou Média) escrita por quem a descreveu. A\n**ordem do backlog** soma a ela o esforço e a dependência, e por isso as duas podem divergir. A\npágina do backlog marca cada divergência com o selo \"≠ ordem\".\n\n| História | Prioridade | Ordem no backlog | Por quê |\n|---|---|---|---|\n| `HU-SL-022`, `HU-SL-023` (fechamentos) | Média | Must na R3 | São a razão de ser da release financeira |\n| `HU-SL-017` (agente de ocorrências) | Alta | R2 | Depende do protocolo de atendimento, que a SEALog ainda vai escrever (`Q-SL-05`) |",
+          "ids": [
+            "HU-SL-022",
+            "HU-SL-023",
+            "HU-SL-017",
+            "Q-SL-05"
+          ]
+        },
+        {
+          "anchor": "7-tecnicas-consideradas-e-nao-usadas",
+          "level": 2,
+          "title": "7. Técnicas consideradas e não usadas",
+          "body": "| Técnica | Por que não |\n|---|---|\n| **RICE e ICE** (alcance, impacto, confiança, esforço) | Pedem dados de alcance e de confiança que a SEALog ainda não tem; com poucas lojas e duas terceirizadas, o alcance é quase igual para todos os itens |\n| **Kano** (o que encanta e o que é obrigação) | Exige pesquisa com os clientes; pode entrar depois do piloto, para escolher o que vem na R4 |\n| **Custo do atraso (WSJF)** | Precisa de valor em reais por item; a SEALog não deu orçamento nem número de custo do problema atual |\n| **Ordem só pela prioridade da história** | Ignora dependência e esforço (`DEC-SL-20`) |\n\nQuando a SEALog passar os números que faltam (`Q-SL-02`, volume por dia), RICE e custo do atraso\nficam viáveis, e esta página passa a registrar a mudança.",
+          "ids": [
+            "DEC-SL-20",
+            "Q-SL-02"
+          ]
+        },
+        {
+          "anchor": "8-quando-a-equipe-revisa",
+          "level": 2,
+          "title": "8. Quando a equipe revisa",
+          "body": "O backlog é revisado a cada fim de release e quando uma decisão muda o escopo. Em cada revisão:\n\n1. Confere se os Must de cada release ainda resolvem o caso a que se propõem.\n2. Rebaixa para Should o Must que ninguém consegue justificar.\n3. Refaz a matriz valor × esforço com o esforço real medido na release anterior.\n4. Registra a mudança de ordem e o motivo, em vez de só reordenar a lista.",
+          "ids": []
         }
       ]
     }
@@ -13684,12 +13765,12 @@
       "system": "sl",
       "file": "02-regras-de-negocio",
       "anchor": "1-entrada-de-pedidos",
-      "title": "O prazo padrão é o dia útil seguinte ao pedido; a loja pode agendar outra data. A data prevista da entrega sai dessa regra. O horário a partir do qual o pedido passa para o dia útil seguinte não está na origem (`Q-SL-01`).",
-      "text": "**Referência:** Enunciado §2 (prazo padrão); `Q-SL-01`",
+      "title": "O prazo padrão é o dia útil seguinte ao pedido; a loja pode agendar outra data. Pedido feito depois das 18h conta como feito no dia útil seguinte. A data prevista da entrega sai dessa regra.",
+      "text": "**Referência:** Enunciado §2 (prazo padrão); resposta da SEALog a `Q-SL-01` (corte às 18h)",
       "via": "tabela",
       "fields": {
-        "Regra": "O prazo padrão é o dia útil seguinte ao pedido; a loja pode agendar outra data. A data prevista da entrega sai dessa regra. O horário a partir do qual o pedido passa para o dia útil seguinte não está na origem (`Q-SL-01`).",
-        "Referência": "Enunciado §2 (prazo padrão); `Q-SL-01`"
+        "Regra": "O prazo padrão é o dia útil seguinte ao pedido; a loja pode agendar outra data. Pedido feito depois das 18h conta como feito no dia útil seguinte. A data prevista da entrega sai dessa regra.",
+        "Referência": "Enunciado §2 (prazo padrão); resposta da SEALog a `Q-SL-01` (corte às 18h)"
       },
       "severity": null,
       "hasOutcome": null,
@@ -13720,11 +13801,11 @@
       "system": "sl",
       "file": "02-regras-de-negocio",
       "anchor": "1-entrada-de-pedidos",
-      "title": "A loja edita ou cancela o pedido pelo WhatsApp até a terceirizada registrar a coleta. Depois disso, a mudança só se faz pelo atendimento. O limite está para confirmação (`Q-SL-04`).",
+      "title": "A loja edita ou cancela o pedido pelo WhatsApp até a terceirizada registrar a coleta. Depois disso, a mudança só se faz pelo atendimento. Na edição, a loja altera só os itens que ainda não saíram para entrega. Pedir a alteração por código do produto ainda está em debate (`Q-SL-04`).",
       "text": "**Referência:** Encontro 1 [08:38] (editar pedido); Proposta; `Q-SL-04`",
       "via": "tabela",
       "fields": {
-        "Regra": "A loja edita ou cancela o pedido pelo WhatsApp até a terceirizada registrar a coleta. Depois disso, a mudança só se faz pelo atendimento. O limite está para confirmação (`Q-SL-04`).",
+        "Regra": "A loja edita ou cancela o pedido pelo WhatsApp até a terceirizada registrar a coleta. Depois disso, a mudança só se faz pelo atendimento. Na edição, a loja altera só os itens que ainda não saíram para entrega. Pedir a alteração por código do produto ainda está em debate (`Q-SL-04`).",
         "Referência": "Encontro 1 [08:38] (editar pedido); Proposta; `Q-SL-04`"
       },
       "severity": null,
@@ -13960,12 +14041,12 @@
       "system": "sl",
       "file": "02-regras-de-negocio",
       "anchor": "3-despacho",
-      "title": "A coleta na loja é feita pela terceirizada. Hoje a coleta acontece entre 14h e 18h e a loja pode levar o volume ao galpão até 17h; se essas janelas valem para a terceirizada está em `Q-SL-02`.",
-      "text": "**Referência:** Encontro 1 [15:19], [17:36]; Enunciado §2 (janelas de hoje); `Q-SL-02`",
+      "title": "A coleta na loja é feita só pela terceirizada, hoje entre 14h e 18h. A loja não leva o volume ao galpão da SEALog.",
+      "text": "**Referência:** Encontro 1 [15:19], [17:36]; Enunciado §2 (janelas de hoje); resposta da SEALog a `Q-SL-02`",
       "via": "tabela",
       "fields": {
-        "Regra": "A coleta na loja é feita pela terceirizada. Hoje a coleta acontece entre 14h e 18h e a loja pode levar o volume ao galpão até 17h; se essas janelas valem para a terceirizada está em `Q-SL-02`.",
-        "Referência": "Encontro 1 [15:19], [17:36]; Enunciado §2 (janelas de hoje); `Q-SL-02`"
+        "Regra": "A coleta na loja é feita só pela terceirizada, hoje entre 14h e 18h. A loja não leva o volume ao galpão da SEALog.",
+        "Referência": "Encontro 1 [15:19], [17:36]; Enunciado §2 (janelas de hoje); resposta da SEALog a `Q-SL-02`"
       },
       "severity": null,
       "hasOutcome": null,
@@ -14115,12 +14196,12 @@
       "system": "sl",
       "file": "02-regras-de-negocio",
       "anchor": "4-retorno-da-terceirizada",
-      "title": "Entrega despachada sem retorno da terceirizada há mais tempo que o limite combinado fica sinalizada na lista. O limite não está na origem (`Q-SL-13`).",
-      "text": "**Referência:** Proposta — resolve Gargalos §3 (atualizações em lote ou só no problema); `Q-SL-13`",
+      "title": "Entrega despachada sem retorno fica sinalizada na lista quando passa do prazo estimado pela terceirizada. Enquanto estiver dentro do prazo, não há alerta.",
+      "text": "**Referência:** Proposta — resolve Gargalos §3 (atualizações em lote ou só no problema); resposta da SEALog a `Q-SL-13`",
       "via": "tabela",
       "fields": {
-        "Regra": "Entrega despachada sem retorno da terceirizada há mais tempo que o limite combinado fica sinalizada na lista. O limite não está na origem (`Q-SL-13`).",
-        "Referência": "Proposta — resolve Gargalos §3 (atualizações em lote ou só no problema); `Q-SL-13`"
+        "Regra": "Entrega despachada sem retorno fica sinalizada na lista quando passa do prazo estimado pela terceirizada. Enquanto estiver dentro do prazo, não há alerta.",
+        "Referência": "Proposta — resolve Gargalos §3 (atualizações em lote ou só no problema); resposta da SEALog a `Q-SL-13`"
       },
       "severity": null,
       "hasOutcome": null,

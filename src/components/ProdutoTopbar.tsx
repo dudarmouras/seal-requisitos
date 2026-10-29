@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-/** Topo das páginas da visão de produto. As sete páginas já estão na barra lateral; aqui fica só o
+/** Topo das páginas da visão de produto. As páginas de produto já estão na barra lateral; aqui fica só o
  *  rótulo da seção e o Markdown de origem — que as páginas de texto corrido já mostram inteiro e
  *  dispensam (`documento={false}`). */
 export default function ProdutoTopbar({ file, documento = true }: { file: string; documento?: boolean }) {

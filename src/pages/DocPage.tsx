@@ -36,7 +36,7 @@ export default function DocPage(props: { systemId?: string; file?: string }) {
   if (!doc) return <Navigate to={systemId && systemId !== "geral" ? `/sistema/${systemId}` : "/"} replace />;
 
   const sys = systemById.get(doc.system);
-  // Nas páginas da visão de produto, as sete já estão na barra lateral: o índice fica só com as seções.
+  // Nas páginas da visão de produto, elas já estão na barra lateral: o índice fica só com as seções.
   const produto = props.file ? paginaDoArquivo(doc.file) : undefined;
   const arquivos = produto
     ? []
