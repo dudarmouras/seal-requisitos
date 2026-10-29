@@ -10,7 +10,7 @@ em APIs (`DEC-SL-12`).
 
 | ID | Sistema | Natureza | Direção | Uso |
 |---|---|---|---|---|
-| `INT-001` | WhatsApp (plataforma oficial da Meta) | Mensageria, com formulários | Entrada e saída | Menu, formulário de pedido, acompanhamento, edição, relato de problema e avisos à loja |
+| `INT-001` | WhatsApp (plataforma oficial da Meta) | Mensageria, com formulários | Entrada e saída | Menu, formulário de pedido, edição, relato de problema e avisos à loja |
 | `INT-002` | API padrão da terceirizada | API do SEALog, publicada para as terceirizadas | Entrada e saída | Despacho e alteração para a terceirizada; retorno de status e comprovante |
 | `INT-003` | Planilhas (XLSX, CSV) | Arquivo | Entrada e saída | Pedidos de loja e retorno de terceirizada, traduzidos para o padrão; exportação das listas |
 | `INT-004` | Agente de ocorrências (n8n com modelo de linguagem) | Automação com IA | Entrada | Conversa com a loja sobre o problema e abre o chamado com a sugestão |
@@ -22,19 +22,19 @@ em APIs (`DEC-SL-12`).
 | | |
 |---|---|
 | **Sistema externo** | Plataforma oficial de mensagens do WhatsApp (Meta Cloud API), no número que a SEALog já usa, com formulários do WhatsApp (WhatsApp Flows) que devolvem os campos estruturados |
-| **Direção** | Entrada: menu, formulário de pedido, acompanhamento, edição, relato. Saída: avisos à loja |
-| **HUs dependentes** | `HU-SL-001` a `HU-SL-005`, `HU-SL-017`, `HU-SL-018`, `HU-SL-020`, `HU-SL-021` |
-| **Autenticação** | Credencial da conta comercial da SEALog na Meta; o número da loja é conferido contra o cadastro (`RN-SL-003`) |
-| **Mensagens** | `MSG-SL-001` a `MSG-SL-011`, `MSG-SL-013`, `MSG-SL-022` a `MSG-SL-025` |
+| **Direção** | Entrada: menu, formulário de pedido, edição, relato. Saída: avisos à loja |
+| **HUs dependentes** | `HU-SL-001`, `HU-SL-003`, `HU-SL-004`, `HU-SL-017`, `HU-SL-018`, `HU-SL-020`, `HU-SL-021` |
+| **Autenticação** | Credencial da conta comercial da SEALog na Meta; a loja não tem cadastro, e o número do primeiro pedido é confirmado pela equipe (`RN-SL-014`) |
+| **Mensagens** | `MSG-SL-001` a `MSG-SL-007`, `MSG-SL-009` a `MSG-SL-011`, `MSG-SL-013`, `MSG-SL-022` a `MSG-SL-025` |
 
 A loja continua no mesmo número de WhatsApp (Enunciado §2; Encontro 1 [07:35]). A mensagem dela
-abre o menu de três opções (`RN-SL-004`); o novo pedido abre um formulário que não envia sem os
+abre o menu de duas opções (`RN-SL-004`); o novo pedido abre um formulário que não envia sem os
 dados obrigatórios (`RN-SL-006`). Os avisos que a SEALog manda por iniciativa própria — pedido
 recebido, problema na entrega, decisão, lote — usam modelos de mensagem aprovados pela Meta.
 
 | Situação | Comportamento |
 |---|---|
-| Número não autorizado | `MSG-SL-002`; nada é registrado |
+| Número novo | O pedido fica "A confirmar" e a loja recebe `MSG-SL-002` (`RN-SL-014`) |
 | Envio aceito | Aviso registrado como Enviado; depois Entregue e Lido, quando a plataforma informa (`RN-SL-045`) |
 | Envio recusado ou número sem WhatsApp | Aviso registrado como Falhou e levado ao painel de chamados (`MSG-SL-027`) |
 | Plataforma fora do ar | Os avisos esperam e são reenviados; os que falharem vão ao painel |
@@ -115,8 +115,8 @@ as colunas e os filtros da tela, e nada exportado volta ao sistema (`RN-SL-050`)
 | **Autenticação** | Token fixo no cabeçalho de autorização (`Authorization: Bearer`), aceito só nessa rota; CORS restrito; limite de chamadas |
 | **Mensagens** | `MSG-SL-025`, `MSG-SL-026` |
 
-O agente começa quando a loja toca em "Relatar problema" no acompanhamento do pedido
-(`RN-SL-004`). Ele classifica o tipo, colhe descrição e foto, compara com o protocolo de atendimento
+O agente começa quando a loja escreve para relatar um problema, com o código do pedido
+(`RN-SL-036`; a porta de entrada está em `Q-SL-20`). Ele classifica o tipo, colhe descrição e foto, compara com o protocolo de atendimento
 da SEALog, que vai nas instruções do agente, e envia o chamado ao SEALog. O SEALog grava o chamado
 e avisa o painel em tempo real. O agente não decide (`RN-SL-037`). O Não entregue que chega pela
 API da terceirizada também é mandado ao agente, só para ganhar a sugestão (`RN-SL-039`).

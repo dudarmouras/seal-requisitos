@@ -26,8 +26,8 @@ Should na R2.
 | Classe | Regra de uso | Exemplo no backlog |
 |---|---|---|
 | **Must** | Sem ele a release não resolve o caso a que se propõe | Pedido pelo WhatsApp com formulário obrigatório (`BL-SL-06`) |
-| **Should** | Importante, mas há contorno enquanto não sai | Editar ou cancelar o pedido pelo WhatsApp (`BL-SL-17`): até lá, a loja pede ao atendimento |
-| **Could** | Entra se sobrar tempo, sem prejudicar a release | Manutenção dos dados comerciais da loja (`BL-SL-25`) |
+| **Should** | Importante, mas há contorno enquanto não sai | Exportação dos pedidos da terceirizada em PDF ou planilha (`BL-SL-44`): até lá, a terceirizada usa o portal |
+| **Could** | Entra se sobrar tempo, sem prejudicar a release | Painel de chamados em tempo real (`BL-SL-42`): até lá, a equipe recarrega a tela |
 | **Won't** | Fora desta versão, de propósito, com o motivo escrito | Aplicativo do motorista (`BL-SL-29`): o motorista é da terceirizada (`DEC-SL-04`) |
 
 **Como evitar o erro comum.** Se tudo é Must, a classe não prioriza nada. Por isso todo Must tem de

@@ -21,7 +21,7 @@ fontes discordam, a reunião de 28/10/2026 manda sobre o enunciado (`fontes/READ
 > ele ficam com a terceirizada (Encontro 1 [13:15], [17:36]).
 
 **Desfecho** — vale a reunião. O SEALog não tem aplicativo do motorista, montagem de rotas nem
-etiqueta. No lugar entram o despacho pela tabela de regiões (`RN-SL-023`), o padrão único de
+etiqueta. No lugar entram o despacho pelas regiões das terceirizadas (`RN-SL-023`), o padrão único de
 retorno e comprovante (`RN-SL-019`, `RN-SL-030`) e o código SEALog como identificação do pacote
 (`RN-SL-027`). A coleta na loja passa a ser da terceirizada (`RN-SL-025`). O prazo de entrega ao
 cliente também é responsabilidade da terceirizada, pela resposta da SEALog a `Q-SL-12`.
@@ -36,8 +36,8 @@ cliente também é responsabilidade da terceirizada, pela resposta da SEALog a `
 
 | Item da equipe | O que mudou |
 |---|---|
-| RF-02 Autenticação de clientes | A loja é identificada pelo número de WhatsApp autorizado, sem senha (`RN-SL-054`) |
-| RF-04 Sincronização de dados comerciais | Absorvido no RF-03: com banco único, não há o que sincronizar (`RN-SL-015`) |
+| RF-02 Autenticação de clientes | A loja não tem senha nem cadastro; o primeiro pedido de um número é confirmado pela equipe (`RN-SL-014`) |
+| RF-01, RF-03, RF-04 Cadastro da loja e dados comerciais | Saíram: a loja não tem cadastro (`DIV-SL-10`) |
 | RF-05, RF-06 Cadastro e análise de motoristas | Substituídos pelo cadastro de terceirizadas (`HU-SL-007`) |
 | RF-09 Notificação por e-mail | O aviso vai pelo WhatsApp, onde a loja já está (`RN-SL-043`) |
 | RF-10 Forma de coleta | A coleta é só da terceirizada; a loja não leva mais ao galpão (resposta da SEALog a `Q-SL-02`) |
@@ -68,8 +68,26 @@ exportado volta (`RN-SL-050`).
 errado, recebedor não autorizado, sem retorno e outro (`06-modelo-de-dados.md` §3.4). Não há
 protocolo escrito por enquanto (`Q-SL-05`): o coordenador trata cada chamado manualmente, com a
 sugestão do agente, sem política inventada. O conteúdo enviado ao modelo não leva dados pessoais do
-destinatário (`RN-SL-038`). O agente de consulta de status não existe por enquanto: o acompanhamento
-é um botão do menu, sem IA. O mesmo vale para a coleta de CPF que ele faria.
+destinatário (`RN-SL-038`). O agente de consulta de status não existe: a loja acompanha pela
+terceirizada (`DIV-SL-10`). O mesmo vale para a coleta de CPF que ele faria.
+
+### `DIV-SL-10` — A loja não tem cadastro e não acompanha o pedido pelo SEALog
+
+> **Divergência `DIV-SL-10`:** a primeira versão desta documentação cadastrava a loja, com os
+> números de WhatsApp autorizados e os dados comerciais, e deixava a loja consultar o status do
+> pedido no menu do WhatsApp. Em 29/10/2026 a equipe decidiu que a loja não se cadastra — quem se
+> cadastra são as empresas terceirizadas — e que o acompanhamento do pedido é feito pela
+> terceirizada, não pelo SEALog.
+
+**Desfecho** — vale a decisão da equipe. Saíram `RF-SL-02`, `RF-SL-05`, `RF-SL-06` e `RF-SL-08`,
+as histórias `HU-SL-002`, `HU-SL-005`, `HU-SL-006` e `HU-SL-008`, as telas `TL-SL-005` e
+`TL-SL-007`, a entidade `ENT-SL-001`, as regras `RN-SL-015` e `RN-SL-054` e o item `BL-SL-07`; os
+ids não são reaproveitados. A tabela de regiões virou parte do cadastro da terceirizada
+(`HU-SL-007`). No lugar do número autorizado entra a confirmação: o primeiro pedido de um número fica
+"A confirmar" até a equipe aprovar (`RN-SL-014`, `Q-SL-18`). O que o cadastro dava ao pedido passa
+a vir dele: o endereço de coleta (`Q-SL-19`) e o nome da loja, que a cobrança usa (`Q-SL-21`). O
+menu do WhatsApp fica com novo pedido e editar ou cancelar, e a entrada do relato de problema está
+em `Q-SL-20`.
 
 ## 2. Riscos
 
@@ -131,6 +149,30 @@ A solução usa serviços pagos por uso e não pede nada novo à loja. A entrada
 cada terceirizada é formalizada e passa a enviar os dados direto para o banco e o painel (resposta
 da SEALog a `Q-SL-14`). Quanto tempo a planilha convive com o sistema segue em aberto em `Q-SL-14`.
 
+### `DIV-SL-11` — O aviso à loja, essencial, depende do painel de chamados, desejável
+
+> **Risco:** a equipe marcou o aviso automático à loja (`RF-SL-20`, `BL-SL-21`) e as entregas
+> afetadas por loja (`RF-SL-21`, `BL-SL-24`) como essenciais, e o painel de chamados (`RF-SL-18`,
+> `BL-SL-20`) como desejável. O aviso nasce do chamado, e a consulta de afetados lista as entregas
+> "com chamado" (`RN-SL-043`, `RN-SL-044`).
+
+Sem o painel, o aviso e a consulta funcionam só a partir do Não entregue da terceirizada, e o
+chamado de recebedor não autorizado ou de relato da loja não existe. A prioridade do painel ou a
+dependência precisa ser decidida pela equipe; até lá, a dependência `BL-SL-21` → `BL-SL-20` está
+mantida no backlog, com a classe dos dois à vista.
+
+### `DIV-SL-12` — O pagamento, essencial, depende do comprovante padrão, desejável
+
+> **Risco:** a equipe marcou o pagamento das terceirizadas (`RF-SL-23`, `BL-SL-28`) como essencial e
+> o comprovante padrão (`RF-SL-16`, `BL-SL-15`) como desejável. O pagamento só vale para entrega
+> com comprovante aceito (`RN-SL-048`), e o Entregue só é aceito com o comprovante (`RN-SL-030`).
+
+Se o comprovante for desejável de verdade, `RN-SL-030` e `RN-SL-048` perdem o ponto de apoio: o
+pagamento passaria a se basear no "Entregue" informado, sem prova, que é justamente a dúvida "a
+parceira diz que entregou" (`DIV-SL-07`). A equipe precisa decidir entre subir o comprovante para
+essencial ou mudar a regra do pagamento; até lá, as duas classes estão mantidas como a equipe as
+deu.
+
 ## 3. Perguntas à SEALog
 
 ### 3.1 Em aberto
@@ -145,6 +187,10 @@ da SEALog a `Q-SL-14`). Quanto tempo a planilha convive com o sistema segue em a
 | `Q-SL-14` | Por quanto tempo planilha e sistema convivem, e com qual terceirizada se começa? | Adoção é risco | `DIV-SL-09` |
 | `Q-SL-16` | Por quanto tempo as fotos do comprovante e os dados do destinatário devem ser guardados? A resposta "pra sempre" precisa ser revista pela LGPD. | Exigência da LGPD e custo de armazenamento | `DIV-SL-08` |
 | `Q-SL-17` | Quanto tempo a entrada da equipe fica bloqueada depois de cinco tentativas erradas, e quem desbloqueia? A pergunta anterior não ficou clara. | Ponto a detalhar da lista da equipe (RNF-01) | `RN-SL-052` |
+| `Q-SL-18` | Quem na equipe confirma o número de uma loja nova, e como sabe que ela é cliente? A proposta é o atendente ou o coordenador, conferindo o nome da loja no primeiro pedido. | Sem cadastro, é a única barreira contra pedido falso (`DEC-SL-03`) | `RN-SL-014` |
+| `Q-SL-19` | De onde vem o endereço de coleta, já que a loja não tem cadastro? A proposta é pedi-lo no formulário. | Vai no despacho da terceirizada | `RN-SL-005`, `RN-SL-024` |
+| `Q-SL-20` | Como a loja chega ao agente de ocorrências, se o menu só tem novo pedido e editar ou cancelar? | Sem botão no menu, o relato precisa de outra porta de entrada | `RN-SL-004`, `RN-SL-036`; `HU-SL-017` |
+| `Q-SL-21` | Como a cobrança identifica a loja, sem cadastro: pelo nome digitado no pedido ou por outro dado? | O nome digitado varia de um pedido para outro | `RN-SL-047`; `HU-SL-022` |
 
 ### 3.2 Respondidas em 29/10/2026
 
@@ -172,10 +218,10 @@ conferido na primeira versão e continua coberto.
 | `Enunciado §2` Solicitação e conferência | `entrada-pedidos` | 4 de 4 | 2026-10-29 | `HU-SL-001`, `HU-SL-004`; `RN-SL-002`, `RN-SL-005`, `RN-SL-009` |
 | `Enunciado §2` Registro e planejamento | `despacho` | 4 de 4 | 2026-10-29 | `HU-SL-009`, `HU-SL-010`; `DIV-SL-01`; `Q-SL-02` |
 | `Enunciado §2` Execução e atualização | `retorno-terceirizada` | 5 de 5 | 2026-10-29 | `HU-SL-013` a `HU-SL-016`, `HU-SL-019`; `Q-SL-03` |
-| `Enunciado §2` "Cadê minha entrega?" | `entrada-pedidos` | 1 de 1 | 2026-10-29 | `HU-SL-002`, `HU-SL-009` |
+| `Enunciado §2` "Cadê minha entrega?" | `despacho` | 1 de 1 | 2026-10-29 | `HU-SL-009`; `DIV-SL-10` |
 | `Enunciado §8` Os quatro casos | transversal | 4 de 4 | 2026-10-29 | `00-visao-geral.md` §6 |
 | `Encontro 1` Terceirização e retorno | `retorno-terceirizada` | 8 de 8 | 2026-10-29 | `RN-SL-019`, `RN-SL-028` a `RN-SL-031`; `DIV-SL-01`, `DIV-SL-06`, `DIV-SL-07` |
-| `Encontro 1` WhatsApp e formulário | `entrada-pedidos` | 4 de 4 | 2026-10-29 | `RN-SL-002` a `RN-SL-006`, `RN-SL-054` |
+| `Encontro 1` WhatsApp e formulário | `entrada-pedidos` | 4 de 4 | 2026-10-29 | `RN-SL-002` a `RN-SL-006`, `RN-SL-014` |
 | `Encontro 1` Restrições: custo, volume, mobile | transversal | 4 de 4 | 2026-10-29 | `DIV-SL-09`; `DEC-SL-13`; requisitos não funcionais |
 | `Planejamento da equipe` RF-01 a RF-20, RNF, RN | transversal | 24 de 24 | 2026-10-29 | `DIV-SL-02`; [`requisitos`](../00-visao-geral/requisitos.md) |
 | `Plano do agente` | `ocorrencias` | 6 de 6 | 2026-10-29 | `HU-SL-017`, `HU-SL-018`; `INT-004`; `DIV-SL-04`, `DIV-SL-08` |
@@ -196,7 +242,7 @@ conferido na primeira versão e continua coberto.
 | Atualização em lote ou só no problema (Enunciado §2) | `RN-SL-034`, `RN-SL-035`; `HU-SL-013` |
 | Volta ao galpão 17h–18h; coordenador decide sem regra (Enunciado §2) | `RN-SL-041`, `RN-SL-042`; `HU-SL-019`; `Q-SL-03`, `Q-SL-07` |
 | Planilha fechada às 19h; financeiro calcula a cobrança (Enunciado §2) | `RN-SL-046`, `RN-SL-047`; `HU-SL-022` |
-| "Cadê minha entrega?" em 5 saltos, 20 minutos a 2 horas (Enunciado §2) | `RN-SL-022`; `HU-SL-002`, `HU-SL-009` |
+| "Cadê minha entrega?" em 5 saltos, 20 minutos a 2 horas (Enunciado §2) | `RN-SL-022`; `HU-SL-009`; `DIV-SL-10` |
 | Terceirização: motorista e comunicação com ele são da terceirizada (Encontro 1 [13:15]) | `DIV-SL-01` |
 | Solicitação vai à terceirizada da região (Encontro 1 [15:19]) | `RN-SL-017`, `RN-SL-023`; `HU-SL-010`, `HU-SL-011` |
 | Sem fluxo quando dá errado (Encontro 1 [19:03]) | `RN-SL-039` a `RN-SL-042`; `FLX-SL-05`, `FLX-SL-06` |

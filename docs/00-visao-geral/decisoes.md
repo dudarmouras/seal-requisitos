@@ -224,7 +224,7 @@ aplicativo do motorista e a montagem de rotas, está nas alternativas descartada
 | **Status** | Tomada |
 | **Data** | 29/10/2026 |
 | **Tema** | Método |
-| **Contexto** | São 24 histórias, o risco principal é a adoção e o volume deve chegar a 400 entregas por dia no mês que vem (Encontro 1 [23:40]). Entregar tudo de uma vez adia o primeiro uso real |
+| **Contexto** | São 20 histórias, o risco principal é a adoção e o volume deve chegar a 400 entregas por dia no mês que vem (Encontro 1 [23:40]). Entregar tudo de uma vez adia o primeiro uso real |
 | **Decisão** | Cada item do backlog recebe uma classe MoSCoW (Must, Should, Could, Won't), um valor, um esforço e as dependências. As releases são cortadas para que cada uma resolva casos inteiros do enunciado |
 | **Alternativas descartadas** | Ordenar só pela prioridade da HU (Alta, Média): ignora dependência |
 | **Consequências** | A ordem do backlog pode divergir da prioridade da HU, e a página de backlog mostra essa diferença. O backlog atual é rascunho, para a equipe revisar |

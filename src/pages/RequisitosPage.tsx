@@ -16,6 +16,12 @@ function agrupar(lista: Artifact[], campo: string): [string, Artifact[]][] {
   return [...grupos];
 }
 
+const CLASSE_PRIORIDADE: Record<string, string> = {
+  Essencial: "moscow-must",
+  Importante: "moscow-should",
+  Desejável: "moscow-could",
+};
+
 const casa = (a: Artifact, q: string) =>
   !q || [a.id, a.title, ...Object.values(a.fields)].some((v) => v.toLowerCase().includes(q));
 
@@ -127,6 +133,7 @@ export default function RequisitosPage() {
                   <tr>
                     <th>ID</th>
                     <th>Requisito</th>
+                    <th>Prioridade</th>
                     <th>Histórias</th>
                     <th>Regras</th>
                   </tr>
@@ -142,6 +149,7 @@ export default function RequisitosPage() {
                       <td>
                         <MdInline text={r.fields["Requisito"] ?? r.title} />
                       </td>
+                      <td>{r.fields["Prioridade"] ? <span className={"moscow " + CLASSE_PRIORIDADE[r.fields["Prioridade"]]}>{r.fields["Prioridade"]}</span> : "—"}</td>
                       <td>
                         {idsDoTexto(r.fields["HUs"]).map((id) => {
                           const hu = huById.get(id);

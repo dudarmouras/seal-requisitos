@@ -28,9 +28,9 @@ quem precisa saber onde está uma entrega consulta, em vez de perguntar.
 
 | Público | Uso típico |
 |---|---|
-| Lojas (clientes da SEALog) | Fazer, acompanhar e editar pedidos pelo WhatsApp; relatar problema; receber avisos |
-| Atendentes | Registrar o pedido que chega fora do formulário, tratar chamados, responder à loja |
-| Coordenador de operação | Manter lojas, terceirizadas e regiões; decidir o destino do que volta ao galpão |
+| Lojas (clientes da SEALog) | Fazer, editar e cancelar pedidos pelo WhatsApp, sem cadastro; relatar problema; receber avisos |
+| Atendentes | Registrar o pedido que chega fora do formulário, confirmar o número de loja nova, tratar chamados, responder à loja |
+| Coordenador de operação | Manter as terceirizadas e as regiões que atendem; decidir o destino do que volta ao galpão |
 | Financeiro | Fechar a cobrança das lojas e o pagamento das terceirizadas |
 | Terceirizadas (hoje duas) | Receber os pedidos da região e devolver status e comprovante, pela API, pelo portal ou por planilha |
 | Agente de ocorrências | Conversar com a loja sobre o problema e sugerir a ação à equipe, sem decidir |
@@ -39,8 +39,8 @@ Perfis, permissões e autenticação estão em [`01-atores-e-permissoes.md`](01-
 
 ## 3. Escopo desta documentação
 
-**Dentro:** a entrada do pedido pelo WhatsApp, os cadastros de lojas, terceirizadas e regiões, o
-despacho para a terceirizada da região, o retorno de status e comprovante, as ocorrências e
+**Dentro:** a entrada do pedido pelo WhatsApp, o cadastro das terceirizadas e das regiões que
+atendem, o despacho para a terceirizada da região, o retorno de status e comprovante, as ocorrências e
 devoluções com o agente de ocorrências, o financeiro dos dois lados e o acesso por perfil.
 
 **Fora:**
@@ -49,7 +49,8 @@ devoluções com o agente de ocorrências, o financeiro dos dois lados e o acess
 |---|---|
 | Aplicativo do motorista, roteiro e montagem de rotas | O motorista e a rota são da terceirizada (Encontro 1 [13:15], [17:36]; `DIV-SL-01`) |
 | Etiqueta impressa | O pacote é identificado pelo código SEALog (`RN-SL-027`) |
-| Agente de consulta de status por IA | Fora por enquanto; o acompanhamento é um botão do menu, sem IA (`DIV-SL-04`) |
+| Agente de consulta de status por IA | Fora: a loja acompanha pela terceirizada, e o SEALog não oferece consulta de status (`DIV-SL-04`, `DIV-SL-10`) |
+| Cadastro da loja e acompanhamento do pedido pela loja | Fora: a loja não se cadastra, e quem informa onde está o pedido é a terceirizada (`DIV-SL-10`) |
 | Emissão de nota fiscal e cobrança bancária | A origem só cita o cálculo da cobrança (Enunciado §2) |
 | Rastreamento do veículo por GPS | Não citado na origem; o status vem do retorno da terceirizada |
 | Aviso ao destinatário | A SEALog fala com a loja, que fala com o consumidor (Enunciado §2; `Q-SL-15`) |
@@ -75,8 +76,8 @@ A arquitetura proposta — baseada em APIs, com banco relacional único — est�
 
 | # | Módulo | Slug | Escopo | HUs | Telas |
 |---|---|---|---|---|---|
-| 1 | Entrada de pedidos | `entrada-pedidos` | Menu e formulário no WhatsApp, acompanhar, editar, e o pedido que chega fora do formulário | `HU-SL-001` a `HU-SL-004` | `TL-SL-002` a `TL-SL-004` |
-| 2 | Cadastros | `cadastros` | Lojas e números autorizados, dados comerciais, terceirizadas e tabela de regiões | `HU-SL-005` a `HU-SL-007` | `TL-SL-005` a `TL-SL-007` |
+| 1 | Entrada de pedidos | `entrada-pedidos` | Menu e formulário no WhatsApp, editar ou cancelar, e o pedido que chega fora do formulário | `HU-SL-001`, `HU-SL-003`, `HU-SL-004` | `TL-SL-002` a `TL-SL-004` |
+| 2 | Cadastros | `cadastros` | Terceirizadas e as regiões que cada uma atende | `HU-SL-007` | `TL-SL-006` |
 | 3 | Despacho | `despacho` | Lista única de entregas, distribuição pela região, envio à terceirizada e alterações | `HU-SL-009` a `HU-SL-012` | `TL-SL-008`, `TL-SL-009` |
 | 4 | Retorno da terceirizada | `retorno-terceirizada` | Status pela API, pelo portal ou por planilha, e o comprovante padrão | `HU-SL-013` a `HU-SL-016` | `TL-SL-010`, `TL-SL-011` |
 | 5 | Ocorrências e devoluções | `ocorrencias` | Relato pelo WhatsApp com o agente, chamados, devolução no galpão, avisos à loja e afetados por loja | `HU-SL-017` a `HU-SL-021` | `TL-SL-012` a `TL-SL-015` |
@@ -99,8 +100,8 @@ O enunciado traz quatro casos (Enunciado §8). A tabela diz que parte do sistema
 
 | Restrição | Efeito nos requisitos |
 |---|---|
-| As lojas pedem por WhatsApp e não vão mudar de canal (Enunciado §2; Encontro 1 [07:35]) | Pedido, acompanhamento, edição e relato acontecem na conversa do WhatsApp, sem instalar nada (`RN-SL-002`) |
-| Atendimento de segunda a sexta, 8h às 18h, e sábado, 8h às 12h; operação de segunda a sábado, 7h às 19h (Enunciado §2) | Avisos à loja e acompanhamento funcionam sem atendente (`RN-SL-043`) |
+| As lojas pedem por WhatsApp e não vão mudar de canal (Enunciado §2; Encontro 1 [07:35]) | Pedido, edição e relato acontecem na conversa do WhatsApp, sem instalar nada (`RN-SL-002`) |
+| Atendimento de segunda a sexta, 8h às 18h, e sábado, 8h às 12h; operação de segunda a sábado, 7h às 19h (Enunciado §2) | Pedido e avisos à loja funcionam sem atendente (`RN-SL-043`) |
 | Terceirizadas com pouca habilidade com tecnologia; adaptação gradual (Encontro 1 [23:17]) | Três caminhos de retorno — API, portal simples e planilha traduzida — com o mesmo padrão (`RN-SL-029`) |
 | Cada terceirizada tem seu padrão, e outras podem entrar (Encontro 1 [26:53], [27:54]) | Padrão único de status e comprovante para todas (`RN-SL-019`) |
 | Empresa pequena em expansão; custo controlado (Encontro 1 [29:03], [30:33]) | Serviços pagos por uso; custo estimado em [`infraestrutura-e-custos`](../00-visao-geral/infraestrutura-e-custos.md) |

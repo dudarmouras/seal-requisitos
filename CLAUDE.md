@@ -59,9 +59,10 @@ que define cada um (`/id/<id>`). A leitura integral está em
 
 ## O sistema
 
-Um sistema, `SL` (SEALog), em `docs/01-sealog/`, com os dez arquivos do contrato: 7 módulos, 24
-HUs, 51 regras, 6 fluxogramas, 17 telas, 14 entidades, 3 integrações (`INT-001` a `INT-003`, faixa
-`INT-001` a `INT-009`). Sistema novo entra em `SYSTEMS` de
+Um sistema, `SL` (SEALog), em `docs/01-sealog/`, com os dez arquivos do contrato: 7 módulos, 20
+HUs, 52 regras, 6 fluxogramas, 15 telas, 13 entidades, 4 integrações (`INT-001` a `INT-004`, faixa
+`INT-001` a `INT-009`). Os ids retirados não são reaproveitados, então a numeração tem vazios
+(`DIV-SL-10`): a loja não tem cadastro, e as regiões moram no cadastro da terceirizada. Sistema novo entra em `SYSTEMS` de
 [`scripts/gerar-requisitos-json.mjs`](scripts/gerar-requisitos-json.mjs), em `PASTAS` de
 [`scripts/conferir-md-vs-json.mjs`](scripts/conferir-md-vs-json.mjs) e em `PASTA_DO_SISTEMA` de
 [`src/lib/mdblock.tsx`](src/lib/mdblock.tsx). **A sigla tem de ter duas letras**: `RE_ID` e o app só
@@ -96,7 +97,7 @@ escalabilidade (`/escalabilidade`).
   reproduz a ordem da SIAL e **não exibe `**Atores**`, `**Origem legada**` nem `**Referências**`**.
 - **`**Integrações e APIs**` é o rótulo canônico** e marcador de parser em três pontos de
   `gerar-requisitos-json.mjs`. Renomear só na documentação faz a HU receber `integrationsNote: null`
-  **em silêncio**. Confira o placar: 24 HUs, 24 com nota de integração.
+  **em silêncio**. Confira o placar: 20 HUs, 20 com nota de integração.
 - **Ocultar do deploy sem tirar de `docs/`:** [`scripts/lib/ocultos.mjs`](scripts/lib/ocultos.mjs)
   continua disponível, vazio hoje.
 

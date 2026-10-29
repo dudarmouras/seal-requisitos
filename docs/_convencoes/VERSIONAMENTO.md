@@ -25,5 +25,5 @@ A data é a do merge da PR. Mudança mista numa HU sobe uma vez só, e o escopo 
 - `ultimaPr` é a última PR já processada; a próxima passada começa depois dela.
 - HU que não está no arquivo aparece como v1.0, sem data.
 
-O ponto de partida é 29/10/2026: as 24 HUs do SEALog nasceram nessa data e valem como base, v1.0.
+O ponto de partida é 29/10/2026: as HUs do SEALog nasceram nessa data e valem como base, v1.0.
 O arquivo começa vazio; a primeira mudança de comportamento é a primeira entrada.
