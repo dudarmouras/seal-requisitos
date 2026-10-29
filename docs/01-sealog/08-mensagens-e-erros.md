@@ -1,50 +1,66 @@
 # SEALog — Mensagens e erros
 
-Os textos que o cliente e a equipe veem. Todos são **texto proposto**: a origem não traz mensagens,
-e a redação final é da SEALog. Entre chaves, o que o sistema preenche.
+Os textos que a loja, a terceirizada e a equipe veem. Todos são **texto proposto**: a origem não
+traz mensagens, e a redação final é da SEALog. Entre chaves, o que o sistema preenche.
 
 ## 1. Mecanismo de exibição
 
-Validação de campo aparece junto ao campo, e o envio não acontece. Aviso de resultado (gravado,
-importado) aparece no topo da tela. No aplicativo do motorista, as mensagens são curtas e não pedem
-leitura longa. As mensagens ao cliente vão pelo WhatsApp (`INT-001`) e ficam registradas na entrega
-(`RN-SL-043`).
+No formulário do WhatsApp, a validação aparece junto ao campo e o envio não acontece. As mensagens à
+loja vão pela conversa do WhatsApp (`INT-001`) e ficam registradas na entrega (`RN-SL-045`). No
+painel e no portal, a validação aparece junto ao campo e o aviso de resultado, no topo da tela. A API
+da terceirizada devolve a mensagem no corpo da resposta, junto do código de erro (`07-integracoes.md`
+§2). As falas do agente de ocorrências são geradas pelo modelo de linguagem; só as de abertura e de
+encerramento são fixas.
 
 ## 2. Catálogo de mensagens
 
 | ID | Texto exato | Tipo | Tela | Condição | História |
 |---|---|---|---|---|---|
-| `MSG-SL-001` | "Informe o número do endereço ou marque Sem número." | Validação | `TL-SL-002`, `TL-SL-003` | Número vazio sem a marca | `HU-SL-001`, `HU-SL-002` |
-| `MSG-SL-002` | "Informe o telefone com DDD." | Validação | `TL-SL-002`, `TL-SL-003` | Telefone sem 10 ou 11 dígitos | `HU-SL-001`, `HU-SL-002` |
-| `MSG-SL-003` | "Informe a rua." | Validação | `TL-SL-002`, `TL-SL-003` | Rua vazia | `HU-SL-001`, `HU-SL-002` |
-| `MSG-SL-004` | "Preencha {campo}." | Validação | `TL-SL-002`, `TL-SL-003` | Outro campo obrigatório vazio; inclui o ponto de referência com "Sem número" | `HU-SL-001`, `HU-SL-002` |
-| `MSG-SL-005` | "Pedido {código} gravado como pendente. Falta: {campos}." | Informativa | `TL-SL-002` | Gravar como pendente | `HU-SL-001` |
-| `MSG-SL-006` | "Já existe um pedido de {cliente} para {destinatário} neste endereço em {data}. É outro pedido?" | Confirmação | `TL-SL-002`, `TL-SL-004` | Pedido igual já registrado | `HU-SL-001`, `HU-SL-003` |
-| `MSG-SL-007` | "{n} pedidos confirmados e {m} pendentes." | Informativa | `TL-SL-004` | Fim da importação | `HU-SL-003` |
-| `MSG-SL-008` | "Esta planilha não segue o modelo do SEALog. Baixe o modelo e tente de novo." | Erro | `TL-SL-004` | Arquivo fora do modelo | `HU-SL-003` |
-| `MSG-SL-009` | "A coleta só pode ser agendada entre 14h e 18h." | Validação | `TL-SL-009` | Horário fora da janela | `HU-SL-007` |
-| `MSG-SL-010` | "Recebido depois das 17h: a entrega vai para a programação de amanhã." | Informativa | `TL-SL-009` | Recebimento depois das 17h | `HU-SL-007` |
-| `MSG-SL-011` | "Esta etiqueta é da entrega {código}, que não está na sua rota." | Erro | `TL-SL-011`, `TL-SL-012` | Etiqueta de outra rota | `HU-SL-012` |
-| `MSG-SL-012` | "A entrega {código} não tem etiqueta impressa." | Validação | `TL-SL-010` | Incluir em rota sem etiqueta | `HU-SL-006`, `HU-SL-008` |
-| `MSG-SL-013` | "A entrega {código} ainda não está pronta: {motivo}." | Validação | `TL-SL-010` | Incluir em rota entrega pendente, sem todos os volumes ou já em outra rota | `HU-SL-008` |
-| `MSG-SL-014` | "Tire a foto do comprovante para concluir." | Validação | `TL-SL-012` | Entregue sem foto | `HU-SL-013` |
-| `MSG-SL-015` | "Escolha o motivo." | Validação | `TL-SL-012` | Não entregue sem motivo | `HU-SL-014` |
-| `MSG-SL-016` | "Sem sinal. {n} registros serão enviados quando a conexão voltar." | Informativa | `TL-SL-011`, `TL-SL-012` | Registro guardado no celular | `HU-SL-015` |
-| `MSG-SL-017` | "Sua rota foi atualizada: {mudança}." | Informativa | `TL-SL-011` | Alteração em rota publicada | `HU-SL-009`, `HU-SL-011` |
-| `MSG-SL-018` | "SEALog: não conseguimos entregar o pedido {código} para {destinatário} hoje. Motivo: {motivo}. Acompanhe: {link}" | Aviso ao cliente | WhatsApp | Ocorrência registrada | `HU-SL-014`, `HU-SL-020` |
-| `MSG-SL-019` | "SEALog: sobre o pedido {código}, {decisão}. Acompanhe: {link}" | Aviso ao cliente | WhatsApp | Decisão sobre a ocorrência | `HU-SL-019`, `HU-SL-020` |
-| `MSG-SL-020` | "SEALog: {n} entregas suas foram afetadas hoje ({motivo}): {lista com código, destinatário e situação}." | Aviso ao cliente | WhatsApp | Aviso em lote | `HU-SL-020`, `HU-SL-021` |
-| `MSG-SL-021` | "Entrega não encontrada. Confira o link que você recebeu." | Erro | `TL-SL-013` | Link de rastreio inválido | `HU-SL-016` |
-| `MSG-SL-022` | "SEALog: recebemos seu pedido {código} para {destinatário}. Acompanhe: {link}" | Aviso ao cliente | WhatsApp | Pedido confirmado | `HU-SL-001` a `HU-SL-004` |
-| `MSG-SL-023` | "O aviso a {cliente} não foi entregue: {motivo da falha}." | Erro | `TL-SL-014` | Falha de envio | `HU-SL-018`, `HU-SL-020` |
-| `MSG-SL-024` | "Usuário ou senha incorretos." | Erro | `TL-SL-001` | Entrada recusada | `HU-SL-024` |
-| `MSG-SL-025` | "Seu perfil não tem acesso a esta tela." | Erro | Qualquer | Tela fora do perfil | `HU-SL-001`, `HU-SL-022`, `HU-SL-024` |
-| `MSG-SL-026` | "Este fechamento já foi fechado. Lance um ajuste no próximo." | Validação | `TL-SL-016` | Alterar fechamento fechado | `HU-SL-022` |
-| `MSG-SL-027` | "Nenhuma entrega encontrada para os filtros escolhidos." | Informativa | `TL-SL-006`, `TL-SL-015`, `TL-SL-017` | Lista vazia; exportar sem linhas | `HU-SL-005`, `HU-SL-021`, `HU-SL-023` |
+| `MSG-SL-001` | "Olá, {loja}! O que você quer fazer? [Novo pedido] [Acompanhar pedido] [Editar pedido]" | Menu | `TL-SL-002` | Mensagem de número autorizado | `HU-SL-001`, `HU-SL-002`, `HU-SL-003` |
+| `MSG-SL-002` | "Este número não está autorizado a fazer pedidos na SEALog. Fale com o atendimento de segunda a sexta, das 8h às 18h, e aos sábados, das 8h às 12h." | Erro | `TL-SL-002` | Número fora do cadastro ou de loja inativa | `HU-SL-001`, `HU-SL-005` |
+| `MSG-SL-003` | "Informe o número do endereço ou marque Sem número." | Validação | `TL-SL-003`, `TL-SL-004` | Número vazio sem a marca | `HU-SL-001`, `HU-SL-004` |
+| `MSG-SL-004` | "Informe o telefone com DDD." | Validação | `TL-SL-003`, `TL-SL-004` | Telefone sem 10 ou 11 dígitos | `HU-SL-001`, `HU-SL-004` |
+| `MSG-SL-005` | "Preencha {campo}." | Validação | `TL-SL-003`, `TL-SL-004` | Outro campo obrigatório vazio, inclusive o ponto de referência com "Sem número" e o complemento sem a marca "Sem complemento" | `HU-SL-001`, `HU-SL-004` |
+| `MSG-SL-006` | "Já existe um pedido para {destinatário} neste endereço em {data}. É outro pedido? [Sim, é outro] [Não, cancelar]" | Confirmação | `TL-SL-003`, `TL-SL-004` | Pedido igual já registrado | `HU-SL-001`, `HU-SL-004` |
+| `MSG-SL-007` | "SEALog: recebemos o pedido {código} para {destinatário}, com entrega prevista para {data}. Para acompanhar, mande uma mensagem e escolha Acompanhar pedido." | Aviso à loja | WhatsApp | Pedido recebido | `HU-SL-001`, `HU-SL-004` |
+| `MSG-SL-008` | "Pedido {código} para {destinatário}: {status} desde {data e hora}. {detalhe} [Relatar problema]" | Informativa | `TL-SL-002` | Acompanhar pedido | `HU-SL-002`, `HU-SL-017` |
+| `MSG-SL-009` | "Não encontramos o pedido {código} entre os pedidos da sua loja." | Erro | `TL-SL-002` | Código inexistente ou de outra loja | `HU-SL-002`, `HU-SL-003` |
+| `MSG-SL-010` | "O pedido {código} já foi coletado e não pode mais ser alterado por aqui. Fale com o atendimento." | Erro | `TL-SL-002` | Edição depois da coleta | `HU-SL-003` |
+| `MSG-SL-011` | "SEALog: o pedido {código} foi alterado: {mudança}." | Aviso à loja | WhatsApp | Edição ou cancelamento confirmados | `HU-SL-003`, `HU-SL-012` |
+| `MSG-SL-012` | "Pedido {código} gravado como pendente. Falta: {campos}." | Informativa | `TL-SL-004` | Gravar como pendente | `HU-SL-004` |
+| `MSG-SL-013` | "SEALog: o pedido {código} para {destinatário} está quase pronto. Falta: {campos}. [Completar pedido]" | Aviso à loja | WhatsApp | Pedido pendente de dados | `HU-SL-004` |
+| `MSG-SL-014` | "O bairro {bairro} ({cidade}) não está na tabela de regiões. Escolha a terceirizada." | Validação | `TL-SL-007`, `TL-SL-009` | Pedido "Aguardando região" | `HU-SL-008`, `HU-SL-010` |
+| `MSG-SL-015` | "Já existe uma terceirizada ativa para {bairro} ({cidade}): {terceirizada}." | Validação | `TL-SL-007` | Segundo vínculo ativo para o mesmo bairro | `HU-SL-008` |
+| `MSG-SL-016` | "O código {código} não foi despachado para {terceirizada}." | Erro | API, `TL-SL-010`, `TL-SL-011` | Retorno com código desconhecido ou de outra terceirizada | `HU-SL-013`, `HU-SL-014`, `HU-SL-015` |
+| `MSG-SL-017` | "Entregue exige foto, data e hora, nome de quem recebeu e identificação do entregador. Falta: {campos}." | Erro | API, `TL-SL-010`, `TL-SL-011` | Comprovante incompleto | `HU-SL-013`, `HU-SL-014`, `HU-SL-016` |
+| `MSG-SL-018` | "A entrega {código} está {status atual} e não pode passar para {situação}." | Erro | API, `TL-SL-010`, `TL-SL-011` | Situação fora do ciclo | `HU-SL-013`, `HU-SL-014`, `HU-SL-015` |
+| `MSG-SL-019` | "Escolha o motivo da não entrega." | Validação | API, `TL-SL-010`, `TL-SL-011` | Não entregue sem motivo | `HU-SL-013`, `HU-SL-014` |
+| `MSG-SL-020` | "{n} linhas aceitas e {m} recusadas. Veja o motivo de cada recusa." | Informativa | `TL-SL-011` | Fim da importação | `HU-SL-004`, `HU-SL-015` |
+| `MSG-SL-021` | "Não reconhecemos as colunas {colunas}. Diga a que campo do padrão cada uma corresponde." | Validação | `TL-SL-011` | Coluna sem correspondência | `HU-SL-015` |
+| `MSG-SL-022` | "SEALog: tivemos um problema com o pedido {código} para {destinatário}: {motivo}. Já estamos cuidando e avisamos aqui o próximo passo." | Aviso à loja | WhatsApp | Não entregue ou chamado aberto | `HU-SL-020` |
+| `MSG-SL-023` | "SEALog: sobre o pedido {código}, {decisão}." | Aviso à loja | WhatsApp | Chamado concluído ou decisão no galpão | `HU-SL-018`, `HU-SL-019`, `HU-SL-020` |
+| `MSG-SL-024` | "SEALog: {n} pedidos seus foram afetados hoje ({motivo}): {lista com código, destinatário e situação}." | Aviso à loja | WhatsApp | Aviso em lote | `HU-SL-021` |
+| `MSG-SL-025` | "Recebemos seu relato sobre o pedido {código}. Uma pessoa da nossa equipe vai analisar e responder por aqui." | Informativa | `TL-SL-002` | Fim da conversa com o agente | `HU-SL-017` |
+| `MSG-SL-026` | "Novo chamado: {tipo} no pedido {código}, de {loja}." | Informativa | `TL-SL-012` | Chamado aberto | `HU-SL-017`, `HU-SL-018` |
+| `MSG-SL-027` | "O aviso a {destino} não foi entregue: {motivo da falha}." | Erro | `TL-SL-012` | Falha de envio | `HU-SL-011`, `HU-SL-020` |
+| `MSG-SL-028` | "Pacote {código} recebido no galpão. Escolha o destino." | Informativa | `TL-SL-014` | Chegada registrada | `HU-SL-019` |
+| `MSG-SL-029` | "Usuário ou senha incorretos." | Erro | `TL-SL-001`, `TL-SL-010` | Entrada recusada | `HU-SL-024` |
+| `MSG-SL-030` | "Acesso bloqueado depois de 5 tentativas sem sucesso. Tente de novo em {tempo} ou fale com o coordenador." | Erro | `TL-SL-001`, `TL-SL-010` | Quinta tentativa seguida sem sucesso | `HU-SL-024` |
+| `MSG-SL-031` | "Seu perfil não tem acesso a esta tela." | Erro | Qualquer | Tela fora do perfil | `HU-SL-024` |
+| `MSG-SL-032` | "Este fechamento já foi fechado. Lance um ajuste no próximo." | Validação | `TL-SL-016` | Alterar fechamento fechado | `HU-SL-022`, `HU-SL-023` |
+| `MSG-SL-033` | "Nenhuma entrega encontrada para os filtros escolhidos." | Informativa | `TL-SL-008`, `TL-SL-015`, `TL-SL-017` | Lista vazia; exportar sem linhas | `HU-SL-009`, `HU-SL-021` |
 
-## 3. Códigos HTTP
+## 3. Respostas da API da terceirizada
 
-Não definidos: a stack não está definida (`Q-SL-01`). O comportamento esperado é o da coluna
-Condição acima.
+A API padrão (`INT-002`) responde com um código e uma das mensagens acima.
 
-**Referências** — Gargalos §1 a §9.
+| Situação | Código | Mensagem |
+|---|---|---|
+| Retorno aceito | 200 | — |
+| Retorno repetido (`RN-SL-033`) | 200 | — (indica que já estava gravado) |
+| Chave ausente ou inválida | 401 | — |
+| Código não despachado para a terceirizada | 404 | `MSG-SL-016` |
+| Comprovante incompleto, situação fora do ciclo, motivo ausente | 422 | `MSG-SL-017`, `MSG-SL-018`, `MSG-SL-019` |
+| Excesso de chamadas | 429 | — |
+
+**Referências** — Enunciado §2, §8; Encontro 1; Plano do agente; `RN-SL-001` a `RN-SL-054`.
