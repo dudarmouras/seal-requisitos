@@ -8,45 +8,56 @@ Termos da operação da SEALog e desta documentação, com o sentido em que são
 
 | Termo | Significado |
 |---|---|
-| Pedido | O que o cliente pede: levar um ou mais pacotes a um destinatário. No sistema, um pedido é uma entrega (`RN-SL-012`) |
-| Entrega | O registro único de um pedido, do registro ao status final. É a "fonte única da verdade" que falta hoje |
-| Código de entrega | Identificador gerado no registro; vai na etiqueta e no rastreio |
-| Volume | Cada pacote de uma entrega, com etiqueta própria ("2/3") |
-| Etiqueta | Impressa pelo sistema, com o código em texto e em código lido pela câmera; substitui a etiqueta à mão |
-| Pendente de dados | Pedido registrado sem algum dado obrigatório; não entra em rota |
-| Galpão | Onde os pacotes chegam, por coleta ou trazidos pelo cliente até 17h, e de onde saem as rotas |
-| Coleta | Busca do pacote na casa do cliente, entre 14h e 18h |
-| Rota | O conjunto de paradas de um motorista num dia |
-| Roteiro | A rota como o motorista a vê no celular |
-| Parada | Uma entrega dentro de uma rota |
-| Comprovante | Foto tirada pelo aplicativo na entrega, presa a ela, com o nome de quem recebeu |
-| Ocorrência | Registro de entrega não realizada, com o motivo |
-| Exceção | Ocorrência ainda sem decisão; aparece no painel de exceções |
-| Decisão | O que se faz com a entrega não realizada: nova tentativa, devolver, guardar ou cancelar |
-| Retorno ao galpão | Volta do pacote não entregue; hoje sem regra formal |
-| Aviso proativo | Mensagem ao cliente enviada pelo sistema, sem que ele pergunte |
-| Aviso em lote | Uma mensagem por cliente com todas as entregas dele afetadas |
-| Rastreio | Página aberta pelo link que o cliente recebe, com o status da entrega |
-| Afetados | Entregas atrasadas ou com ocorrência num período, agrupadas por cliente |
+| Loja | Cliente da SEALog: loja de bairro, farmácia, floricultura, papelaria, pequeno e-commerce. Pede as entregas |
+| Destinatário | O consumidor que recebe o pacote. Fala com a loja, não com a SEALog |
+| Terceirizada | Empresa que coleta na loja e entrega numa região. Hoje são duas |
+| Pedido | O que a loja pede: levar um ou mais volumes a um destinatário. No sistema, um pedido é uma entrega |
+| Entrega | O registro único de um pedido, do recebimento ao status final. É a "fonte única da verdade" que falta hoje |
+| Código SEALog | Identificador gerado no registro. Identifica o pacote, sem etiqueta, e vai em todo retorno da terceirizada |
+| Número autorizado | Número de WhatsApp cadastrado que pode fazer pedidos em nome de uma loja |
+| Menu | As três opções que a loja vê no WhatsApp: novo pedido, acompanhar pedido, editar pedido |
+| Formulário do WhatsApp | Tela dentro da conversa que não envia o pedido sem os dados obrigatórios |
+| Pendente de dados | Pedido registrado pela equipe sem algum dado obrigatório; a loja completa pelo WhatsApp |
+| Tabela de regiões | Lista de pares bairro e cidade, cada um com a terceirizada que o atende |
+| Aguardando região | Pedido para um bairro fora da tabela; o coordenador escolhe a terceirizada |
+| Despacho | Envio do pedido à terceirizada da região, pela API ou pelo portal |
+| Retorno | O que a terceirizada informa: coleta, saída, entrega, não entrega ou devolução, com data e hora |
+| API padrão | O caminho de integração que o SEALog publica, igual para toda terceirizada |
+| Portal | Tela simples para a terceirizada que não se integra ver as entregas e informar o retorno |
+| Comprovante padrão | Foto da entrega, data e hora, nome de quem recebeu e identificação do entregador. Sem ele, o Entregue não vale |
+| Pessoa autorizada | Vizinho, porteiro ou outra pessoa que a loja autorizou a receber no lugar do destinatário |
+| Chamado | Ocorrência registrada no painel, com a sugestão do agente, até a equipe decidir |
+| Agente de ocorrências | Assistente de IA que conversa com a loja sobre o problema e sugere a ação, sem decidir |
+| Protocolo de atendimento | O que a SEALog faz em cada tipo de ocorrência; base da sugestão do agente |
+| Galpão | Onde volta o pacote não entregue; ali o coordenador decide o destino |
+| Destino | Nova tentativa, devolver à loja, guardar aguardando instrução ou cancelar |
+| Aviso proativo | Mensagem à loja enviada pelo sistema, sem que ela pergunte |
+| Aviso em lote | Uma mensagem por loja com todas as entregas dela afetadas |
+| Afetados | Entregas atrasadas ou com chamado num período, agrupadas por loja |
 | Atrasada | Entrega não concluída até o fim da data prevista |
-| Fechamento | Cobrança de um cliente num período, calculada das entregas registradas |
-| Ajuste | Correção lançada num fechamento por erro descoberto depois de um fechamento já fechado |
-| Cadeia de 5 saltos | Hoje, o caminho da pergunta "cadê minha entrega?": cliente, atendente, analista, motorista e volta |
+| Data prevista | Dia útil seguinte ao pedido, ou a data agendada pela loja |
+| Fechamento | Cobrança de uma loja, ou pagamento de uma terceirizada, num período |
+| Ajuste | Correção lançada num fechamento seguinte por erro descoberto depois de fechado |
+| Cadeia de 5 saltos | Hoje, o caminho da pergunta "cadê minha entrega?": loja, atendente, analista, motorista e volta |
 
 ## 2. Os quatro casos do enunciado
 
 | Caso | Em uma linha |
 |---|---|
-| Buquê de sábado | Aviso de exceção perdido no grupo; o cliente não foi avisado |
-| Registro incorreto | Linha errada na planilha e foto sem vínculo com a entrega |
-| Segunda-feira de chuva | 40 entregas afetadas, mais de 120 mensagens, sem consulta por cliente |
-| Pedido incompleto | Pedido sem dados, sem validação na entrada |
+| Pedido com informações incompletas | Pedidos sem número, rua ou telefone; nada valida na entrada |
+| O buquê de sábado | Aviso de que o endereço não foi achado ficou no grupo por mais de uma hora; a floricultura soube pela consumidora |
+| O registro incorreto | "Ok" na linha errada; um dia para achar a foto; pacote no apartamento errado |
+| A segunda-feira de chuva | Cerca de 40 entregas atrasadas, mais de 120 mensagens, sem saber que clientes avisar |
 
 ## 3. Termos desta documentação
 
 | Termo | Significado |
 |---|---|
+| Enunciado §N | Seção N do `Projeto da Dinâmica.pdf` |
+| Encontro 1 [mm:ss] | Minuto da transcrição da reunião com o cliente de 28/10/2026 |
 | Gargalos §N | Seção N do resumo `SEALog gargalos e problemas da operação.pdf`; a numeração está em `docs/01-sealog/00-visao-geral.md` §9 |
+| Planejamento da equipe | Papéis, decisões e a lista RF-01 a RF-20 da Equipe 11 |
+| Plano do agente | O plano do agente de ocorrências, com custos, de 29/10/2026 |
 | Origem legada | Campo de rastreio da HU. No SEALog descreve como a operação faz aquilo hoje, já que não há sistema legado |
 | Proposta | Regra que esta documentação propõe para resolver um gargalo, em oposição a fato da origem |
 | `SL` | Sigla do sistema SEALog nos identificadores (`HU-SL-001`, `RN-SL-001`) |
@@ -55,11 +66,14 @@ Termos da operação da SEALog e desta documentação, com o sentido em que são
 
 | Sigla | Significado |
 |---|---|
-| SEAL | O programa do Desafio Prático em Grupo (edição 2026.2) |
+| SEAL | Liga Acadêmica de Engenharia de Software do CIn-UFPE, que promove o desafio |
 | SEALog | A empresa de entregas do caso, e o sistema proposto para ela |
 | HU | História de usuário |
 | RN | Regra de negócio |
 | CA | Critério de aceitação |
+| RF / RNF | Requisito funcional / não funcional |
+| DEC | Decisão |
+| BL | Item do backlog |
 | FLX | Fluxograma |
 | TL | Tela |
 | ENT | Entidade de dados |
@@ -67,3 +81,5 @@ Termos da operação da SEALog e desta documentação, com o sentido em que são
 | MSG | Mensagem do sistema |
 | DIV | Divergência ou risco |
 | Q | Pergunta ao cliente |
+| IA | Inteligência artificial |
+| LGPD | Lei Geral de Proteção de Dados (Lei 13.709/2018) |

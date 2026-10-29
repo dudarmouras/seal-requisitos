@@ -23,7 +23,8 @@ export default function HomePage() {
           {systems.length === 1
             ? "O SEALog, sistema proposto para a operação de entregas do desafio SEAL 2026.2"
             : `Os ${porExtenso(systems.length)} sistemas do projeto SEAL`}
-          , documentado a partir dos gargalos da operação de hoje e navegável aqui: cada
+          , já com as entregas terceirizadas, documentado a partir do enunciado e da reunião com
+          o cliente e navegável aqui: cada
           história de usuário com descrição, regras de negócio e critérios de aceitação, ligada
           aos fluxogramas e às telas em que aparece.
         </p>

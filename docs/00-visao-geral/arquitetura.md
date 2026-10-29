@@ -1,8 +1,9 @@
 # SEALog — Arquitetura do sistema
 
-A arquitetura proposta para o SEALog. É **proposta**: a stack não foi definida pela SEALog
-(`Q-SL-01`), e os requisitos não dependem dela (`DEC-SL-10`). O que está aqui responde a três
-perguntas: quais são as partes, como conversam, e por que esta forma e não outra.
+A arquitetura proposta para o SEALog depois da terceirização. Responde a três perguntas: quais são
+as partes, como conversam, e por que esta forma e não outra. Os requisitos não dependem dela
+(`DEC-SL-19`); a escolha final de servidor e de banco gerenciado está **a confirmar pela equipe**
+de back end e infraestrutura.
 
 ---
 
@@ -10,10 +11,11 @@ perguntas: quais são as partes, como conversam, e por que esta forma e não out
 
 | Princípio | O que obriga na arquitetura | Decisão |
 |---|---|---|
-| Um registro, uma verdade | Um banco só, e nenhuma parte do sistema guarda cópia editável da entrega | `DEC-SL-01` |
-| Registrar onde o fato acontece | O aplicativo do motorista funciona sem sinal, e o cliente acessa por link | `DEC-SL-03`, `DEC-SL-13` |
-| Pequeno para operar | Serviços gerenciados no lugar de servidores; um código só | `DEC-SL-12`, `DEC-SL-15` |
-| Crescer quando precisar | Módulos separados por dentro, que podem virar serviços se um gatilho pedir | `DEC-SL-17` |
+| Um registro, uma verdade | Um banco só; nenhuma porta guarda cópia editável da entrega | `DEC-SL-01` |
+| Tudo por API | WhatsApp, painel, portal, terceirizada e agente usam as mesmas APIs do back end | `DEC-SL-12` |
+| Ninguém muda de canal à força | A loja fica no WhatsApp; a terceirizada escolhe integração, portal ou planilha | `DEC-SL-02`, `DEC-SL-06` |
+| IA sugere, pessoa decide | O agente só abre chamado; a decisão é gravada por uma pessoa no painel | `DEC-SL-10` |
+| Pequeno para operar | Serviços gerenciados no lugar de servidores próprios onde der; um back end só | `DEC-SL-12`, `DEC-SL-17` |
 
 ## 2. Visão de contexto
 
@@ -21,151 +23,189 @@ Quem usa o SEALog e com quem ele conversa.
 
 ```mermaid
 flowchart LR
-  Cliente(["Cliente<br/>celular, sem conta"])
-  Equipe(["Equipe<br/>atendente, analista,<br/>coordenador, financeiro"])
-  Motorista(["Motorista<br/>celular, às vezes sem sinal"])
+  Loja(["Loja<br/>no WhatsApp, sem senha"])
+  Equipe(["Equipe SEALog<br/>atendente, coordenador,<br/>financeiro"])
+  Terc(["Terceirizadas<br/>uma por região"])
+
+  Meta["WhatsApp<br/>plataforma oficial da Meta"]
+  Agente["Agente de ocorrências<br/>n8n + modelo de linguagem"]
 
   subgraph SEALog["SEALog"]
-    Publico["Páginas públicas<br/>pedido e rastreio por link"]
-    Web["Tela da equipe"]
-    App["Aplicativo do motorista<br/>instalável, funciona sem sinal"]
-    Nucleo["Núcleo<br/>sete módulos de negócio"]
+    Painel["Painel da equipe<br/>web responsivo"]
+    Portal["Portal da terceirizada"]
+    API["Back end por APIs"]
   end
 
-  WhatsApp["WhatsApp Business<br/>plataforma oficial"]
-  Impressora["Impressora de etiquetas<br/>no galpão"]
-
-  Cliente --> Publico
-  Equipe --> Web
-  Motorista --> App
-  Publico --> Nucleo
-  Web --> Nucleo
-  App --> Nucleo
-  Nucleo -- avisos --> WhatsApp
-  WhatsApp -- link na conversa --> Cliente
-  Web -- etiquetas --> Impressora
+  Loja <--> Meta
+  Meta <--> API
+  Meta <--> Agente
+  Agente -- abre chamado --> API
+  Equipe --> Painel --> API
+  Terc -- integração padrão --> API
+  Terc -- portal ou planilha --> Portal --> API
+  API -- despacho --> Terc
 ```
 
 ## 3. Componentes
 
 ```mermaid
 flowchart TB
-  subgraph Entradas["Portas de entrada — um código só"]
-    Publico["Páginas públicas<br/>pedido e rastreio por link"]
-    Web["Tela da equipe"]
-    App["Aplicativo do motorista<br/>fila local de registros"]
+  subgraph Portas["Portas de entrada"]
+    WA["Conversa no WhatsApp<br/>menu, formulário, acompanhar"]
+    Painel["Painel da equipe"]
+    Portal["Portal da terceirizada<br/>situações e planilha"]
+    IntT["Integração da terceirizada"]
+    Agente["Agente de ocorrências"]
   end
 
-  subgraph Nucleo["Núcleo da aplicação"]
-    API["API e os sete módulos de negócio<br/>regras, permissões, histórico"]
-    Jobs["Tarefas em segundo plano<br/>avisos, importação, exportação"]
+  subgraph Backend["Back end — sete módulos"]
+    Pedidos["Entrada de pedidos"]
+    Cad["Cadastros"]
+    Desp["Despacho"]
+    Ret["Retorno da terceirizada"]
+    Cham["Ocorrências e devoluções"]
+    Fin["Financeiro"]
+    Acesso["Acesso"]
+    Jobs["Tarefas em segundo plano<br/>avisos, despacho, importação"]
+    RT["Atualização em tempo real<br/>do painel"]
   end
 
-  subgraph Dados["Dados gerenciados"]
-    DB[("Banco relacional<br/>entregas, rotas, histórico")]
-    Arquivos[("Arquivos<br/>fotos, etiquetas, planilhas")]
-    Auth["Autenticação da equipe"]
+  subgraph Dados["Dados"]
+    DB[("Banco relacional<br/>lojas, entregas, retornos,<br/>chamados, fechamentos")]
+    Arq[("Arquivos<br/>fotos, planilhas")]
   end
 
-  WhatsApp["WhatsApp Business"]
-
-  Publico --> API
-  Web --> API
-  App --> API
-  API --> Jobs
-  API --> DB
-  API --> Arquivos
-  API --> Auth
-  Jobs --> WhatsApp
+  WA --> Pedidos
+  Painel --> Cad
+  Painel --> Desp
+  Painel --> Cham
+  Painel --> Fin
+  Portal --> Ret
+  IntT --> Ret
+  Agente --> Cham
+  Pedidos --> Desp
+  Ret --> Cham
+  Desp --> Jobs
+  Cham --> Jobs
+  Cham --> RT
+  RT --> Painel
+  Backend --> DB
+  Ret --> Arq
+  Cham --> Arq
+  Acesso -.-> Painel
+  Acesso -.-> Portal
 ```
 
 | Componente | Responsabilidade | Requisitos que atende |
 |---|---|---|
-| Páginas públicas | Formulário de pedido e de complemento, e rastreio. Acessadas por link com código impossível de adivinhar, sem login | `RF-SL-02`, `RF-SL-04`, `RF-SL-18`, `RNF-SL-01`, `RNF-SL-07` |
-| Tela da equipe | Lista de entregas, pendências, etiquetas, galpão, rotas, painel de exceções, fechamento, exportação | `RF-SL-01`, `RF-SL-07` a `RF-SL-12`, `RF-SL-19` a `RF-SL-26` |
-| Aplicativo do motorista | Roteiro do dia, leitura da etiqueta pela câmera, foto, ocorrência; guarda tudo no aparelho e envia quando há sinal | `RF-SL-13` a `RF-SL-17`, `RNF-SL-02`, `RNF-SL-03`, `RNF-SL-11` |
-| API | Única porta para o banco. Aplica o ciclo de status, as permissões por perfil e o histórico de alterações | `RNF-SL-08`, `RNF-SL-09`, `RNF-SL-13` |
-| Módulos de negócio | Os sete módulos da documentação, separados por dentro da mesma aplicação, cada um dono das suas tabelas | Inventário de módulos do `00` do SEALog |
-| Tarefas em segundo plano | Envio dos avisos com nova tentativa, importação de planilha, geração de exportações e de etiquetas | `RF-SL-03`, `RF-SL-22`, `RF-SL-23`, `RF-SL-25`, `RNF-SL-19` |
-| Banco relacional | O registro único: clientes, entregas, volumes, rotas, paradas, ocorrências, avisos, fechamentos, histórico | `DEC-SL-01`, `DEC-SL-15` |
-| Armazenamento de arquivos | Fotos de comprovante, comprimidas no celular; planilhas importadas e exportadas | `RF-SL-15`, `RNF-SL-17` |
-| Autenticação | Usuário e senha da equipe, sessão longa do motorista durante o dia | `RF-SL-26`, `RNF-SL-08` |
+| Conversa no WhatsApp | Menu de três opções, formulário do pedido e da edição, acompanhamento, avisos; tudo pela plataforma oficial | `RF-SL-01` a `RF-SL-04`, `RF-SL-20`, `RNF-SL-01` |
+| Painel da equipe | Lista de entregas, cadastros, regiões, chamados, devoluções, afetados, fechamentos, exportação; web responsivo | `RF-SL-05` a `RF-SL-10`, `RF-SL-18`, `RF-SL-19`, `RF-SL-21` a `RF-SL-24`, `RNF-SL-03` |
+| Portal da terceirizada | Lista do dia, situação de cada entrega com foto, envio de planilha | `RF-SL-11`, `RF-SL-14`, `RF-SL-15`, `RNF-SL-02` |
+| Integração da terceirizada | Recebe o despacho e as alterações; devolve as situações e o comprovante; chave por terceirizada | `RF-SL-11` a `RF-SL-13`, `RNF-SL-05`, `RNF-SL-12`, `RNF-SL-15` |
+| Agente de ocorrências | Conversa com a loja, classifica, colhe relato e fotos, compara com o protocolo e abre o chamado com a sugestão | `RF-SL-17`, `RNF-SL-13` |
+| Back end | Os sete módulos, cada um dono das suas tabelas; aplica ciclo de status, permissões e histórico | `RNF-SL-11`, `RNF-SL-14`, `RNF-SL-17`, `RNF-SL-19` |
+| Tarefas em segundo plano | Envio de avisos com nova tentativa, despacho à integração, tradução de planilha, exportações | `RF-SL-12`, `RF-SL-15`, `RF-SL-20`, `RNF-SL-20` |
+| Atualização em tempo real | Leva o chamado novo ao painel sem recarregar | `RNF-SL-09` |
+| Banco relacional | O registro único | `DEC-SL-01`, `DEC-SL-12` |
+| Arquivos | Fotos de comprovante e de avaria, planilhas recebidas e exportadas | `RF-SL-16`, `RNF-SL-06` |
 
 ## 4. Fluxos que a arquitetura precisa garantir
 
-### 4.1 Registro sem sinal
-
-O ponto mais delicado: o registro nasce no celular, às vezes sem conexão, e precisa chegar uma
-vez só, com a hora real do fato (`RN-SL-030`).
+### 4.1 Pedido pelo WhatsApp
 
 ```mermaid
 sequenceDiagram
-  participant M as Motorista
-  participant A as Aplicativo (celular)
-  participant F as Fila local
-  participant S as API
+  participant L as Loja
+  participant W as WhatsApp (Meta)
+  participant S as Back end
   participant B as Banco
+  participant T as Terceirizada
 
-  M->>A: lê a etiqueta e marca Entregue
-  A->>A: tira a foto e grava a hora do fato
-  A->>F: guarda o registro com um código único
-  Note over A,F: sem sinal, o motorista vê 3 registros esperando envio
-  F-->>S: sinal voltou: envia em ordem
-  S->>S: confere se o código já chegou antes
-  S->>B: grava com a hora do fato, não a da chegada
-  S-->>F: confirmado
-  F->>F: apaga o registro enviado
+  L->>W: "Oi"
+  W->>S: mensagem com o número de origem
+  S->>B: número autorizado?
+  S-->>W: menu: novo, acompanhar, editar
+  L->>W: Novo pedido → preenche o formulário
+  Note over W: o formulário não envia sem os obrigatórios
+  W->>S: respostas do formulário
+  S->>B: grava a entrega com o código SEALog
+  S->>B: região do bairro → terceirizada
+  S-->>W: pedido recebido, com o código e a data prevista
+  S->>T: despacho pela integração, ou lista do dia no portal
 ```
 
-O código único de cada registro faz com que um reenvio, depois de uma conexão que caiu no meio,
-não gere uma segunda parada. A foto sobe separada do registro, e o registro vale mesmo antes de
-a foto terminar de subir.
-
-### 4.2 Ocorrência e aviso ao cliente
+### 4.2 Retorno com comprovante
 
 ```mermaid
 sequenceDiagram
-  participant M as Motorista
-  participant S as API
-  participant P as Painel de exceções
-  participant J as Tarefa de avisos
-  participant W as WhatsApp Business
-  participant C as Cliente
+  participant T as Terceirizada
+  participant S as Back end
+  participant B as Banco
+  participant P as Painel
 
-  M->>S: Não entregue, motivo destinatário ausente
-  S->>P: abre a ocorrência
-  S->>J: agenda o aviso
-  J->>W: envia o modelo de mensagem com o link de rastreio
-  W-->>C: mensagem na conversa de sempre
-  W-->>J: resultado do envio
-  alt falhou
-    J->>P: aviso com falha, para reenvio
+  T->>S: Entregue, código, hora do fato, foto, recebedor, entregador
+  S->>S: código despachado para ela? comprovante completo? ciclo permite?
+  alt incompleto ou fora do ciclo
+    S-->>T: recusado, com o motivo
+  else aceito
+    S->>B: grava o retorno, o comprovante e o novo status
+    S-->>T: aceito
+    opt recebedor não autorizado
+      S->>P: abre chamado em tempo real
+    end
   end
-  Note over P: o coordenador decide o destino;<br/>a decisão gera o segundo aviso
+```
+
+Retorno repetido — mesmo código, mesma situação, mesma hora do fato — é respondido como aceito e
+não grava de novo (`RN-SL-033`). A foto é copiada para o armazenamento do SEALog; o sistema não
+depende de a terceirizada mantê-la.
+
+### 4.3 Ocorrência com o agente
+
+```mermaid
+sequenceDiagram
+  participant L as Loja
+  participant W as WhatsApp (Meta)
+  participant A as Agente (n8n)
+  participant M as Modelo de linguagem
+  participant S as Back end
+  participant P as Painel
+
+  L->>W: Acompanhar → Relatar problema
+  W->>A: conversa
+  A->>L: pede o relato e, se houver avaria, a foto
+  A->>M: código, tipo, relato e protocolo — sem nome, telefone nem endereço
+  M-->>A: resumo e ação sugerida
+  A->>S: abre o chamado, com chave fixa
+  S->>P: chamado novo em tempo real
+  A-->>L: "uma pessoa vai analisar e responder por aqui"
+  P->>S: atendente aprova, muda ou recusa
+  S-->>W: decisão para a loja
 ```
 
 ## 5. Segurança
 
 | Ameaça | Proteção |
 |---|---|
-| Alguém troca o código do link e vê a entrega de outro | Código longo e aleatório, não sequencial; a página pública mostra só a entrega do código e nunca o telefone do motorista (`RNF-SL-07`) |
-| Um perfil faz o que não pode chamando a API direto | Permissão conferida na API e no banco, não só escondida na tela (`RNF-SL-08`) |
-| Alteração sem rastro | A API grava o histórico na mesma operação que altera; ninguém edita o histórico (`RNF-SL-09`) |
-| Vazamento de dados pessoais | Acesso por perfil, conexão cifrada, fotos acessadas só por endereço temporário; prazo de guarda definido com a SEALog (`RNF-SL-10`) |
-| Celular do motorista perdido | Sessão encerrável pelo coordenador; o aparelho guarda só o roteiro do dia |
+| Alguém pede em nome de uma loja | Só número autorizado abre o menu (`RN-SL-003`) |
+| Uma terceirizada lê ou altera entrega da outra | Chave e usuário por terceirizada; ela só vê e altera o que foi despachado para ela (`RN-SL-053`) |
+| Chamada falsa abrindo chamados | A rota de chamados aceita só a chave fixa do agente; limite de chamadas por minuto em toda integração (`RNF-SL-12`) |
+| Um perfil faz o que não pode chamando a API direto | Permissão conferida no back end, não só escondida na tela (`RNF-SL-11`) |
+| Tentativa repetida de senha | Bloqueio depois de cinco tentativas seguidas sem sucesso (`RNF-SL-10`) |
+| Dado pessoal enviado ao modelo de linguagem | O agente envia só código, tipo, relato e fotos; o back end junta o contato ao gravar (`RN-SL-038`) |
+| Alteração sem rastro | O histórico é gravado na mesma operação que altera, e ninguém o edita (`RNF-SL-14`) |
+| Vazamento de fotos | Fotos acessadas só pelo painel, por perfil, com endereço temporário; prazo de guarda em `Q-SL-16` |
 
 ## 6. Stack proposta
 
-| Camada | Proposta | Por quê | Alternativa equivalente |
+| Camada | Proposta | Por quê | Situação |
 |---|---|---|---|
-| Tela da equipe, páginas públicas e aplicativo do motorista | React com TypeScript, num só projeto, com o aplicativo do motorista instalável e funcionando sem sinal | Um código para as três portas (`RNF-SL-16`); o mesmo conjunto que a equipe usa neste repositório | Angular ou Vue |
-| API e tarefas | Node.js com TypeScript, junto da aplicação | Mesma linguagem do front; equipe pequena | .NET ou Python |
-| Banco, autenticação e arquivos | Supabase: PostgreSQL gerenciado, autenticação e armazenamento de arquivos | Um fornecedor para os três, com cópia de segurança diária e plano que cresce (`DEC-SL-15`) | PostgreSQL na AWS ou no Google Cloud |
-| Hospedagem | Vercel | Publicação automática a cada versão, rede de entrega de conteúdo inclusa | Netlify, Cloudflare Pages |
-| Avisos | Plataforma oficial do WhatsApp Business (Meta) | O cliente já está no WhatsApp; a via oficial não arrisca o número (`DEC-SL-14`) | Um provedor parceiro da Meta |
-| Leitura de etiqueta | Leitura de código pela câmera, no navegador | Dispensa leitor dedicado | Leitor de código em bluetooth no galpão |
-| Monitoramento | Registro de erros do aplicativo e monitor externo do rastreio | Falha percebida antes da reclamação (`RNF-SL-19`) | — |
+| Canal da loja | Plataforma oficial do WhatsApp da Meta, com formulários do WhatsApp | A loja já está lá; a via oficial não arrisca o número (`DEC-SL-15`) | Proposta |
+| Back end | Serviço único, organizado pelos sete módulos, expondo APIs REST e atualização em tempo real por websocket | Arquitetura baseada em APIs, decidida pela equipe (`DEC-SL-12`) | Linguagem e servidor a confirmar pela equipe |
+| Banco | PostgreSQL | O dado é relacional e o histórico precisa de integridade | Onde hospedar a confirmar pela equipe |
+| Arquivos | Armazenamento de objetos para fotos e planilhas | A foto é o dado que mais cresce | A confirmar pela equipe |
+| Painel e portal | Aplicação web responsiva, um código para os dois | Abre no celular e no computador sem instalar nada (`DEC-SL-13`) | Proposta |
+| Agente de ocorrências | n8n Cloud com o nó de agente de IA e o modelo GPT-4o | Orquestração pronta para WhatsApp e HTTP; modelo com bom raciocínio sobre regras (`DEC-SL-14`) | Proposta |
 
-A infraestrutura, os ambientes e os custos dessa stack estão em
-[`infraestrutura-e-custos.md`](infraestrutura-e-custos.md); como ela cresce, em
-[`escalabilidade.md`](escalabilidade.md).
+A infraestrutura e os custos estão em [`infraestrutura-e-custos.md`](infraestrutura-e-custos.md);
+como ela cresce, em [`escalabilidade.md`](escalabilidade.md).

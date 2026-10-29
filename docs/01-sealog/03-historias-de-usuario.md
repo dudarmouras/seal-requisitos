@@ -1,22 +1,26 @@
 # SEALog — Histórias de usuário
 
-Vinte e quatro histórias, em sete módulos, na ordem das etapas da operação. As regras citam o
+Vinte e quatro histórias, em sete módulos, na ordem do caminho de um pedido: a loja pede pelo
+WhatsApp, o pedido vai sozinho para a terceirizada da região, a terceirizada devolve o status e o
+comprovante, e o que dá errado vira um chamado que uma pessoa da equipe decide. As regras citam o
 catálogo `RN-SL-*` de [`02-regras-de-negocio.md`](02-regras-de-negocio.md); o que ainda está em
 aberto é `Q-SL-*`, em [`09-divergencias-e-lacunas.md`](09-divergencias-e-lacunas.md).
 
-A origem é o resumo dos gargalos da operação (`SEALog gargalos e problemas da operação.pdf`,
-recebido em 27/10/2026). Como não há sistema legado, o campo **Origem legada** de cada história
-descreve **como a operação faz aquilo hoje**, com o gargalo que a história resolve.
+As fontes são o enunciado do desafio, o resumo dos gargalos, o Encontro 1 com o cliente
+(28/10/2026), em que a SEALog contou que terceirizou as entregas, o planejamento da equipe e o plano
+do agente de ocorrências. Como não há sistema legado, o campo **Origem legada** de cada história
+descreve **como a operação faz aquilo hoje**, com o gargalo que a história resolve, e aponta o item
+da lista RF-01 a RF-20 da equipe que ela cobre ou substitui.
 
 ## Índice
 
 | Módulo | HUs | Total |
 |---|---|---|
 | Entrada de pedidos (`entrada-pedidos`) | `HU-SL-001` a `HU-SL-004` | 4 |
-| Registro e planejamento (`registro-planejamento`) | `HU-SL-005` a `HU-SL-010` | 6 |
-| Execução do motorista (`execucao-motorista`) | `HU-SL-011` a `HU-SL-015` | 5 |
-| Consulta de status (`consulta-status`) | `HU-SL-016`, `HU-SL-017` | 2 |
-| Exceções e decisões (`excecoes`) | `HU-SL-018` a `HU-SL-021` | 4 |
+| Cadastros (`cadastros`) | `HU-SL-005` a `HU-SL-008` | 4 |
+| Despacho (`despacho`) | `HU-SL-009` a `HU-SL-012` | 4 |
+| Retorno da terceirizada (`retorno-terceirizada`) | `HU-SL-013` a `HU-SL-016` | 4 |
+| Ocorrências e devoluções (`ocorrencias`) | `HU-SL-017` a `HU-SL-021` | 5 |
 | Financeiro (`financeiro`) | `HU-SL-022`, `HU-SL-023` | 2 |
 | Acesso (`acesso`) | `HU-SL-024` | 1 |
 
@@ -24,1242 +28,1263 @@ descreve **como a operação faz aquilo hoje**, com o gargalo que a história re
 
 ## Entrada de pedidos
 
-### HU-SL-001 — Registrar pedido recebido por mensagem
+### HU-SL-001 — Fazer o pedido pelo WhatsApp
 
 | | |
 |---|---|
 | **Módulo** | `entrada-pedidos` |
 | **Sistema** | SEALog |
-| **Atores** | Atendente, Analista, Coordenador |
-| **Telas** | `TL-SL-002` Novo pedido |
-| **Origem legada** | Hoje: o pedido chega por WhatsApp ou Instagram, em texto, áudio ou planilha própria do cliente, e o analista o copia do grupo de WhatsApp para a planilha. Cerca de 1 em 5 chega sem dados, e nada impede o envio sem número, telefone ou rua (Sr. Paulo, Cond. MarAzul) |
+| **Atores** | Loja |
+| **Telas** | `TL-SL-002` Conversa do WhatsApp, `TL-SL-003` Formulário de pedido no WhatsApp |
+| **Origem legada** | Hoje: a loja manda o pedido ao número de WhatsApp do Atendimento em texto, áudio ou planilha própria; a atendente confere os dados à mão, e cerca de 1 em 5 chega incompleto (Sr. Paulo sem número e telefone, Cond. MarAzul sem rua e telefone). Na lista da equipe: RF-07 |
 | **Prioridade** | Alta |
 
-**Como** atendente
-**Gostaria de** registrar no sistema o pedido que o cliente me mandou por mensagem, áudio ou planilha
-**Para que** ele exista num só lugar desde o primeiro minuto, e eu saiba na hora se falta algum dado.
-
-**Descrição**
-
-O atendente transforma o que chegou pela conversa — texto, áudio ou uma planilha fora do modelo —
-em um pedido no sistema, preenchendo um formulário único. O formulário aponta, campo a campo, o
-que falta: endereço sem número, telefone sem DDD, rua em branco. É a validação que hoje não
-existe em lugar nenhum da entrada.
-
-Se todos os dados obrigatórios estiverem preenchidos, o pedido é confirmado, recebe o código de
-entrega e o cliente recebe pelo WhatsApp a confirmação com o link de rastreio. Se faltar algo, o
-atendente pode registrar mesmo assim: o pedido fica pendente de dados, com a lista do que falta, e
-não entra no planejamento até ser completado (`HU-SL-004`). Assim o pedido incompleto não se perde
-na conversa enquanto se espera a resposta do cliente.
-
-O canal por onde o pedido chegou fica registrado. Se já houver um pedido do mesmo cliente para o
-mesmo destinatário, endereço e data, o sistema avisa antes de gravar, para evitar a mesma entrega
-registrada duas vezes.
-
-**Regras de negócio**
-
-| # | Regra | Catálogo |
-|---|---|---|
-| RN1 | Todo pedido ganha registro único e código de entrega no momento do registro. | `RN-SL-001` |
-| RN2 | São obrigatórios: cliente, nome e telefone do destinatário, rua, número, bairro, cidade e data desejada. | `RN-SL-002` |
-| RN3 | Pedido sem algum dado obrigatório fica "Pendente de dados" e não entra no planejamento. | `RN-SL-003` |
-| RN4 | Texto, áudio e planilha fora do modelo passam pelo mesmo formulário e pelas mesmas validações; o canal de origem fica registrado. | `RN-SL-005` |
-| RN5 | O telefone tem DDD e 10 ou 11 dígitos. | `RN-SL-006` |
-| RN6 | Endereço sem número só é aceito com a marca "Sem número", e então o ponto de referência é obrigatório. | `RN-SL-007` |
-| RN7 | Pedido igual a outro já registrado (mesmo cliente, destinatário, endereço e data) gera aviso, sem bloquear. | `RN-SL-011` |
-| RN8 | O pedido tem um ou mais volumes, informados no registro. | `RN-SL-012` |
-| RN9 | Pedido confirmado gera aviso ao cliente com o link de rastreio. | `RN-SL-033` |
-
-**Critérios de aceitação**
-
-| # | Cenário | Dado | Quando | Então |
-|---|---|---|---|---|
-| CA1 | Pedido completo | que preenchi todos os dados obrigatórios | gravo o pedido | ele é confirmado, recebe o código de entrega e o cliente recebe a confirmação com o link de rastreio. |
-| CA2 | Sem número | que deixei o número do endereço em branco e não marquei "Sem número" | tento confirmar | o sistema aponta o campo e explica que o número é obrigatório. |
-| CA3 | Endereço sem número de verdade | que marquei "Sem número" | tento confirmar sem ponto de referência | o sistema exige o ponto de referência. |
-| CA4 | Telefone inválido | que informei o telefone sem DDD | tento confirmar | o sistema aponta o telefone e pede DDD e número. |
-| CA5 | Registrar incompleto | que falta a rua e o cliente ainda não respondeu | gravo como pendente | o pedido fica "Pendente de dados", com "rua" na lista do que falta, e não aparece entre as entregas prontas para rota. |
-| CA6 | Pedido repetido | que já existe pedido do mesmo cliente para o mesmo destinatário, endereço e data | gravo o pedido | o sistema avisa e pergunta se é outro pedido; se eu confirmar, grava. |
-| CA7 | Canal de origem | que o pedido chegou por áudio no WhatsApp | gravo o pedido | o canal "WhatsApp" fica registrado no pedido. |
-| CA8 | Sem permissão | que entrei com o perfil de motorista | tento abrir o registro de pedido | o sistema recusa e informa que meu perfil não tem acesso. |
-
-**Integrações e APIs** — `INT-001` WhatsApp, para a confirmação com o link de rastreio. Os canais de chegada (WhatsApp, `INT-002` Instagram) não são lidos pelo sistema: o atendente transcreve.
-
-**Referências** — Gargalos §1 (pedidos incompletos, formatos misturados, sem validação na origem), §2 (digitação manual), §7 (caso "Pedido incompleto"), §8.
-
----
-
-### HU-SL-002 — Fazer o pedido pelo link
-
-| | |
-|---|---|
-| **Módulo** | `entrada-pedidos` |
-| **Sistema** | SEALog |
-| **Atores** | Cliente |
-| **Telas** | `TL-SL-003` Pedido pelo link |
-| **Origem legada** | Hoje: o cliente pequeno pede por WhatsApp ou Instagram, no formato que quiser, e a atendente precisa voltar a ele quando falta dado e esperar a resposta antes de seguir |
-| **Prioridade** | Alta |
-
-**Como** cliente da SEALog
-**Gostaria de** preencher meu pedido num link que a atendente me manda na própria conversa
+**Como** loja cliente da SEALog
+**Gostaria de** fazer o pedido num formulário dentro da própria conversa do WhatsApp
 **Para que** eu informe tudo certo de primeira, sem instalar nada e sem esperar a atendente me perguntar o que faltou.
 
 **Descrição**
 
-O atendente envia ao cliente, na conversa de WhatsApp ou Instagram em que ele já está, um link
-para o formulário de pedido. O formulário abre no navegador do celular, sem aplicativo e sem conta,
-e já sabe de qual cliente é. Ele tem os mesmos campos e as mesmas validações do formulário do
-atendente: o cliente não consegue enviar o pedido sem número, sem telefone ou sem rua.
+A loja manda uma mensagem ao número de WhatsApp da SEALog, o mesmo que já usa. Se o número estiver
+autorizado para uma loja ativa, ela recebe o menu com três opções e escolhe "Novo pedido". Abre-se
+um formulário dentro do próprio WhatsApp, que já sabe de qual loja é o pedido.
 
-Ao enviar, o pedido é confirmado na hora, sem passar pelo atendente, e o cliente recebe no
-WhatsApp o código e o link de rastreio. O link funciona fora do horário do atendimento, inclusive
-no sábado depois das 12h.
+O formulário pede os dados que hoje a atendente confere à mão: nome e telefone do destinatário,
+endereço com número, complemento e bairro e cidade, tamanho aproximado do volume e a data desejada.
+Ele não envia enquanto faltar algum dado obrigatório e aponta cada campo que falta. Endereço sem
+número precisa da marca "Sem número" e de um ponto de referência. Se alguém além do destinatário
+puder receber — um vizinho, o porteiro —, a loja diz quem no próprio pedido.
+
+Ao enviar, o pedido ganha o código SEALog, recebe a data prevista e a loja recebe a confirmação na
+conversa. Se já houver pedido igual, a loja é avisada antes e confirma se é outro.
 
 **Regras de negócio**
 
 | # | Regra | Catálogo |
 |---|---|---|
-| RN1 | O link abre no celular, sem instalar aplicativo e sem criar conta, e dá acesso só aos pedidos daquele cliente. | `RN-SL-004`, `RN-SL-050` |
-| RN2 | O formulário tem os mesmos dados obrigatórios do formulário do atendente. | `RN-SL-002` |
-| RN3 | Sem algum dado obrigatório, o envio não é aceito e o campo que falta é apontado. | `RN-SL-003` |
-| RN4 | O telefone tem DDD e 10 ou 11 dígitos; endereço sem número exige a marca "Sem número" e o ponto de referência. | `RN-SL-006`, `RN-SL-007` |
-| RN5 | Pedido enviado pelo link é confirmado sem trabalho do atendente, com o canal "Link". | `RN-SL-005`, `RN-SL-009` |
-| RN6 | O link funciona a qualquer hora, sem depender do horário do atendimento. | `RN-SL-032` |
+| RN1 | Só um número autorizado de loja ativa recebe o menu; número desconhecido recebe a orientação de procurar o atendimento, e nada é registrado. | `RN-SL-003` |
+| RN2 | O menu tem três opções: novo pedido, acompanhar pedido e editar pedido. | `RN-SL-004` |
+| RN3 | São obrigatórios: nome e telefone do destinatário, rua, número, bairro, cidade, complemento ou a marca de que não há, tamanho aproximado do volume e data desejada; o formulário não envia sem eles. | `RN-SL-005`, `RN-SL-006` |
+| RN4 | O telefone tem DDD e 10 ou 11 dígitos; endereço sem número exige a marca "Sem número" e o ponto de referência. | `RN-SL-007`, `RN-SL-008` |
+| RN5 | A data prevista é o dia útil seguinte ou a data agendada pela loja. | `RN-SL-009` |
+| RN6 | Pedido igual a outro da mesma loja (mesmo destinatário, endereço e data) gera aviso, sem bloquear. | `RN-SL-010` |
+| RN7 | Quem pode receber além do destinatário é informado no pedido; sem isso, só o destinatário recebe. | `RN-SL-013` |
 
 **Critérios de aceitação**
 
 | # | Cenário | Dado | Quando | Então |
 |---|---|---|---|---|
-| CA1 | Pedido completo | que recebi o link e preenchi todos os campos obrigatórios | envio | o pedido é confirmado e recebo no WhatsApp o código e o link de rastreio. |
-| CA2 | Campo faltando | que deixei o telefone do destinatário em branco | tento enviar | o formulário não envia e aponta o telefone como obrigatório. |
-| CA3 | Fora do horário | que é sábado, 15h, e o atendimento já fechou | envio um pedido completo | o pedido é confirmado da mesma forma. |
-| CA4 | Sem conta | que nunca usei o SEALog | abro o link no celular | o formulário abre sem pedir cadastro nem instalação. |
-| CA5 | Só os meus pedidos | que tenho o link do meu cliente | tento usar o link para ver pedidos de outro cliente | não há como: o link só mostra e cria pedidos do meu cadastro. |
+| CA1 | Pedido completo | que meu número está autorizado e preenchi todos os campos obrigatórios | envio o formulário | o pedido recebe o código SEALog e eu recebo na conversa a confirmação com a data prevista. |
+| CA2 | Pedido incompleto | que estou pedindo para o Sr. Paulo e não sei o número da casa nem o telefone | tento enviar | o formulário não envia e aponta o número e o telefone como obrigatórios. |
+| CA3 | Endereço sem número de verdade | que marquei "Sem número" | tento enviar sem ponto de referência | o formulário pede o ponto de referência. |
+| CA4 | Número não autorizado | que escrevo de um número que não está cadastrado em nenhuma loja | mando a mensagem | recebo a orientação de falar com o atendimento, com o horário dele, e nenhum pedido é criado. |
+| CA5 | Pessoa autorizada a receber | que o pedido é para o condomínio Mar Azul e pode ser deixado com Dona Lúcia | informo o nome dela no campo de quem pode receber | o pedido guarda a autorização e ela vai junto para a terceirizada. |
+| CA6 | Pedido repetido | que já pedi hoje uma entrega para o mesmo destinatário, endereço e data | envio de novo | sou avisada da repetição e só vira outro pedido se eu confirmar. |
+| CA7 | Fora do horário | que é sábado, 15h, e o atendimento já fechou | envio um pedido completo | o pedido é recebido da mesma forma. |
 
-**Integrações e APIs** — `INT-001` WhatsApp, para enviar o link e a confirmação; `INT-002` Instagram, onde o atendente cola o link na conversa.
+**Integrações e APIs** — `INT-001` WhatsApp: menu, formulário dentro da conversa (resposta estruturada que o sistema lê) e confirmação ao fim.
 
-**Referências** — Gargalos §1 (pedidos incompletos, sem validação na origem), §9 (clientes pequenos pedem por WhatsApp e Instagram; atendimento com horário limitado).
+**Referências** — Enunciado §2 (pedido por um número de WhatsApp, dados conferidos), §8 (caso "Pedido com informações incompletas"); Encontro 1 [07:35], [08:38], [14:33], [35:39], [43:19]; Planejamento da equipe (RF-07; cliente continua no WhatsApp); Gargalos §1.
 
 ---
 
-### HU-SL-003 — Importar pedidos da planilha do cliente
+### HU-SL-002 — Acompanhar o pedido pelo WhatsApp
 
 | | |
 |---|---|
 | **Módulo** | `entrada-pedidos` |
 | **Sistema** | SEALog |
-| **Atores** | Atendente, Analista, Coordenador |
-| **Telas** | `TL-SL-004` Importação de planilha |
-| **Origem legada** | Hoje: alguns clientes mandam planilhas próprias, cada uma num formato, e o analista as digita na planilha da operação |
-| **Prioridade** | Média |
+| **Atores** | Loja |
+| **Telas** | `TL-SL-002` Conversa do WhatsApp |
+| **Origem legada** | Hoje: a loja pergunta "cadê minha entrega?" ao Atendimento, que pergunta no grupo interno, o analista procura na planilha e, se ela está desatualizada, tenta falar com o motorista; a resposta leva de 20 minutos a mais de 2 horas. Depois da terceirização, a SEALog ainda depende de a terceirizada responder por WhatsApp ou planilha. Na lista da equipe: RF-07 |
+| **Prioridade** | Alta |
 
-**Como** atendente
-**Gostaria de** importar de uma vez a planilha com vários pedidos de um cliente
-**Para que** eu não precise digitar linha por linha, e os pedidos incompletos fiquem marcados em vez de passarem despercebidos.
+**Como** loja cliente da SEALog
+**Gostaria de** ver na conversa do WhatsApp em que pé está o meu pedido
+**Para que** eu responda ao meu cliente na hora, sem esperar a atendente perguntar a ninguém.
 
 **Descrição**
 
-O cliente que manda muitos pedidos usa a planilha modelo do SEALog, que o atendente envia a ele. O
-atendente escolhe o cliente, carrega o arquivo e vê uma prévia: cada linha vira um pedido, e cada
-pedido passa pelas mesmas validações do formulário.
+A loja escolhe "Acompanhar pedido" no menu e informa o código SEALog do pedido, ou escolhe entre os
+seus pedidos mais recentes. O sistema responde na hora com o status atual, a data e a hora do último
+registro e o detalhe que faz sentido para o status: a data prevista, a terceirizada que está com o
+pacote, o nome de quem recebeu depois da entrega, ou o motivo da não entrega.
 
-As linhas completas são confirmadas; as que têm dado faltando entram como pendentes, com o que
-falta — nenhuma é descartada em silêncio. O resultado mostra, linha a linha, o que aconteceu. Se o
-arquivo não segue o modelo, nada é importado e o atendente é avisado. A planilha num formato
-próprio do cliente continua possível: o atendente registra os pedidos pelo formulário
-(`HU-SL-001`).
+A resposta vem do registro único, alimentado pelo retorno da terceirizada, e funciona a qualquer
+hora, inclusive fora do horário do atendimento. A loja só vê os pedidos dela. Da mesma resposta, a
+loja pode relatar um problema com aquele pedido (`HU-SL-017`).
 
 **Regras de negócio**
 
 | # | Regra | Catálogo |
 |---|---|---|
-| RN1 | A importação aceita o modelo do SEALog, com colunas fixas; cada linha vira um pedido do cliente escolhido. | `RN-SL-008` |
-| RN2 | Cada linha passa pelas mesmas validações do formulário. | `RN-SL-002`, `RN-SL-006`, `RN-SL-007` |
-| RN3 | Linha com dado faltando entra como pendente, não é descartada. | `RN-SL-003`, `RN-SL-008` |
-| RN4 | O resultado mostra, linha a linha, o que foi confirmado e o que ficou pendente, e por quê. | `RN-SL-008` |
-| RN5 | Arquivo fora do modelo não é importado. | `RN-SL-008` |
-| RN6 | Linha igual a pedido já registrado é sinalizada na prévia. | `RN-SL-011` |
-| RN7 | Cada pedido confirmado gera aviso ao cliente com o link de rastreio. | `RN-SL-033` |
+| RN1 | Acompanhar é uma das três opções do menu, e o pedido é identificado pelo código SEALog. | `RN-SL-004` |
+| RN2 | A loja vê só os pedidos dela; código de outra loja recebe a mesma resposta de código não encontrado. | `RN-SL-054` |
+| RN3 | A resposta mostra o status e a data e a hora do último registro, para que se saiba se a informação é atual. | `RN-SL-022` |
+| RN4 | O status considera a hora do fato informada pela terceirizada, não a hora em que o retorno chegou. | `RN-SL-035` |
+| RN5 | O relato de problema sai do acompanhamento do pedido, sem um quarto botão no menu. | `RN-SL-004`, `RN-SL-036` |
 
 **Critérios de aceitação**
 
 | # | Cenário | Dado | Quando | Então |
 |---|---|---|---|---|
-| CA1 | Planilha completa | que a planilha modelo tem 10 linhas completas | importo | vejo 10 pedidos confirmados, cada um com seu código. |
-| CA2 | Linhas incompletas | que 2 das 10 linhas estão sem número no endereço | importo | 8 são confirmados e 2 ficam pendentes, com "número" na lista do que falta. |
-| CA3 | Fora do modelo | que o arquivo tem colunas diferentes das do modelo | tento importar | nada é importado e sou avisado de que o arquivo não segue o modelo. |
-| CA4 | Prévia | que carreguei o arquivo | ainda não confirmei | vejo a prévia linha a linha, com os problemas apontados, antes de gravar. |
-| CA5 | Repetido | que uma linha repete um pedido já registrado | vejo a prévia | a linha aparece sinalizada como possível repetição. |
+| CA1 | Pedido em rota | que a terceirizada informou que o pacote saiu para entrega às 10h15 | consulto o código | vejo "Em rota desde 10h15" e a data prevista. |
+| CA2 | Pedido entregue | que o pedido foi entregue com comprovante | consulto o código | vejo "Entregue", a data e a hora e o nome de quem recebeu. |
+| CA3 | Não entregue | que a terceirizada informou que não achou o endereço | consulto o código | vejo "Não entregue", o motivo e o botão para relatar problema. |
+| CA4 | Código de outra loja | que informo o código de um pedido de outra loja | peço o acompanhamento | recebo a mensagem de pedido não encontrado, sem nenhum dado do pedido. |
+| CA5 | Código inexistente | que digito um código errado | peço o acompanhamento | recebo a mensagem de pedido não encontrado e posso tentar de novo. |
+| CA6 | Fora do horário | que é sábado, 16h | consulto o código | recebo a resposta na hora, sem atendente. |
 
-**Integrações e APIs** — `INT-003` Planilhas, para ler o arquivo no modelo do SEALog; `INT-001` WhatsApp, para a confirmação de cada pedido.
+**Integrações e APIs** — `INT-001` WhatsApp: opção do menu, pergunta do código e resposta com o status (`MSG-SL-008`, `MSG-SL-009`).
 
-**Referências** — Gargalos §1 (formatos misturados: planilhas próprias dos clientes), §2 (digitação manual).
+**Referências** — Enunciado §2 (o caminho de "cadê minha entrega?"); Encontro 1 [08:38] (acompanhar pelo ID do pedido), [25:39]; Planejamento da equipe (RF-07); Gargalos §4.
 
 ---
 
-### HU-SL-004 — Resolver pedido com dados pendentes
+### HU-SL-003 — Editar ou cancelar o pedido pelo WhatsApp
 
 | | |
 |---|---|
 | **Módulo** | `entrada-pedidos` |
 | **Sistema** | SEALog |
-| **Atores** | Atendente, Analista, Coordenador, Cliente |
-| **Telas** | `TL-SL-005` Pendências de dados · `TL-SL-003` Pedido pelo link |
-| **Origem legada** | Hoje: quando o pedido chega incompleto, a atendente volta ao cliente e espera a resposta antes de seguir, e o pedido fica parado na conversa, sem registro |
+| **Atores** | Loja |
+| **Telas** | `TL-SL-002` Conversa do WhatsApp, `TL-SL-003` Formulário de pedido no WhatsApp |
+| **Origem legada** | Hoje: a loja manda a correção por mensagem, a atendente repassa no grupo interno e o analista corrige a planilha, se achar a linha certa; a mudança pode não chegar a quem vai entregar. Na lista da equipe: RF-19 e RF-20 |
+| **Prioridade** | Média |
+
+**Como** loja cliente da SEALog
+**Gostaria de** corrigir ou cancelar um pedido pela mesma conversa em que pedi
+**Para que** a correção chegue a quem vai entregar sem passar por três pessoas.
+
+**Descrição**
+
+A loja escolhe "Editar pedido" no menu e informa o código. Enquanto a terceirizada não registrou a
+coleta, abre-se o mesmo formulário do pedido, com os dados já preenchidos, e a loja muda o que
+precisar — endereço, telefone, data, quem pode receber — ou cancela o pedido. As validações são as
+mesmas do pedido novo.
+
+Se o pedido já foi despachado, a mudança vai na hora para a terceirizada, com o que mudou em
+destaque (`HU-SL-012`). Depois da coleta, a edição pelo WhatsApp é recusada e a loja é orientada a
+falar com o atendimento. A loja recebe a confirmação de toda mudança, e tudo fica no histórico do
+pedido.
+
+**Regras de negócio**
+
+| # | Regra | Catálogo |
+|---|---|---|
+| RN1 | A loja edita ou cancela pelo WhatsApp até a terceirizada registrar a coleta; o limite está para confirmação. | `RN-SL-011`, `Q-SL-04` |
+| RN2 | A edição passa pelas mesmas validações do pedido novo. | `RN-SL-005`, `RN-SL-006` |
+| RN3 | A autorização de entrega a outra pessoa pode ser incluída ou retirada na edição. | `RN-SL-013` |
+| RN4 | Mudança depois do despacho vai na hora para a terceirizada, com o que mudou em destaque. | `RN-SL-026` |
+| RN5 | Toda mudança fica no histórico do pedido, com a loja como autora e o valor anterior. | `RN-SL-020` |
+
+**Critérios de aceitação**
+
+| # | Cenário | Dado | Quando | Então |
+|---|---|---|---|---|
+| CA1 | Corrigir antes da coleta | que o pedido está despachado e ainda não foi coletado | mudo o número do apartamento | o pedido é atualizado, a terceirizada recebe a alteração e eu recebo a confirmação. |
+| CA2 | Depois da coleta | que a terceirizada já registrou a coleta | tento editar | recebo a mensagem de que o pedido já foi coletado e devo falar com o atendimento. |
+| CA3 | Cancelar | que o pedido ainda não foi coletado | cancelo | o pedido fica Cancelado, a terceirizada é avisada e eu recebo a confirmação. |
+| CA4 | Edição inválida | que apaguei o telefone do destinatário | tento salvar | o formulário não salva e aponta o telefone como obrigatório. |
+| CA5 | Autorizar o porteiro | que o destinatário vai viajar | incluo o porteiro entre quem pode receber | a autorização fica no pedido e chega à terceirizada. |
+
+**Integrações e APIs** — `INT-001` WhatsApp, para o menu, o formulário e a confirmação (`MSG-SL-010`, `MSG-SL-011`); `INT-002` API padrão da terceirizada, para levar a alteração quando o pedido já foi despachado.
+
+**Referências** — Encontro 1 [08:38] (editar pedido), [43:19]; Planejamento da equipe (RF-19, RF-20); Gargalos §2.
+
+---
+
+### HU-SL-004 — Registrar o pedido que chegou fora do formulário
+
+| | |
+|---|---|
+| **Módulo** | `entrada-pedidos` |
+| **Sistema** | SEALog |
+| **Atores** | Atendente, Coordenador |
+| **Telas** | `TL-SL-004` Novo pedido pela equipe, `TL-SL-011` Importação de planilha |
+| **Origem legada** | Hoje: pedidos em áudio, texto livre ou planilha própria da loja são copiados à mão do WhatsApp para a planilha do dia; quando falta dado, a atendente volta à loja e espera. Na lista da equipe: RF-07 e RF-19 |
 | **Prioridade** | Alta |
 
 **Como** atendente
-**Gostaria de** ver todos os pedidos que esperam dados, há quanto tempo e o que falta em cada um
-**Para que** nenhum pedido incompleto fique esquecido, e o cliente possa completar sozinho.
+**Gostaria de** registrar no sistema o pedido que a loja mandou por áudio, mensagem livre, ligação ou planilha
+**Para que** nenhum pedido fique só na conversa, e o que faltar seja completado pela própria loja.
 
 **Descrição**
 
-Os pedidos pendentes de dados ficam numa lista própria, do mais antigo para o mais recente, com o
-cliente, o que falta e há quanto tempo esperam. Daqui o atendente reenvia ao cliente o link de
-complemento, que abre o formulário já preenchido com o que foi informado e pede só o que falta.
+Nem toda loja vai usar o formulário desde o primeiro dia. Quando o pedido chega de outro jeito, o
+atendente o registra no painel, num formulário com os mesmos campos e as mesmas validações do
+WhatsApp, ou importa a planilha da loja: cada linha vira um pedido.
 
-Quando o cliente completa pelo link, o pedido é confirmado sozinho e sai da lista. O atendente
-também pode completar com o que o cliente respondeu na conversa. Pedido que só se completa depois do
-horário de corte do dia fica para as rotas do dia seguinte.
+Se faltar algum dado obrigatório, o pedido pode ser gravado assim mesmo, como "Pendente de dados",
+com a lista do que falta. A loja recebe no WhatsApp um aviso com um botão para completar só o que
+falta; quando ela completa, o pedido passa a "Recebido" e segue sozinho para a terceirizada. O canal
+de origem fica registrado, e pedido igual a outro gera o mesmo aviso de repetição.
 
 **Regras de negócio**
 
 | # | Regra | Catálogo |
 |---|---|---|
-| RN1 | A lista mostra todo pedido pendente, com o que falta e há quanto tempo espera. | `RN-SL-009` |
-| RN2 | O link de complemento pede só o que falta e confirma o pedido sem trabalho do atendente. | `RN-SL-009` |
-| RN3 | Pedido pendente não entra no planejamento. | `RN-SL-003` |
-| RN4 | Pedido confirmado depois do horário de corte vai para o dia seguinte. | `RN-SL-010` |
-| RN5 | O complemento passa pelas mesmas validações do formulário. | `RN-SL-002`, `RN-SL-006`, `RN-SL-007` |
+| RN1 | O pedido registrado pela equipe passa pelas mesmas validações do formulário do WhatsApp, e o canal de origem fica registrado. | `RN-SL-012` |
+| RN2 | São obrigatórios os mesmos dados do pedido pelo WhatsApp. | `RN-SL-005` |
+| RN3 | O telefone tem DDD e 10 ou 11 dígitos; endereço sem número exige a marca "Sem número" e o ponto de referência. | `RN-SL-007`, `RN-SL-008` |
+| RN4 | O que faltar deixa o pedido "Pendente de dados", fora do despacho, e a loja recebe o formulário para completar só o que falta. | `RN-SL-012` |
+| RN5 | Na planilha da loja, cada linha vira um pedido; linha incompleta entra como pendente, não é descartada. | `RN-SL-012` |
+| RN6 | Pedido igual a outro da mesma loja gera aviso, sem bloquear. | `RN-SL-010` |
 
 **Critérios de aceitação**
 
 | # | Cenário | Dado | Quando | Então |
 |---|---|---|---|---|
-| CA1 | Ver pendências | que há 3 pedidos sem número no endereço | abro as pendências | vejo os 3, com "número" na coluna do que falta e o tempo de espera de cada um. |
-| CA2 | Cliente completa | que reenviei o link de complemento | o cliente informa o número e envia | o pedido é confirmado, sai da lista e o cliente recebe o link de rastreio. |
-| CA3 | Atendente completa | que o cliente respondeu o número na conversa | preencho o número no pedido | o pedido é confirmado e sai da lista. |
-| CA4 | Depois do corte | que o pedido foi completado depois do horário de corte | ele é confirmado | ele entra entre as entregas prontas do dia seguinte. |
-| CA5 | Complemento inválido | que o cliente informou telefone sem DDD no complemento | tenta enviar | o link aponta o telefone e não envia. |
+| CA1 | Pedido por áudio, completo | que transcrevi um áudio com todos os dados | confirmo o pedido | ele recebe o código, o canal "Equipe" e a loja recebe a confirmação no WhatsApp. |
+| CA2 | Falta a rua | que o pedido para o condomínio Mar Azul chegou sem rua e sem telefone | gravo como pendente | o pedido fica "Pendente de dados" com rua e telefone na lista do que falta, e a loja recebe o aviso para completar. |
+| CA3 | Loja completa | que a loja recebeu o aviso de pedido pendente | completa os dados no WhatsApp | o pedido passa a "Recebido" e segue para a terceirizada, sem trabalho do atendente. |
+| CA4 | Planilha da loja | que importei uma planilha com 3 linhas, uma sem número | a importação termina | vejo 2 pedidos recebidos e 1 pendente, com o motivo, e a loja é avisada do pendente. |
+| CA5 | Telefone inválido | que digitei o telefone sem DDD | tento confirmar | o sistema aponta o telefone e pede DDD e número. |
+| CA6 | Sem permissão | que entrei com o perfil Financeiro | tento abrir o registro de pedido | o sistema recusa e informa que meu perfil não tem acesso. |
 
-**Integrações e APIs** — `INT-001` WhatsApp, para reenviar o link de complemento e a confirmação.
+**Integrações e APIs** — `INT-001` WhatsApp, para a confirmação e o aviso de pedido pendente com o formulário de complemento (`MSG-SL-007`, `MSG-SL-013`); `INT-003` Planilhas, para importar a planilha da loja.
 
-**Referências** — Gargalos §1 (pedidos incompletos: a atendente volta ao cliente e espera), §7 (caso "Pedido incompleto").
-
----
-
-## Registro e planejamento
-
-### HU-SL-005 — Consultar e manter a lista única de entregas
-
-| | |
-|---|---|
-| **Módulo** | `registro-planejamento` |
-| **Sistema** | SEALog |
-| **Atores** | Atendente, Analista, Coordenador, Financeiro |
-| **Telas** | `TL-SL-006` Lista de entregas · `TL-SL-007` Detalhe da entrega |
-| **Origem legada** | Hoje: o analista copia do grupo de WhatsApp para a planilha, e as cópias por analista geram registros diferentes da mesma entrega. No caso "Registro incorreto", a linha errada na planilha fez a informação se perder |
-| **Prioridade** | Alta |
-
-**Como** analista
-**Gostaria de** trabalhar numa só lista de entregas, a mesma para toda a equipe
-**Para que** não existam duas versões da mesma entrega, e qualquer correção fique registrada.
-
-**Descrição**
-
-A lista de entregas substitui as planilhas da operação. Cada linha é uma entrega, com código,
-cliente, destinatário, bairro, data prevista, status, motorista e a hora do último registro. Ela se
-usa como uma planilha: filtra por status, data, cliente, bairro e motorista, ordena por qualquer
-coluna e exporta (`HU-SL-023`). A diferença é que não há cópia: todos olham a mesma lista, e o que o
-motorista registra na rua aparece nela.
-
-Abrir uma linha mostra o detalhe da entrega: os dados do pedido, os volumes, o histórico de status
-e de alterações, o comprovante, as ocorrências e os avisos enviados ao cliente. O analista e o
-coordenador podem corrigir dados; cada correção fica no histórico com quem alterou, quando e o
-valor anterior. O status não se altera à mão: muda pelos caminhos do ciclo da entrega.
-
-**Regras de negócio**
-
-| # | Regra | Catálogo |
-|---|---|---|
-| RN1 | Há uma única lista de entregas para toda a equipe, sem cópias. | `RN-SL-013` |
-| RN2 | Toda alteração fica no histórico da entrega, com autor, data e hora e valor anterior. | `RN-SL-013` |
-| RN3 | O status só muda pelos caminhos do ciclo da entrega. | `RN-SL-014` |
-| RN4 | A lista mostra a data e a hora do último registro de cada entrega. | `RN-SL-035` |
-| RN5 | O atendente só corrige pedido antes de confirmado; depois, a correção é do analista ou do coordenador. | `RN-SL-051` |
-| RN6 | A lista filtrada pode ser exportada para planilha. | `RN-SL-048` |
-
-**Critérios de aceitação**
-
-| # | Cenário | Dado | Quando | Então |
-|---|---|---|---|---|
-| CA1 | Mesma lista | que dois analistas abrem a lista ao mesmo tempo | um deles corrige o bairro de uma entrega | o outro vê o bairro corrigido ao atualizar a lista. |
-| CA2 | Histórico | que corrigi o telefone do destinatário | abro o detalhe da entrega | o histórico mostra o telefone anterior, o novo, meu nome e a hora. |
-| CA3 | Filtro | que há entregas de vários dias | filtro por "Em rota" e pela data de hoje | vejo só as entregas de hoje que estão em rota. |
-| CA4 | Status à mão | que a entrega está "No galpão" | procuro mudar o status para "Entregue" no detalhe | não há como: o status só muda pelo registro da parada. |
-| CA5 | Atendente depois de confirmado | que sou atendente e a entrega já está confirmada | tento corrigir o endereço | o sistema recusa e informa que a correção é do analista ou do coordenador. |
-| CA6 | Sem resultado | que filtrei por um cliente sem entregas no período | aplico o filtro | a lista informa que nenhuma entrega foi encontrada. |
-
-**Integrações e APIs** — Nenhuma. A exportação está em `HU-SL-023` (`INT-003`).
-
-**Referências** — Gargalos §2 (digitação manual, planilhas divergentes), §4 (planilha desatualizada), §7 (caso "Registro incorreto"), §8.
+**Referências** — Enunciado §2 (texto, áudio e planilhas próprias; cerca de 1 em 5 incompleto), §8 (caso "Pedido com informações incompletas"); Planejamento da equipe (RF-07, RF-19); Gargalos §1, §2.
 
 ---
 
-### HU-SL-006 — Gerar a etiqueta do pacote
+## Cadastros
+
+### HU-SL-005 — Cadastrar a loja e os números autorizados
 
 | | |
 |---|---|
-| **Módulo** | `registro-planejamento` |
-| **Sistema** | SEALog |
-| **Atores** | Analista, Coordenador |
-| **Telas** | `TL-SL-008` Etiqueta do pacote · `TL-SL-007` Detalhe da entrega |
-| **Origem legada** | Hoje: as etiquetas são escritas à mão nos pacotes |
-| **Prioridade** | Alta |
-
-**Como** analista
-**Gostaria de** imprimir a etiqueta de cada volume da entrega
-**Para que** todo pacote carregue o código da entrega de forma legível, e o motorista possa lê-lo com a câmera.
-
-**Descrição**
-
-A etiqueta sai do próprio sistema, uma por volume: código da entrega em texto e em código lido
-pela câmera do celular, nome do destinatário, bairro e o número do volume ("2/3"). Pode ser impressa
-para uma entrega ou em lote, para todas as entregas prontas do dia.
-
-A etiqueta é o que liga o pacote físico à entrega no sistema: é por ela que o galpão registra a
-chegada, que o motorista abre a parada e que o comprovante fica preso à entrega certa. Por isso
-nenhuma entrega entra em rota sem etiqueta impressa. Reimprimir é possível, e fica no histórico.
-
-**Regras de negócio**
-
-| # | Regra | Catálogo |
-|---|---|---|
-| RN1 | A etiqueta traz o código em texto e em código lido pela câmera, o destinatário, o bairro e o número do volume. | `RN-SL-015` |
-| RN2 | Cada volume tem etiqueta própria, com o mesmo código de entrega. | `RN-SL-012` |
-| RN3 | Nenhuma entrega entra em rota sem etiqueta impressa. | `RN-SL-015` |
-| RN4 | Impressão e reimpressão ficam no histórico da entrega. | `RN-SL-013` |
-
-**Critérios de aceitação**
-
-| # | Cenário | Dado | Quando | Então |
-|---|---|---|---|---|
-| CA1 | Três volumes | que a entrega tem 3 volumes | imprimo as etiquetas | saem 3 etiquetas, "1/3", "2/3" e "3/3", com o mesmo código. |
-| CA2 | Em lote | que há 25 entregas confirmadas para hoje sem etiqueta | imprimo em lote | saem as etiquetas de todos os volumes das 25. |
-| CA3 | Leitura | que a etiqueta foi impressa | leio o código com a câmera do celular | abre a entrega correspondente. |
-| CA4 | Sem etiqueta | que a entrega não tem etiqueta impressa | tento incluí-la numa rota | o sistema recusa e informa que falta a etiqueta. |
-| CA5 | Reimpressão | que reimprimi a etiqueta de um volume | abro o histórico | a reimpressão aparece com meu nome e a hora. |
-
-**Integrações e APIs** — Nenhuma. A impressão usa a impressora do galpão, sem integração própria.
-
-**Referências** — Gargalos §2 (etiquetas escritas à mão), §3 (foto sem vínculo com a entrega), §7 (caso "Registro incorreto").
-
----
-
-### HU-SL-007 — Agendar a coleta e receber o pacote no galpão
-
-| | |
-|---|---|
-| **Módulo** | `registro-planejamento` |
-| **Sistema** | SEALog |
-| **Atores** | Analista, Coordenador |
-| **Telas** | `TL-SL-009` Coletas e recebimento no galpão |
-| **Origem legada** | Hoje: a coleta acontece numa janela apertada, entre 14h e 18h, ou o cliente leva ao galpão até 17h, e a chegada do pacote não é registrada em lugar consultável |
-| **Prioridade** | Média |
-
-**Como** analista
-**Gostaria de** agendar a coleta de cada pedido dentro da janela e registrar a chegada dos pacotes ao galpão
-**Para que** se saiba o que já está no galpão e pode sair em rota, e o que ainda falta chegar.
-
-**Descrição**
-
-Para cada pedido confirmado, o analista registra como o pacote chega ao galpão: coleta na casa do
-cliente, agendada entre 14h e 18h, ou entrega pelo próprio cliente no galpão, até 17h. As coletas
-agendadas aparecem por horário, para que o coordenador as encaixe nas rotas.
-
-Quando o pacote chega, o analista lê a etiqueta (ou digita o código) e o volume passa a constar no
-galpão. A entrega só fica pronta para rota quando todos os volumes dela chegaram. Pacote recebido
-depois das 17h vai para a programação do dia seguinte.
-
-**Regras de negócio**
-
-| # | Regra | Catálogo |
-|---|---|---|
-| RN1 | A coleta só pode ser agendada entre 14h e 18h. | `RN-SL-016` |
-| RN2 | O cliente que leva ao galpão entrega até 17h; depois disso, o pacote vai para o dia seguinte. | `RN-SL-016`, `RN-SL-017` |
-| RN3 | A chegada ao galpão é registrada pela leitura da etiqueta ou pelo código. | `RN-SL-017` |
-| RN4 | Só entrega com todos os volumes no galpão fica pronta para rota. | `RN-SL-017` |
-| RN5 | A chegada muda o status da entrega para "No galpão", com o registro no histórico. | `RN-SL-013`, `RN-SL-014` |
-
-**Critérios de aceitação**
-
-| # | Cenário | Dado | Quando | Então |
-|---|---|---|---|---|
-| CA1 | Coleta na janela | que o pedido está confirmado | agendo a coleta para 15h | a coleta fica agendada e aparece na lista de coletas do dia. |
-| CA2 | Coleta fora da janela | que o pedido está confirmado | tento agendar a coleta para 12h | o sistema recusa e informa que a coleta é entre 14h e 18h. |
-| CA3 | Recebimento | que o pacote chegou ao galpão | leio a etiqueta | o volume fica registrado no galpão e a entrega passa a "No galpão". |
-| CA4 | Volume faltando | que a entrega tem 2 volumes e só 1 chegou | olho as entregas prontas para rota | a entrega não aparece entre as prontas. |
-| CA5 | Depois das 17h | que o cliente trouxe o pacote às 17h30 | registro o recebimento | o pacote é recebido e a entrega fica para a programação do dia seguinte. |
-
-**Integrações e APIs** — Nenhuma.
-
-**Referências** — Gargalos §2 (coleta em janela apertada: entre 14h e 18h, ou o cliente leva ao galpão até 17h).
-
----
-
-### HU-SL-008 — Montar as rotas do dia
-
-| | |
-|---|---|
-| **Módulo** | `registro-planejamento` |
+| **Módulo** | `cadastros` |
 | **Sistema** | SEALog |
 | **Atores** | Coordenador |
-| **Telas** | `TL-SL-010` Rotas do dia |
-| **Origem legada** | Hoje: as rotas são montadas na experiência do coordenador, sem ferramenta, a partir da planilha |
+| **Telas** | `TL-SL-005` Lojas e números autorizados |
+| **Origem legada** | Hoje: não há cadastro; a loja é reconhecida pelo nome na conversa, e qualquer número que escreva ao Atendimento pode pedir uma entrega. Na lista da equipe: RF-01 e RF-02 (a autenticação da loja passa a ser o número autorizado, sem senha) |
 | **Prioridade** | Alta |
 
 **Como** coordenador de operação
-**Gostaria de** distribuir as entregas prontas entre os motoristas e definir a ordem das paradas
-**Para que** cada motorista saia com a rota que eu planejei, e essa rota fique registrada.
+**Gostaria de** cadastrar cada loja com os números de WhatsApp que podem pedir por ela
+**Para que** só quem é cliente faça pedido, e cada pedido saiba de que loja é sem perguntar.
 
 **Descrição**
 
-A tela de rotas mostra as entregas prontas para sair — confirmadas, etiquetadas e com todos os
-volumes no galpão — agrupadas por bairro, e os motoristas disponíveis no dia. O coordenador monta
-cada rota escolhendo o motorista e as entregas, e ordena as paradas. O agrupamento por bairro é
-só apoio: quem decide a rota continua sendo o coordenador, com a experiência que já usa hoje.
+O coordenador cadastra a loja com os dados comerciais e um ou mais números de WhatsApp autorizados —
+o do dono, o do balcão. A partir daí, mensagem de um desses números abre o menu de pedidos já
+identificada; a loja não tem senha nem conta.
 
-Uma entrega fica em no máximo uma rota. Enquanto não é publicada, a rota pode ser alterada à
-vontade; depois de publicada, mudanças seguem `HU-SL-009`.
+Um número pode ser incluído ou retirado a qualquer momento, e a loja pode ser desativada; loja
+inativa não faz pedido novo. Cada inclusão e retirada fica no histórico, com quem fez e quando.
 
 **Regras de negócio**
 
 | # | Regra | Catálogo |
 |---|---|---|
-| RN1 | O coordenador escolhe motorista, entregas e ordem; o sistema agrupa as entregas prontas por bairro, sem decidir. | `RN-SL-018` |
-| RN2 | Só entrega confirmada, etiquetada e com todos os volumes no galpão pode entrar em rota. | `RN-SL-015`, `RN-SL-017` |
-| RN3 | Uma entrega está em no máximo uma rota de cada vez. | `RN-SL-019` |
-| RN4 | A ordem das paradas pode ser mudada antes da publicação. | `RN-SL-021` |
-| RN5 | As rotas são do dia e cabem no horário da Operação, das 7h às 19h. | `RN-SL-023` |
-| RN6 | Montar rota é exclusivo do coordenador. | `RN-SL-051` |
+| RN1 | A loja é cadastrada pela equipe, com um ou mais números de WhatsApp autorizados. | `RN-SL-014` |
+| RN2 | Só número autorizado de loja ativa abre o menu de pedidos. | `RN-SL-003` |
+| RN3 | A loja não tem senha: é identificada pelo número e vê só os pedidos dela. | `RN-SL-054` |
+| RN4 | Um número autorizado pertence a uma só loja ativa. | `RN-SL-014` |
+| RN5 | Incluir ou tirar um número, e ativar ou desativar a loja, fica no histórico com quem fez. | `RN-SL-014` |
 
 **Critérios de aceitação**
 
 | # | Cenário | Dado | Quando | Então |
 |---|---|---|---|---|
-| CA1 | Montar rota | que há 12 entregas prontas no bairro Centro | incluo 8 delas na rota de um motorista | a rota fica com 8 paradas e as 8 saem da lista de prontas. |
-| CA2 | Ordenar | que a rota tem 8 paradas | mudo a parada 5 para a posição 1 | a ordem fica registrada como eu deixei. |
-| CA3 | Entrega já em rota | que a entrega já está na rota de outro motorista | tento incluí-la em mais uma rota | o sistema recusa e informa em que rota ela está. |
-| CA4 | Entrega não pronta | que a entrega ainda está "Pendente de dados" | procuro a entrega entre as prontas | ela não aparece. |
-| CA5 | Sem permissão | que entrei como analista | tento montar uma rota | posso ver as rotas, mas não montar nem alterar. |
+| CA1 | Loja nova | que a floricultura assinou com a SEALog | cadastro a loja com dois números | os dois números passam a receber o menu de pedidos, já com o nome da floricultura. |
+| CA2 | Número retirado | que um funcionário saiu da loja | retiro o número dele | a próxima mensagem desse número recebe a orientação de procurar o atendimento. |
+| CA3 | Número de outra loja | que o número já está autorizado para outra loja ativa | tento incluí-lo | o sistema recusa e diz a qual loja ele pertence. |
+| CA4 | Loja desativada | que desativei a loja | um número dela pede um pedido novo | recebe a orientação de procurar o atendimento, e nada é registrado. |
+| CA5 | Sem permissão | que entrei com o perfil Atendente | tento incluir um número | o sistema recusa. |
 
-**Integrações e APIs** — Nenhuma.
+**Integrações e APIs** — `INT-001` WhatsApp: o número de quem escreve é conferido contra os números autorizados (`MSG-SL-002`).
 
-**Referências** — Gargalos §2 (rotas montadas na experiência do coordenador, sem ferramenta); `DIV-SL-01`.
-
----
-
-### HU-SL-009 — Publicar o roteiro para o motorista
-
-| | |
-|---|---|
-| **Módulo** | `registro-planejamento` |
-| **Sistema** | SEALog |
-| **Atores** | Coordenador, Motorista |
-| **Telas** | `TL-SL-010` Rotas do dia · `TL-SL-011` Roteiro do motorista |
-| **Origem legada** | Hoje: o roteiro é enviado por WhatsApp, motorista por motorista, e alterações durante o dia viram mais mensagens no grupo |
-| **Prioridade** | Alta |
-
-**Como** coordenador de operação
-**Gostaria de** publicar as rotas montadas e, se preciso, alterá-las durante o dia
-**Para que** cada motorista receba o roteiro no celular de uma vez, sem que eu mande mensagem a um por um.
-
-**Descrição**
-
-Publicar uma rota envia o roteiro ao celular do motorista e muda as entregas para "Em rota". Pode-se
-publicar uma rota ou todas as do dia de uma vez. A publicação substitui o envio por WhatsApp.
-
-Depois de publicada, a rota ainda pode mudar: o coordenador pode trocar a ordem, retirar uma
-entrega ou remanejá-la para outro motorista, sempre com o motivo. O motorista vê o roteiro
-atualizado, com o que mudou em destaque, e o histórico de cada entrega registra a mudança.
-
-**Regras de negócio**
-
-| # | Regra | Catálogo |
-|---|---|---|
-| RN1 | Publicar envia o roteiro ao celular do motorista, sem mensagem individual por WhatsApp. | `RN-SL-020` |
-| RN2 | Alteração depois de publicada aparece ao motorista como roteiro atualizado, com o que mudou em destaque. | `RN-SL-020` |
-| RN3 | Retirar ou remanejar entrega de rota publicada exige motivo e fica no histórico. | `RN-SL-019`, `RN-SL-024` |
-| RN4 | A ordem planejada fica registrada mesmo que o motorista atenda em outra ordem. | `RN-SL-021` |
-| RN5 | Publicar é exclusivo do coordenador. | `RN-SL-051` |
-
-**Critérios de aceitação**
-
-| # | Cenário | Dado | Quando | Então |
-|---|---|---|---|---|
-| CA1 | Publicar | que montei a rota de um motorista | publico | o motorista vê o roteiro no celular e as entregas passam a "Em rota". |
-| CA2 | Publicar todas | que montei as rotas de 18 motoristas | publico todas | cada motorista recebe a própria rota, sem nenhuma mensagem de WhatsApp. |
-| CA3 | Remanejar | que a rota está publicada | remanejo uma entrega para outro motorista, informando o motivo | os dois motoristas veem o roteiro atualizado e a entrega registra o remanejamento. |
-| CA4 | Sem motivo | que a rota está publicada | tento retirar uma entrega sem informar o motivo | o sistema exige o motivo. |
-| CA5 | Mudança em destaque | que o coordenador mudou minha rota | abro o roteiro | vejo o aviso de roteiro atualizado, com a parada nova ou retirada em destaque. |
-
-**Integrações e APIs** — Nenhuma. O roteiro chega pelo próprio aplicativo do motorista, não pelo `INT-001` WhatsApp.
-
-**Referências** — Gargalos §2 (roteiro enviado por WhatsApp, motorista por motorista), §3 (grupo com cerca de 18 motoristas).
+**Referências** — Encontro 1 [08:38] (validação do número de origem); Planejamento da equipe (RF-01, RF-02; RBAC e Auth).
 
 ---
 
-### HU-SL-010 — Acompanhar o andamento das rotas
+### HU-SL-006 — Manter os dados comerciais da loja
 
 | | |
 |---|---|
-| **Módulo** | `registro-planejamento` |
+| **Módulo** | `cadastros` |
 | **Sistema** | SEALog |
-| **Atores** | Analista, Coordenador |
-| **Telas** | `TL-SL-010` Rotas do dia |
-| **Origem legada** | Hoje: muitos motoristas só avisam no almoço, no fim do dia ou quando algo dá errado, e o andamento só se descobre perguntando no grupo |
+| **Atores** | Atendente, Coordenador |
+| **Telas** | `TL-SL-005` Lojas e números autorizados |
+| **Origem legada** | Hoje: endereço de coleta, contato e condição de cobrança de cada loja ficam na memória da equipe ou em planilhas soltas, e a mudança chega por mensagem. Na lista da equipe: RF-03 e RF-04 (com banco único, a sincronização deixa de ser um passo separado) |
 | **Prioridade** | Média |
 
+**Como** atendente
+**Gostaria de** manter atualizados os dados comerciais de cada loja
+**Para que** todo pedido novo saia com o endereço de coleta e o contato certos, sem eu repetir a informação.
+
+**Descrição**
+
+Os dados comerciais da loja — nome, documento, endereço de coleta, contato e condição de cobrança —
+ficam no cadastro e entram em todo pedido novo: o endereço de coleta vai no despacho para a
+terceirizada, e a condição de cobrança é usada no fechamento.
+
+Quando a loja muda de endereço ou de contato, a equipe atualiza o cadastro. A mudança vale a partir
+do pedido seguinte; pedidos já despachados continuam com o endereço que tinham. Tudo fica no
+histórico, com o valor anterior.
+
+**Regras de negócio**
+
+| # | Regra | Catálogo |
+|---|---|---|
+| RN1 | Os dados comerciais da loja ficam no cadastro e são usados em todo pedido novo. | `RN-SL-015` |
+| RN2 | A alteração vale a partir do pedido seguinte e fica no histórico, com o valor anterior. | `RN-SL-015` |
+| RN3 | O endereço de coleta vai no despacho para a terceirizada. | `RN-SL-024` |
+| RN4 | O valor cobrado da loja depende da tabela de preços da SEALog. | `RN-SL-047`, `Q-SL-08` |
+
+**Critérios de aceitação**
+
+| # | Cenário | Dado | Quando | Então |
+|---|---|---|---|---|
+| CA1 | Endereço de coleta novo | que a papelaria mudou de endereço | atualizo o cadastro | os pedidos seguintes saem com o endereço novo no despacho. |
+| CA2 | Pedido já despachado | que havia um pedido despachado antes da mudança | atualizo o endereço | o pedido despachado mantém o endereço antigo, e o histórico mostra a mudança no cadastro. |
+| CA3 | Campo obrigatório vazio | que apaguei o endereço de coleta | tento salvar | o sistema aponta o campo e não salva. |
+| CA4 | Histórico | que o contato da loja foi trocado | abro o histórico da loja | vejo quem trocou, quando e o contato anterior. |
+
+**Integrações e APIs** — Nenhuma. Cadastro interno; o endereço chega à terceirizada pelo despacho de `HU-SL-011`.
+
+**Referências** — Planejamento da equipe (RF-03, RF-04).
+
+---
+
+### HU-SL-007 — Cadastrar a terceirizada
+
+| | |
+|---|---|
+| **Módulo** | `cadastros` |
+| **Sistema** | SEALog |
+| **Atores** | Coordenador |
+| **Telas** | `TL-SL-006` Terceirizadas |
+| **Origem legada** | Hoje: a SEALog terceirizou as entregas para duas empresas, uma por região; cada uma manda notícia do seu jeito, por planilha ou WhatsApp, e não há registro de quem atende o quê. Substitui, na lista da equipe, RF-05 e RF-06 (cadastro e análise de motoristas): o motorista agora é da terceirizada |
+| **Prioridade** | Alta |
+
 **Como** coordenador de operação
-**Gostaria de** ver, para cada rota, quantas paradas foram feitas, quantas faltam e quando foi o último registro do motorista
-**Para que** eu perceba cedo a rota parada ou o motorista que não está registrando, sem precisar perguntar.
+**Gostaria de** cadastrar cada terceirizada com as regiões que atende e o jeito que ela devolve o status
+**Para que** o pedido chegue à empresa certa e o retorno dela entre no mesmo padrão, hoje e com qualquer empresa nova.
 
 **Descrição**
 
-A tela de rotas, durante o dia, mostra o andamento de cada uma: paradas entregues, não entregues e
-pendentes, e a hora do último registro do motorista. Rota sem nenhum registro há mais tempo que o
-limite combinado fica sinalizada, para que o coordenador entre em contato. Esse limite não está na
-origem (`Q-SL-06`).
+O coordenador cadastra a terceirizada com o nome, o documento, o contato para o despacho e a forma de
+retorno que ela vai usar: pela integração com o SEALog, pelo portal ou por planilha. A terceirizada
+recebe uma credencial própria — chave de integração ou usuário do portal — que só dá acesso às
+entregas despachadas para ela.
 
-Abrir uma rota mostra as paradas na ordem planejada, com o status e a hora do registro de cada uma.
+O padrão de retorno e de comprovação é o mesmo para todas, as duas de hoje e as que vierem. As
+regiões que cada uma atende são mantidas na tabela de regiões (`HU-SL-008`). Terceirizada inativa
+não recebe despacho novo.
 
 **Regras de negócio**
 
 | # | Regra | Catálogo |
 |---|---|---|
-| RN1 | Cada rota mostra paradas concluídas, pendentes e com ocorrência, e a hora do último registro do motorista. | `RN-SL-022` |
-| RN2 | Rota sem registro há mais que o limite combinado fica sinalizada. | `RN-SL-022` |
-| RN3 | O registro feito sem sinal conta pela hora do fato, não pela hora em que chegou. | `RN-SL-030` |
-| RN4 | Toda tela de status mostra a hora do último registro. | `RN-SL-035` |
+| RN1 | A terceirizada é cadastrada com as regiões que atende, a forma de retorno e o contato para despacho, e tem credencial própria. | `RN-SL-016` |
+| RN2 | Toda terceirizada, atual ou futura, segue o mesmo padrão de retorno e de comprovação. | `RN-SL-019` |
+| RN3 | Pela integração ou pelo portal, a terceirizada vê e altera só as entregas despachadas para ela. | `RN-SL-053` |
+| RN4 | Terceirizada inativa não recebe despacho novo. | `RN-SL-016` |
 
 **Critérios de aceitação**
 
 | # | Cenário | Dado | Quando | Então |
 |---|---|---|---|---|
-| CA1 | Andamento | que um motorista já registrou 5 das 10 paradas | abro as rotas do dia | vejo "5 de 10" na rota dele e a hora do último registro. |
-| CA2 | Rota parada | que a rota está sem registro há mais que o limite combinado | abro as rotas do dia | a rota aparece sinalizada. |
-| CA3 | Registro atrasado pelo sinal | que o motorista entregou às 10h sem sinal e o registro só chegou às 11h | olho a parada | a entrega aparece como feita às 10h. |
-| CA4 | Ocorrência visível | que uma parada foi registrada como não entregue | abro a rota | a parada aparece com a ocorrência em destaque. |
+| CA1 | Terceirizada com integração | que a empresa da zona sul tem sistema próprio | cadastro com retorno pela integração | ela recebe uma chave própria e passa a receber os despachos por ali. |
+| CA2 | Terceirizada sem integração | que a empresa da zona norte usa só planilha e WhatsApp | cadastro com retorno pelo portal | ela recebe usuário do portal e vê lá a lista do dia. |
+| CA3 | Empresa nova | que a SEALog contratou uma terceira empresa | cadastro e ligo os bairros dela | os pedidos desses bairros passam a ir para ela, com o mesmo padrão de retorno das outras. |
+| CA4 | Chave trocada | que a chave de uma terceirizada vazou | gero uma chave nova | a chave antiga deixa de funcionar na hora. |
+| CA5 | Inativar com região ativa | que a terceirizada ainda é a única de alguns bairros | tento inativá-la | o sistema avisa quais bairros ficariam sem terceirizada e pede que eu os passe a outra. |
 
-**Integrações e APIs** — Nenhuma.
+**Integrações e APIs** — `INT-002` API padrão da terceirizada: o cadastro guarda o endereço da integração e a chave, só em forma irreversível.
 
-**Referências** — Gargalos §3 (atualizações em lote ou só em problema; motorista dirigindo ou sem sinal); `Q-SL-06`.
+**Referências** — Encontro 1 [13:15], [15:19], [17:36], [27:54]; Planejamento da equipe (RF-05, RF-06, substituídos).
 
 ---
 
-## Execução do motorista
-
-### HU-SL-011 — Ver o roteiro do dia no celular
+### HU-SL-008 — Manter a tabela de regiões
 
 | | |
 |---|---|
-| **Módulo** | `execucao-motorista` |
+| **Módulo** | `cadastros` |
 | **Sistema** | SEALog |
-| **Atores** | Motorista |
-| **Telas** | `TL-SL-011` Roteiro do motorista |
-| **Origem legada** | Hoje: o roteiro chega por WhatsApp, numa mensagem do coordenador, e o motorista o acompanha entre as cerca de 18 conversas do grupo |
+| **Atores** | Coordenador |
+| **Telas** | `TL-SL-007` Tabela de regiões |
+| **Origem legada** | Hoje: o coordenador e os analistas distribuem os pedidos de cabeça, pelo conhecimento das regiões; depois da terceirização, decidem para qual das duas empresas cada pedido vai. Substitui, na lista da equipe, RF-12 (distribuição por motorista) |
 | **Prioridade** | Alta |
 
-**Como** motorista
-**Gostaria de** abrir no celular a minha rota do dia, parada por parada
-**Para que** eu tenha endereço, contato e volumes de cada entrega sem procurar mensagem no grupo.
+**Como** coordenador de operação
+**Gostaria de** manter a tabela que diz qual terceirizada atende cada bairro
+**Para que** o pedido vá sozinho para a empresa certa, sem eu distribuir à mão.
 
 **Descrição**
 
-O motorista entra no aplicativo e vê só as próprias rotas do dia, com as paradas na ordem
-planejada. Cada parada traz o destinatário, o telefone, o endereço completo, o ponto de referência,
-os volumes e as observações do pedido, e o status: pendente, entregue ou não entregue. O endereço
-abre no aplicativo de mapas do celular, e o telefone, na discagem.
+A tabela de regiões liga cada par de bairro e cidade a uma terceirizada. É o que o sistema usa para
+despachar cada pedido sem ninguém no meio (`HU-SL-010`). O coordenador inclui, muda ou desativa
+linhas; um bairro tem uma só terceirizada ativa de cada vez.
 
-Quando o coordenador altera a rota, o roteiro mostra o aviso de atualização e destaca o que mudou.
-O roteiro continua disponível sem sinal, com o que foi carregado da última vez.
+Quando chega pedido para um bairro que não está na tabela, ele fica "Aguardando região" e aparece ao
+coordenador, que escolhe a terceirizada e pode, no mesmo passo, incluir o bairro na tabela para os
+próximos pedidos.
 
 **Regras de negócio**
 
 | # | Regra | Catálogo |
 |---|---|---|
-| RN1 | O motorista vê só as próprias rotas do dia, com as paradas na ordem planejada. | `RN-SL-025` |
-| RN2 | Cada parada mostra destinatário, telefone, endereço completo, ponto de referência, volumes e observações. | `RN-SL-025` |
-| RN3 | Alteração da rota aparece como roteiro atualizado, com o que mudou em destaque. | `RN-SL-020` |
-| RN4 | O roteiro fica disponível sem sinal. | `RN-SL-030` |
-| RN5 | O motorista pode atender fora da ordem planejada. | `RN-SL-021` |
+| RN1 | Cada par de bairro e cidade aponta para uma terceirizada, e só o coordenador mantém a tabela. | `RN-SL-017` |
+| RN2 | Um bairro tem uma só terceirizada ativa de cada vez. | `RN-SL-017` |
+| RN3 | Pedido para bairro fora da tabela fica "Aguardando região" e aparece ao coordenador. | `RN-SL-018` |
+| RN4 | Ao escolher a terceirizada de um pedido aguardando região, o coordenador pode incluir o bairro na tabela. | `RN-SL-018` |
+| RN5 | Toda mudança na tabela fica registrada, com quem fez e quando. | `RN-SL-017` |
 
 **Critérios de aceitação**
 
 | # | Cenário | Dado | Quando | Então |
 |---|---|---|---|---|
-| CA1 | Minha rota | que o coordenador publicou minha rota com 10 paradas | abro o aplicativo | vejo as 10 paradas na ordem planejada. |
-| CA2 | Rota de outro | que outro motorista tem rota publicada | abro o aplicativo | não vejo a rota dele. |
-| CA3 | Sem rota | que nenhuma rota minha foi publicada hoje | abro o aplicativo | vejo que não há rota para mim no dia. |
-| CA4 | Sem sinal | que perdi o sinal depois de abrir o roteiro | abro uma parada | vejo os dados dela normalmente. |
-| CA5 | Atualização | que o coordenador retirou uma parada da minha rota | abro o roteiro | vejo o aviso de atualização e a parada retirada em destaque. |
+| CA1 | Bairro novo | que Piedade não está na tabela | incluo Piedade, Jaboatão, para a empresa da zona sul | os pedidos seguintes para Piedade vão para ela. |
+| CA2 | Bairro repetido | que Boa Viagem já aponta para uma terceirizada | tento ligar Boa Viagem a outra | o sistema recusa e diz qual terceirizada já atende o bairro. |
+| CA3 | Grafia diferente | que a loja escreveu "Gracas", sem acento | o pedido chega | o sistema reconhece o bairro Graças da tabela. |
+| CA4 | Pedido sem região | que chegou pedido para um bairro fora da tabela | abro a tabela | vejo o pedido aguardando, escolho a terceirizada e marco para incluir o bairro. |
+| CA5 | Troca de terceirizada | que um bairro passou de uma empresa para a outra | mudo a linha | só os pedidos novos vão para a nova; os já despachados continuam com a anterior. |
 
-**Integrações e APIs** — Nenhuma. O aplicativo de mapas e a discagem são os do próprio celular.
+**Integrações e APIs** — Nenhuma. A tabela é interna; o despacho que a usa está em `HU-SL-010` e `HU-SL-011`.
 
-**Referências** — Gargalos §2 (roteiro enviado por WhatsApp), §3 (grupo com cerca de 18 motoristas; motorista sem sinal).
-
----
-
-### HU-SL-012 — Registrar a parada
-
-| | |
-|---|---|
-| **Módulo** | `execucao-motorista` |
-| **Sistema** | SEALog |
-| **Atores** | Motorista |
-| **Telas** | `TL-SL-012` Registro da parada |
-| **Origem legada** | Hoje: as atualizações vêm em lote ou só quando há problema — muitos motoristas avisam no almoço, no fim do dia ou só quando algo dá errado — e o motorista dirigindo atrasa qualquer resposta |
-| **Prioridade** | Alta |
-
-**Como** motorista
-**Gostaria de** registrar cada parada na hora, com poucos toques
-**Para que** a SEALog e o cliente saibam o que aconteceu sem me ligar e sem eu ter de escrever no grupo.
-
-**Descrição**
-
-Ao chegar a uma parada, o motorista a abre — tocando nela no roteiro ou lendo a etiqueta do pacote
-com a câmera — e escolhe Entregue ou Não entregue. Entregue segue para o comprovante
-(`HU-SL-013`); Não entregue segue para o motivo (`HU-SL-014`). Não há texto a digitar.
-
-Ler a etiqueta confere que o pacote é daquela rota: etiqueta de outra entrega é recusada com aviso,
-antes que o pacote errado seja entregue. Cada registro grava o motorista e a hora do fato, e a
-entrega muda de status na lista da equipe e no rastreio do cliente.
-
-**Regras de negócio**
-
-| # | Regra | Catálogo |
-|---|---|---|
-| RN1 | Cada parada é registrada no momento, como Entregue ou Não entregue, com motorista e hora do fato. | `RN-SL-026` |
-| RN2 | Abrir a parada pela etiqueta confere que o pacote é daquela rota; etiqueta de outra entrega é recusada. | `RN-SL-027` |
-| RN3 | O registro é feito por toque, leitura e foto, sem texto obrigatório. | `RN-SL-031` |
-| RN4 | O registro muda o status da entrega pelos caminhos do ciclo. | `RN-SL-014` |
-| RN5 | O motorista só registra paradas das próprias rotas. | `RN-SL-025` |
-
-**Critérios de aceitação**
-
-| # | Cenário | Dado | Quando | Então |
-|---|---|---|---|---|
-| CA1 | Abrir pela etiqueta | que estou na parada 3 | leio a etiqueta do pacote | abre a parada 3, pronta para registrar. |
-| CA2 | Pacote errado | que estou na parada 3 | leio a etiqueta de um pacote de outra rota | o aplicativo recusa e avisa que aquela etiqueta não é desta rota. |
-| CA3 | Registro na hora | que entreguei às 10h12 | registro a entrega | a lista da equipe e o rastreio do cliente mostram a entrega às 10h12. |
-| CA4 | Sem digitar | que estou registrando uma parada | concluo o registro | não precisei escrever nenhum texto. |
-| CA5 | Parada já registrada | que a parada 3 já foi registrada como entregue | tento registrá-la de novo | o aplicativo mostra o registro feito e não grava outro. |
-
-**Integrações e APIs** — Nenhuma. A mudança de status alimenta o rastreio (`HU-SL-016`) e, na ocorrência, o aviso ao cliente pelo `INT-001` WhatsApp (`HU-SL-020`).
-
-**Referências** — Gargalos §3 (atualizações em lote ou só em problema; motorista dirigindo), §7 (caso "Registro incorreto").
+**Referências** — Encontro 1 [15:19] (duas empresas, uma por região); Enunciado §2 (distribuição pelo conhecimento das regiões); Planejamento da equipe (RF-12, substituído).
 
 ---
 
-### HU-SL-013 — Registrar o comprovante de entrega
+## Despacho
+
+### HU-SL-009 — Consultar a lista única de entregas
 
 | | |
 |---|---|
-| **Módulo** | `execucao-motorista` |
+| **Módulo** | `despacho` |
 | **Sistema** | SEALog |
-| **Atores** | Motorista |
-| **Telas** | `TL-SL-012` Registro da parada |
-| **Origem legada** | Hoje: a foto de comprovante é enviada solta no grupo, sem vínculo com a entrega. No caso "Registro incorreto", a foto sem vínculo e a linha errada na planilha impediram provar a entrega |
-| **Prioridade** | Alta |
-
-**Como** motorista
-**Gostaria de** fotografar o comprovante pelo próprio aplicativo ao concluir a entrega
-**Para que** a prova da entrega fique presa a ela, e ninguém precise procurar a foto no grupo.
-
-**Descrição**
-
-Ao escolher Entregue, o aplicativo abre a câmera. O motorista fotografa o comprovante — o pacote
-entregue, a assinatura ou o documento combinado — e informa o nome de quem recebeu, escolhendo
-"o próprio destinatário" ou digitando outro nome. A foto é tirada na hora, pelo aplicativo, e não
-escolhida da galeria, para que não se troque a foto de uma entrega pela de outra.
-
-Sem a foto, a entrega não se conclui. A foto fica no detalhe da entrega, à vista da equipe, e no
-rastreio do cliente.
-
-**Regras de negócio**
-
-| # | Regra | Catálogo |
-|---|---|---|
-| RN1 | Entregue exige a foto do comprovante, tirada na hora pelo aplicativo, e o nome de quem recebeu. | `RN-SL-028` |
-| RN2 | A foto fica presa à entrega; não existe comprovante solto. | `RN-SL-028` |
-| RN3 | O comprovante aparece no rastreio do cliente depois da entrega. | `RN-SL-033` |
-| RN4 | Sem sinal, a foto fica guardada no celular e é enviada quando a conexão volta. | `RN-SL-030` |
-
-**Critérios de aceitação**
-
-| # | Cenário | Dado | Quando | Então |
-|---|---|---|---|---|
-| CA1 | Comprovante | que escolhi Entregue | fotografo o comprovante e confirmo "o próprio destinatário" | a entrega fica "Entregue", com a foto e o nome no detalhe. |
-| CA2 | Sem foto | que escolhi Entregue | tento concluir sem foto | o aplicativo pede a foto e não conclui. |
-| CA3 | Outra pessoa recebeu | que o porteiro recebeu o pacote | informo o nome dele | o nome do porteiro fica registrado como quem recebeu. |
-| CA4 | Foto da galeria | que estou no comprovante | procuro escolher uma foto da galeria | não há essa opção: só a câmera. |
-| CA5 | Cliente vê | que a entrega foi concluída | o cliente abre o rastreio | vê o status "Entregue" e a foto do comprovante. |
-
-**Integrações e APIs** — Nenhuma. A câmera é a do celular.
-
-**Referências** — Gargalos §3 (foto de comprovante solta no grupo, sem vínculo com a entrega), §7 (caso "Registro incorreto").
-
----
-
-### HU-SL-014 — Registrar ocorrência de entrega não realizada
-
-| | |
-|---|---|
-| **Módulo** | `execucao-motorista` |
-| **Sistema** | SEALog |
-| **Atores** | Motorista |
-| **Telas** | `TL-SL-012` Registro da parada |
-| **Origem legada** | Hoje: o problema é avisado no grupo de WhatsApp, onde a mensagem se perde entre as dos cerca de 18 motoristas. No caso "Buquê de sábado", o aviso de exceção se perdeu no grupo e o cliente não foi avisado |
-| **Prioridade** | Alta |
-
-**Como** motorista
-**Gostaria de** registrar, na própria parada, que não consegui entregar e por quê
-**Para que** o problema chegue a quem decide e ao cliente, em vez de se perder no grupo.
-
-**Descrição**
-
-Ao escolher Não entregue, o motorista toca no motivo, numa lista curta: destinatário ausente,
-endereço não encontrado, endereço incompleto, recusado pelo destinatário, acesso impedido, pacote
-avariado, condição climática e outro. Pode juntar uma foto e uma observação, mas não precisa.
-
-O registro abre uma ocorrência na entrega. Ela aparece no painel de exceções do coordenador
-(`HU-SL-018`) e dispara o aviso automático ao cliente (`HU-SL-020`), a qualquer hora. O pacote
-volta com o motorista e é registrado na chegada ao galpão.
-
-**Regras de negócio**
-
-| # | Regra | Catálogo |
-|---|---|---|
-| RN1 | Não entregue exige um motivo da lista; foto e observação são opcionais. | `RN-SL-029` |
-| RN2 | O registro abre uma ocorrência, que entra no painel de exceções. | `RN-SL-029`, `RN-SL-036` |
-| RN3 | A ocorrência dispara aviso automático ao cliente, com o motivo e o link de rastreio. | `RN-SL-040` |
-| RN4 | O aviso não depende do horário do atendimento. | `RN-SL-032` |
-| RN5 | O pacote que volta é registrado na chegada ao galpão. | `RN-SL-039` |
-
-**Critérios de aceitação**
-
-| # | Cenário | Dado | Quando | Então |
-|---|---|---|---|---|
-| CA1 | Ocorrência | que o destinatário não estava | escolho Não entregue e "Destinatário ausente" | a entrega fica "Não entregue", a ocorrência aparece no painel de exceções e o cliente recebe o aviso. |
-| CA2 | Sem motivo | que escolhi Não entregue | tento concluir sem motivo | o aplicativo pede o motivo e não conclui. |
-| CA3 | Sábado à tarde | que é sábado, 15h, e o atendimento fechou às 12h | registro a ocorrência | o cliente recebe o aviso da mesma forma. |
-| CA4 | Foto opcional | que o portão estava fechado | registro "Acesso impedido" com uma foto | a foto fica presa à ocorrência. |
-| CA5 | Outro motivo | que o motivo não está na lista | escolho "Outro" | o aplicativo pede uma observação curta. |
-
-**Integrações e APIs** — `INT-001` WhatsApp, para o aviso automático ao cliente.
-
-**Referências** — Gargalos §3 (grupo com cerca de 18 motoristas: mensagens se perdem), §5 (sem aviso proativo), §7 (caso "Buquê de sábado").
-
----
-
-### HU-SL-015 — Registrar sem sinal
-
-| | |
-|---|---|
-| **Módulo** | `execucao-motorista` |
-| **Sistema** | SEALog |
-| **Atores** | Motorista |
-| **Telas** | `TL-SL-011` Roteiro do motorista · `TL-SL-012` Registro da parada |
-| **Origem legada** | Hoje: o motorista sem sinal não consegue mandar nada, e a notícia só chega quando ele volta a ter conexão e se lembra de escrever |
-| **Prioridade** | Alta |
-
-**Como** motorista
-**Gostaria de** registrar as paradas mesmo sem sinal
-**Para que** eu não precise lembrar depois, e o registro chegue sozinho com a hora certa.
-
-**Descrição**
-
-Sem conexão, o aplicativo continua funcionando: o motorista registra a parada, a foto e a
-ocorrência normalmente. Os registros ficam guardados no celular, com a hora em que aconteceram, e o
-roteiro mostra quantos esperam envio. Quando o sinal volta, eles são enviados sozinhos, na ordem
-em que foram feitos.
-
-A entrega considera a hora do fato, não a hora em que o registro chegou: o cliente e a equipe veem
-que a entrega foi feita às 10h, mesmo que a informação só tenha chegado às 11h.
-
-**Regras de negócio**
-
-| # | Regra | Catálogo |
-|---|---|---|
-| RN1 | Sem sinal, o registro fica guardado no celular com a hora real do fato. | `RN-SL-030` |
-| RN2 | O envio acontece sozinho quando a conexão volta. | `RN-SL-030` |
-| RN3 | O motorista vê quantos registros esperam envio. | `RN-SL-030` |
-| RN4 | O status da entrega considera a hora do fato. | `RN-SL-030` |
-
-**Critérios de aceitação**
-
-| # | Cenário | Dado | Quando | Então |
-|---|---|---|---|---|
-| CA1 | Registro guardado | que estou sem sinal | registro uma entrega com foto | o aplicativo aceita e mostra "1 registro aguardando envio". |
-| CA2 | Envio automático | que tenho 3 registros aguardando envio | o sinal volta | os 3 são enviados sem eu fazer nada, e o contador zera. |
-| CA3 | Hora do fato | que registrei sem sinal às 10h e o envio foi às 11h | a equipe abre a entrega | vê "Entregue às 10h". |
-| CA4 | Celular desligado | que tenho registros aguardando envio | desligo e religo o celular | os registros continuam lá e são enviados quando houver sinal. |
-
-**Integrações e APIs** — Nenhuma.
-
-**Referências** — Gargalos §3 (motorista dirigindo ou sem sinal, o que atrasa qualquer resposta).
-
----
-
-## Consulta de status
-
-### HU-SL-016 — Acompanhar a entrega pelo link de rastreio
-
-| | |
-|---|---|
-| **Módulo** | `consulta-status` |
-| **Sistema** | SEALog |
-| **Atores** | Cliente |
-| **Telas** | `TL-SL-013` Rastreio da entrega |
-| **Origem legada** | Hoje: "cadê minha entrega?" percorre uma cadeia de 5 saltos — cliente, atendente, analista, motorista e volta —, a resposta leva de 20 minutos a mais de 2 horas, e em dias cheios algumas ficam para o dia seguinte |
-| **Prioridade** | Alta |
-
-**Como** cliente da SEALog
-**Gostaria de** abrir um link e ver onde está a minha entrega
-**Para que** eu tenha a resposta na hora, sem precisar perguntar à atendente.
-
-**Descrição**
-
-Quando o pedido é confirmado, o cliente recebe no WhatsApp o link de rastreio daquela entrega. O
-link abre no celular, sem login, e mostra o status atual, a data e a hora do último registro, a
-data prevista e o histórico de status. Depois da entrega, mostra o comprovante e o nome de quem
-recebeu; se houve ocorrência, mostra o motivo e o que foi decidido.
-
-O link vale só para aquela entrega: não mostra outras entregas, a rota nem o telefone do
-motorista. Funciona a qualquer hora, inclusive quando o atendimento está fechado.
-
-**Regras de negócio**
-
-| # | Regra | Catálogo |
-|---|---|---|
-| RN1 | Cada entrega tem um link de rastreio, enviado ao cliente na confirmação do pedido. | `RN-SL-033` |
-| RN2 | O rastreio mostra status atual, histórico, data prevista e, depois da entrega, o comprovante. | `RN-SL-033` |
-| RN3 | O rastreio mostra a data e a hora do último registro. | `RN-SL-035` |
-| RN4 | O link dá acesso só àquela entrega e não mostra a rota nem o telefone do motorista. | `RN-SL-033`, `RN-SL-050` |
-| RN5 | O rastreio funciona a qualquer hora, sem atendente. | `RN-SL-032` |
-
-**Critérios de aceitação**
-
-| # | Cenário | Dado | Quando | Então |
-|---|---|---|---|---|
-| CA1 | Em rota | que minha entrega saiu para entrega às 9h | abro o link | vejo "Em rota", com a hora 9h. |
-| CA2 | Entregue | que a entrega foi concluída | abro o link | vejo "Entregue", a hora, o nome de quem recebeu e a foto do comprovante. |
-| CA3 | Ocorrência | que o motorista registrou "Destinatário ausente" | abro o link | vejo o motivo e, quando houver, a decisão tomada. |
-| CA4 | Link inválido | que o endereço do link foi alterado | abro o link | vejo a mensagem de entrega não encontrada, sem nenhum dado de outra entrega. |
-| CA5 | Fora do horário | que é domingo | abro o link | o rastreio funciona normalmente. |
-
-**Integrações e APIs** — `INT-001` WhatsApp, para enviar o link na confirmação do pedido.
-
-**Referências** — Gargalos §4 (cadeia de 5 saltos; resposta de 20 min a mais de 2 h; planilha desatualizada), §9 (atendimento com horário limitado).
-
----
-
-### HU-SL-017 — Localizar uma entrega para responder ao cliente
-
-| | |
-|---|---|
-| **Módulo** | `consulta-status` |
-| **Sistema** | SEALog |
-| **Atores** | Atendente, Analista, Coordenador, Financeiro |
-| **Telas** | `TL-SL-006` Lista de entregas · `TL-SL-007` Detalhe da entrega |
-| **Origem legada** | Hoje: a atendente pergunta ao analista, que pergunta ao motorista, e a resposta volta pelo mesmo caminho; a planilha está desatualizada e a informação não está em lugar consultável |
+| **Atores** | Atendente, Coordenador, Financeiro |
+| **Telas** | `TL-SL-008` Lista de entregas, `TL-SL-009` Detalhe da entrega, `TL-SL-017` Exportação para planilha |
+| **Origem legada** | Hoje: cada analista registra as entregas dos seus clientes numa planilha online do dia, e as cópias divergem; num caso, um "ok" foi marcado na linha errada e a equipe levou um dia para descobrir o que houve. Na lista da equipe: RF-08 |
 | **Prioridade** | Alta |
 
 **Como** atendente
-**Gostaria de** achar a entrega do cliente que me escreveu e ver o status na hora
-**Para que** eu responda na mesma conversa, sem perguntar ao analista nem ao motorista.
+**Gostaria de** ver todas as entregas numa lista só, a mesma para a equipe toda
+**Para que** eu responda "cadê minha entrega?" em segundos e ninguém trabalhe numa cópia desatualizada.
 
 **Descrição**
 
-A busca da lista de entregas acha uma entrega pelo código, pelo nome do cliente, pelo nome ou
-telefone do destinatário ou pelo bairro. O detalhe da entrega mostra o status com a hora do último
-registro, o motorista, a posição na rota, o comprovante e as ocorrências. A atendente responde com
-base nisso, ou reenvia ao cliente o link de rastreio.
+A lista de entregas substitui as planilhas do dia. Ela se organiza pela data prevista e se usa como
+uma planilha: filtro por data, loja, bairro, terceirizada e status, busca pelo código, pelo nome ou
+pelo telefone do destinatário. Cada linha mostra a data e a hora do último registro, para que se
+saiba se a informação é atual, e a entrega despachada sem retorno há mais tempo que o combinado fica
+sinalizada.
+
+Ao abrir uma entrega, a equipe vê os dados do pedido, a terceirizada, o comprovante, os chamados, os
+avisos enviados e o histórico de tudo o que mudou, com quem mudou e quando. A lista pode ser
+exportada para planilha com as mesmas colunas e filtros, mas nada exportado volta ao sistema.
 
 **Regras de negócio**
 
 | # | Regra | Catálogo |
 |---|---|---|
-| RN1 | A busca acha a entrega por código, cliente, nome ou telefone do destinatário, ou bairro. | `RN-SL-034` |
-| RN2 | O detalhe é o mesmo para toda a equipe, sem precisar perguntar a ninguém. | `RN-SL-013`, `RN-SL-034` |
-| RN3 | O status vem com a data e a hora do último registro. | `RN-SL-035` |
-| RN4 | A atendente pode reenviar ao cliente o link de rastreio. | `RN-SL-033` |
+| RN1 | Há uma única lista de entregas, sem cópia por pessoa; toda alteração fica no histórico com autor, hora e valor anterior. | `RN-SL-020` |
+| RN2 | O status segue o ciclo da entrega; mudança fora do ciclo é recusada. | `RN-SL-021` |
+| RN3 | A lista se organiza pela data prevista e mostra a data e a hora do último registro. | `RN-SL-022` |
+| RN4 | Entrega despachada sem retorno há mais tempo que o limite combinado fica sinalizada. | `RN-SL-034`, `Q-SL-13` |
+| RN5 | A lista pode ser exportada para planilha com as mesmas colunas e filtros; nada exportado volta. | `RN-SL-050` |
+| RN6 | O perfil Financeiro vê a lista sem poder alterá-la. | `RN-SL-051` |
 
 **Critérios de aceitação**
 
 | # | Cenário | Dado | Quando | Então |
 |---|---|---|---|---|
-| CA1 | Pelo telefone | que o cliente informou o telefone do destinatário | busco pelo telefone | vejo as entregas para aquele telefone, com o status e a hora do último registro. |
-| CA2 | Pelo código | que o cliente informou o código | busco pelo código | abre direto o detalhe da entrega. |
-| CA3 | Reenviar rastreio | que estou no detalhe da entrega | reenvio o link de rastreio | o cliente recebe o link no WhatsApp e o envio fica no histórico. |
-| CA4 | Não encontrada | que busquei por um telefone sem entregas | faço a busca | a lista informa que nenhuma entrega foi encontrada. |
+| CA1 | "Cadê minha entrega?" | que a loja me liga perguntando por um pedido | busco pelo nome do destinatário | encontro a entrega, vejo o status, a terceirizada e a hora do último registro, sem perguntar a ninguém. |
+| CA2 | Registro incorreto | que um destinatário diz, três dias depois, que não recebeu | abro a entrega | vejo o comprovante com a foto, quem recebeu, o entregador e a hora, presos àquela entrega. |
+| CA3 | Sem retorno | que uma entrega foi despachada e a terceirizada não deu notícia além do limite | abro a lista | a entrega aparece sinalizada. |
+| CA4 | Filtro do dia | que quero as entregas de amanhã de uma terceirizada | filtro por data prevista e terceirizada | vejo só essas, e posso exportá-las. |
+| CA5 | Lista vazia | que filtrei uma combinação sem entregas | peço a exportação | o sistema informa que não há entregas e não gera arquivo. |
+| CA6 | Financeiro só lê | que entrei com o perfil Financeiro | abro uma entrega | vejo tudo, mas não há ação de alterar. |
 
-**Integrações e APIs** — `INT-001` WhatsApp, para reenviar o link de rastreio.
+**Integrações e APIs** — `INT-003` Planilhas, para a exportação.
 
-**Referências** — Gargalos §4 (cadeia de 5 saltos; planilha desatualizada).
+**Referências** — Enunciado §2 (planilha por analista, cópias divergentes), §8 (caso "O registro incorreto"); Planejamento da equipe (RF-08; substituir planilha por banco); Gargalos §2, §4, §8.
 
 ---
 
-## Exceções e decisões
-
-### HU-SL-018 — Acompanhar o painel de exceções
+### HU-SL-010 — Distribuir o pedido pela região
 
 | | |
 |---|---|
-| **Módulo** | `excecoes` |
+| **Módulo** | `despacho` |
 | **Sistema** | SEALog |
-| **Atores** | Coordenador, Atendente, Analista |
-| **Telas** | `TL-SL-014` Painel de exceções |
-| **Origem legada** | Hoje: as exceções aparecem como mensagens no grupo dos motoristas, misturadas às demais, e algumas se perdem — como no caso "Buquê de sábado" |
+| **Atores** | Sistema, Coordenador |
+| **Telas** | `TL-SL-007` Tabela de regiões, `TL-SL-009` Detalhe da entrega |
+| **Origem legada** | Hoje: o coordenador e os analistas decidem, pedido a pedido, para quem cada entrega vai, pelo conhecimento das regiões, sem ferramenta. Na lista da equipe: RF-12, agora por terceirizada e não por motorista |
 | **Prioridade** | Alta |
 
 **Como** coordenador de operação
-**Gostaria de** ver num só lugar todas as entregas com problema que ainda esperam decisão
-**Para que** nenhuma exceção se perca, e eu saiba o que decidir primeiro.
+**Gostaria de** que cada pedido recebido vá sozinho para a terceirizada da região do destinatário
+**Para que** a distribuição não dependa de alguém olhar pedido por pedido, e eu só cuide do que foge da regra.
 
 **Descrição**
 
-O painel lista as ocorrências abertas do dia e as que sobraram de dias anteriores, da mais antiga
-para a mais recente: entrega, cliente, motivo, motorista, hora do registro e o status do aviso ao
-cliente. Ocorrência sem decisão no fim da Operação (19h) fica destacada. Também entram no painel os
-avisos ao cliente que falharam, para reenvio.
+Assim que o pedido fica "Recebido", o sistema procura o bairro e a cidade do destinatário na tabela
+de regiões e o despacha para a terceirizada correspondente. Ninguém distribui à mão.
 
-O atendente e o analista veem o painel para responder ao cliente; só o coordenador decide
-(`HU-SL-019`). A ocorrência sai do painel quando recebe decisão.
+Se o bairro não está na tabela, o pedido fica "Aguardando região" e aparece ao coordenador. Ele
+escolhe a terceirizada, e o pedido segue; se quiser, inclui o bairro na tabela no mesmo passo. Se a
+terceirizada da região estiver inativa, o pedido também cai para o coordenador.
 
 **Regras de negócio**
 
 | # | Regra | Catálogo |
 |---|---|---|
-| RN1 | Toda ocorrência aberta aparece no painel até receber decisão. | `RN-SL-036` |
-| RN2 | Ocorrência sem decisão até as 19h fica destacada. | `RN-SL-038` |
-| RN3 | Aviso ao cliente que falhou aparece no painel para reenvio. | `RN-SL-043` |
-| RN4 | Atendente e analista veem o painel; só o coordenador decide. | `RN-SL-051` |
+| RN1 | O pedido recebido vai sozinho para a terceirizada da região, pela tabela de regiões. | `RN-SL-023` |
+| RN2 | Cada bairro tem uma só terceirizada ativa. | `RN-SL-017` |
+| RN3 | Bairro fora da tabela deixa o pedido "Aguardando região", para o coordenador escolher. | `RN-SL-018` |
+| RN4 | Pedido "Pendente de dados" não é distribuído. | `RN-SL-012` |
+| RN5 | A distribuição fica no histórico da entrega, com a terceirizada e se foi pela tabela ou pelo coordenador. | `RN-SL-020` |
 
 **Critérios de aceitação**
 
 | # | Cenário | Dado | Quando | Então |
 |---|---|---|---|---|
-| CA1 | Ocorrência nova | que um motorista registrou "Endereço não encontrado" | abro o painel | a ocorrência aparece com entrega, cliente, motivo, motorista e hora. |
-| CA2 | Fim do dia | que são 19h e a ocorrência não tem decisão | abro o painel | ela aparece destacada. |
-| CA3 | Dia anterior | que uma ocorrência de ontem não teve decisão | abro o painel hoje | ela continua no painel, antes das de hoje. |
-| CA4 | Aviso que falhou | que o aviso ao cliente não foi entregue pelo WhatsApp | abro o painel | vejo o aviso com falha e a opção de reenviar. |
-| CA5 | Atendente | que sou atendente | abro o painel | vejo as ocorrências, mas não a ação de decidir. |
+| CA1 | Bairro na tabela | que Graças aponta para a empresa da zona norte | chega um pedido para Graças | ele é despachado para essa empresa sem ninguém intervir. |
+| CA2 | Bairro fora da tabela | que um pedido chegou para um bairro novo | o sistema tenta distribuir | o pedido fica "Aguardando região" e aparece ao coordenador. |
+| CA3 | Coordenador escolhe | que há um pedido aguardando região | escolho a terceirizada e marco para incluir o bairro | o pedido é despachado e o bairro entra na tabela. |
+| CA4 | Pedido pendente | que um pedido está pendente de dados | o sistema procura pedidos a distribuir | o pedido não é despachado até ser completado. |
+| CA5 | Terceirizada inativa | que a terceirizada do bairro foi inativada | chega um pedido para esse bairro | o pedido fica aguardando o coordenador. |
 
-**Integrações e APIs** — `INT-001` WhatsApp, para o status dos avisos ao cliente.
+**Integrações e APIs** — Nenhuma. A distribuição é interna; o envio à terceirizada está em `HU-SL-011`.
 
-**Referências** — Gargalos §3 (mensagens se perdem no grupo), §5 (exceções e decisões), §7 (caso "Buquê de sábado").
+**Referências** — Encontro 1 [15:19]; Enunciado §2 (distribuição manual pelas regiões); Planejamento da equipe (RF-12).
 
 ---
 
-### HU-SL-019 — Decidir o destino da entrega não realizada
+### HU-SL-011 — Enviar a solicitação à terceirizada
 
 | | |
 |---|---|
-| **Módulo** | `excecoes` |
+| **Módulo** | `despacho` |
+| **Sistema** | SEALog |
+| **Atores** | Sistema, Terceirizada |
+| **Telas** | `TL-SL-010` Portal da terceirizada |
+| **Origem legada** | Hoje: cada motorista recebia o roteiro individualmente pelo WhatsApp; depois da terceirização, a SEALog manda os pedidos às empresas por WhatsApp e planilha, e os pacotes são identificados com etiquetas escritas à mão. Na lista da equipe: RF-10 (forma de coleta) e RF-13 (visualização das entregas, agora pela terceirizada) |
+| **Prioridade** | Alta |
+
+**Como** terceirizada que entrega para a SEALog
+**Gostaria de** receber cada solicitação de coleta e entrega com tudo o que preciso, no mesmo formato
+**Para que** eu colete na loja e entregue sem ligar para a SEALog para perguntar o que falta.
+
+**Descrição**
+
+Despachado o pedido, a terceirizada recebe a solicitação com o código SEALog, o endereço de coleta da
+loja, o destinatário com telefone e endereço completo, o tamanho do volume, a data prevista, as
+observações e quem pode receber além do destinatário. A terceirizada com integração recebe pelo
+sistema dela; a outra vê a solicitação na lista do dia do portal.
+
+A coleta na loja é feita pela terceirizada. O pacote não leva etiqueta da SEALog: o código SEALog é a
+identificação, e a terceirizada o informa em todo retorno. A terceirizada confirma o recebimento da
+solicitação; se a entrega falhar, o pedido fica sinalizado para a equipe.
+
+**Regras de negócio**
+
+| # | Regra | Catálogo |
+|---|---|---|
+| RN1 | O despacho leva o código, a coleta, o destinatário, o volume, a data prevista, as observações e quem pode receber. | `RN-SL-024` |
+| RN2 | Sai pela integração da terceirizada ou entra na lista do dia do portal. | `RN-SL-024` |
+| RN3 | A coleta é feita pela terceirizada na loja; as janelas de hoje estão para confirmação. | `RN-SL-025`, `Q-SL-02` |
+| RN4 | O pacote é identificado só pelo código SEALog, sem etiqueta da SEALog. | `RN-SL-027` |
+| RN5 | Retorno com código que não foi despachado para a terceirizada é recusado. | `RN-SL-027` |
+
+**Critérios de aceitação**
+
+| # | Cenário | Dado | Quando | Então |
+|---|---|---|---|---|
+| CA1 | Despacho pela integração | que a terceirizada usa a integração | um pedido para a região dela é recebido | ela recebe a solicitação com todos os dados e o status passa a "Despachado". |
+| CA2 | Despacho pelo portal | que a terceirizada usa o portal | entro no portal de manhã | vejo a lista do dia com cada solicitação, o endereço de coleta e o destinatário. |
+| CA3 | Autorização vai junto | que a loja autorizou o porteiro a receber | a solicitação é enviada | o nome do porteiro aparece na solicitação. |
+| CA4 | Falha no envio | que a integração da terceirizada está fora do ar | o despacho é tentado | o sistema tenta de novo e, se continuar falhando, sinaliza o pedido para a equipe. |
+| CA5 | Só as minhas | que sou da empresa da zona norte | abro o portal | não vejo nenhuma solicitação da empresa da zona sul. |
+
+**Integrações e APIs** — `INT-002` API padrão da terceirizada, para o despacho a quem tem integração; quem não tem recebe pelo portal (`TL-SL-010`).
+
+**Referências** — Encontro 1 [13:15], [15:19], [17:36]; Enunciado §2 (roteiro por WhatsApp, etiquetas à mão, coleta de 14h a 18h); Planejamento da equipe (RF-10, RF-11, RF-13; identificação própria sem etiqueta).
+
+---
+
+### HU-SL-012 — Avisar a terceirizada de alteração no pedido
+
+| | |
+|---|---|
+| **Módulo** | `despacho` |
+| **Sistema** | SEALog |
+| **Atores** | Sistema, Atendente |
+| **Telas** | `TL-SL-009` Detalhe da entrega, `TL-SL-010` Portal da terceirizada |
+| **Origem legada** | Hoje: a correção de endereço ou telefone chega por mensagem ao Atendimento, passa pelo grupo interno e, se alguém lembrar, ao motorista; com a terceirização, vai por WhatsApp à empresa. Na lista da equipe: RF-19 e RF-20 (o aviso é à terceirizada, não ao motorista) |
+| **Prioridade** | Média |
+
+**Como** atendente
+**Gostaria de** que toda alteração num pedido já despachado chegue na hora à terceirizada
+**Para que** a entrega não saia com o endereço velho.
+
+**Descrição**
+
+Quando o pedido muda depois do despacho — pela loja no WhatsApp (`HU-SL-003`) ou pela equipe no
+painel —, o sistema envia a alteração à terceirizada pelo mesmo caminho do despacho, com o que mudou
+em destaque. Cancelamento também é enviado.
+
+A terceirizada confirma que recebeu a alteração. Enquanto não confirma, o pedido mostra a alteração
+como pendente de confirmação, e a equipe vê isso no detalhe da entrega. Depois da coleta, a equipe
+ainda pode alterar dados do destinatário, mas a alteração fica marcada para atenção.
+
+**Regras de negócio**
+
+| # | Regra | Catálogo |
+|---|---|---|
+| RN1 | Alteração ou cancelamento depois do despacho vai na hora para a terceirizada, com o que mudou em destaque. | `RN-SL-026` |
+| RN2 | A terceirizada confirma que recebeu a alteração. | `RN-SL-026` |
+| RN3 | Pela loja, a alteração só vale até a coleta; depois, só pelo atendimento. | `RN-SL-011` |
+| RN4 | A alteração fica no histórico, com autor, hora e valor anterior. | `RN-SL-020` |
+
+**Critérios de aceitação**
+
+| # | Cenário | Dado | Quando | Então |
+|---|---|---|---|---|
+| CA1 | Telefone corrigido | que o pedido está despachado | corrijo o telefone do destinatário no painel | a terceirizada recebe a alteração com o telefone novo em destaque. |
+| CA2 | Confirmação | que a terceirizada recebeu a alteração | ela confirma | o detalhe da entrega mostra a alteração como confirmada, com a hora. |
+| CA3 | Sem confirmação | que a terceirizada não confirmou a alteração | abro a entrega | vejo a alteração pendente de confirmação. |
+| CA4 | Cancelamento | que a loja cancelou antes da coleta | o cancelamento é gravado | a terceirizada recebe o aviso de cancelamento e a solicitação some da lista do dia dela. |
+| CA5 | Falha no envio | que a integração da terceirizada não respondeu | a alteração é enviada | o sistema tenta de novo e, se falhar, mostra a falha no painel de chamados. |
+
+**Integrações e APIs** — `INT-002` API padrão da terceirizada, para a alteração a quem tem integração; quem não tem vê a alteração destacada no portal (`TL-SL-010`).
+
+**Referências** — Planejamento da equipe (RF-19, RF-20); Encontro 1 [13:15]; Gargalos §2.
+
+---
+
+## Retorno da terceirizada
+
+### HU-SL-013 — Informar o status pela API
+
+| | |
+|---|---|
+| **Módulo** | `retorno-terceirizada` |
+| **Sistema** | SEALog |
+| **Atores** | Terceirizada |
+| **Telas** | — (integração direta, sem tela) |
+| **Origem legada** | Hoje: o motorista da terceirizada avisa a empresa dele, que repassa à SEALog por planilha, WhatsApp ou ligação, cada uma no seu padrão; muitas notícias chegam em lote ou só quando há problema. Na lista da equipe: RF-14 (ocorrências durante a entrega, agora informadas pela terceirizada) |
+| **Prioridade** | Alta |
+
+**Como** terceirizada com sistema próprio
+**Gostaria de** mandar cada mudança de status direto para o SEALog, no padrão dele
+**Para que** a SEALog saiba na hora o que aconteceu, sem planilha nem mensagem.
+
+**Descrição**
+
+A terceirizada com integração informa, para cada pacote, cinco situações: coletado, em rota,
+entregue, não entregue e devolvido ao galpão, sempre com o código SEALog e a data e a hora do fato.
+É o caminho preferencial, e o padrão é o mesmo para qualquer terceirizada.
+
+Entregue só é aceito com o comprovante completo: foto, data e hora, nome de quem recebeu e
+identificação do entregador. Não entregue exige um motivo da lista padrão e abre um chamado. O
+sistema recusa o retorno que não fecha — código de outra empresa, comprovante incompleto, salto no
+ciclo — e diz por quê; o mesmo retorno mandado duas vezes é gravado uma vez só.
+
+**Regras de negócio**
+
+| # | Regra | Catálogo |
+|---|---|---|
+| RN1 | A terceirizada informa coletado, em rota, entregue, não entregue e devolvido ao galpão, com a data e a hora do fato. | `RN-SL-028` |
+| RN2 | Entregue só é aceito com foto, data e hora, nome de quem recebeu e identificação do entregador. | `RN-SL-030` |
+| RN3 | Quem recebeu sem ser o destinatário nem pessoa autorizada abre um chamado de recebedor não autorizado. | `RN-SL-031` |
+| RN4 | Não entregue exige motivo da lista padrão e abre um chamado. | `RN-SL-032` |
+| RN5 | O mesmo retorno recebido duas vezes é gravado uma vez só. | `RN-SL-033` |
+| RN6 | O status considera a hora do fato, e as duas horas ficam registradas. | `RN-SL-035` |
+| RN7 | Retorno de código não despachado para a terceirizada, ou fora do ciclo, é recusado com o motivo. | `RN-SL-021`, `RN-SL-027` |
+
+**Critérios de aceitação**
+
+| # | Cenário | Dado | Quando | Então |
+|---|---|---|---|---|
+| CA1 | Entregue completo | que mando entregue com foto, hora, nome de quem recebeu e entregador | o retorno chega | a entrega fica "Entregue" com o comprovante, e a loja vê isso no acompanhamento. |
+| CA2 | Sem foto | que mando entregue sem a foto | o retorno chega | ele é recusado com a lista do que falta, e a entrega continua como estava. |
+| CA3 | Não achou o endereço | que o entregador não achou o endereço às 9h40 | mando não entregue com o motivo | a entrega fica "Não entregue", abre-se um chamado e a loja é avisada na hora, como devia ter sido no caso do buquê de sábado. |
+| CA4 | Código de outra empresa | que mando um código despachado para outra terceirizada | o retorno chega | ele é recusado com a mensagem de que o código não foi despachado para mim. |
+| CA5 | Retorno repetido | que meu sistema reenviou o mesmo entregue por falha de conexão | o retorno chega de novo | ele não duplica o registro. |
+| CA6 | Notícia atrasada | que mando às 18h um entregue que aconteceu às 11h | o retorno chega | o status mostra a entrega às 11h, e o histórico guarda as duas horas. |
+
+**Integrações e APIs** — `INT-002` API padrão da terceirizada: retorno de status com o comprovante; respostas de erro em `08-mensagens-e-erros.md` §3 (`MSG-SL-016` a `MSG-SL-019`).
+
+**Referências** — Encontro 1 [13:15], [25:39], [26:53], [27:54], [40:16]; Enunciado §2 (atualização em lote ou só no problema), §8 (caso "O buquê de sábado"); Planejamento da equipe (RF-14; arquitetura baseada em APIs); Gargalos §3.
+
+---
+
+### HU-SL-014 — Informar o status pelo portal
+
+| | |
+|---|---|
+| **Módulo** | `retorno-terceirizada` |
+| **Sistema** | SEALog |
+| **Atores** | Terceirizada |
+| **Telas** | `TL-SL-010` Portal da terceirizada |
+| **Origem legada** | Hoje: a terceirizada sem sistema avisa a SEALog por WhatsApp e atualiza uma planilha que a SEALog já usa; o cliente contou que os terceirizados têm pouca familiaridade com tecnologia. Na lista da equipe: RF-14 e RNF-02 (comunicação simples) |
+| **Prioridade** | Alta |
+
+**Como** terceirizada sem sistema próprio
+**Gostaria de** marcar o status de cada entrega numa tela simples, no celular ou no computador
+**Para que** eu cumpra o padrão da SEALog sem precisar de integração nem de planilha.
+
+**Descrição**
+
+O portal mostra à terceirizada a lista do dia com as solicitações despachadas para ela. Para cada
+uma, a pessoa marca coletado, em rota, entregue ou não entregue, ou devolvido ao galpão. A tela pede
+só o que a situação exige: no entregue, a foto, o nome de quem recebeu e a identificação do
+entregador; no não entregue, o motivo, numa lista.
+
+As regras são as mesmas da integração: o portal não aceita entregue sem comprovante completo, e a
+terceirizada só vê as entregas dela. Alterações e cancelamentos aparecem em destaque na lista, para
+serem confirmados.
+
+**Regras de negócio**
+
+| # | Regra | Catálogo |
+|---|---|---|
+| RN1 | A terceirizada informa as cinco situações, com a data e a hora do fato. | `RN-SL-028` |
+| RN2 | O portal é um dos três caminhos de retorno, com as mesmas regras da integração. | `RN-SL-029` |
+| RN3 | Entregue exige foto, data e hora, nome de quem recebeu e identificação do entregador. | `RN-SL-030` |
+| RN4 | Não entregue exige um motivo da lista padrão e abre um chamado. | `RN-SL-032` |
+| RN5 | A terceirizada entra com usuário próprio e vê só as entregas despachadas para ela. | `RN-SL-053` |
+
+**Critérios de aceitação**
+
+| # | Cenário | Dado | Quando | Então |
+|---|---|---|---|---|
+| CA1 | Marcar entregue | que estou com a entrega aberta no portal | anexo a foto, o nome de quem recebeu e o entregador e marco entregue | a entrega fica "Entregue" na SEALog na hora. |
+| CA2 | Faltou o nome | que anexei a foto mas não o nome de quem recebeu | tento marcar entregue | o portal aponta o nome como obrigatório e não grava. |
+| CA3 | Não entregue | que o destinatário estava ausente | marco não entregue e escolho o motivo | a entrega fica "Não entregue" e abre-se um chamado na SEALog. |
+| CA4 | Sem motivo | que marquei não entregue sem escolher o motivo | tento gravar | o portal pede o motivo. |
+| CA5 | Alteração em destaque | que a loja mudou o endereço depois do despacho | abro a lista do dia | vejo a entrega com a alteração em destaque e confirmo que li. |
+
+**Integrações e APIs** — Nenhuma. O portal é uma tela do próprio SEALog (`TL-SL-010`), sem integração com o sistema da terceirizada.
+
+**Referências** — Encontro 1 [13:15], [23:17], [40:16]; Planejamento da equipe (RF-14, RNF-02).
+
+---
+
+### HU-SL-015 — Enviar o retorno por planilha
+
+| | |
+|---|---|
+| **Módulo** | `retorno-terceirizada` |
+| **Sistema** | SEALog |
+| **Atores** | Terceirizada, Atendente |
+| **Telas** | `TL-SL-011` Importação de planilha |
+| **Origem legada** | Hoje: a terceirizada atualiza uma planilha com os status e manda à SEALog, cada uma com as suas colunas; um analista copia para a planilha do dia. Não está na lista da equipe; vem do Encontro 1 |
+| **Prioridade** | Média |
+
+**Como** terceirizada que já trabalha com planilha
+**Gostaria de** mandar os status na minha planilha e ver a SEALog entendê-la
+**Para que** eu comece a trabalhar com a SEALog sem mudar meu jeito de uma vez.
+
+**Descrição**
+
+A terceirizada que ainda não usa a integração nem o portal envia a planilha pelo portal, ou a equipe
+a envia por ela. Na primeira vez, cada coluna da planilha é associada a um campo do padrão SEALog —
+código, situação, data e hora, motivo, quem recebeu, entregador, foto —, e a associação fica guardada
+para as próximas.
+
+Cada linha é traduzida para o padrão e passa pelas mesmas regras da integração. A linha que não se
+traduz ou não fecha é recusada com o motivo, e as outras entram. A planilha original fica guardada,
+ligada aos retornos que gerou.
+
+**Regras de negócio**
+
+| # | Regra | Catálogo |
+|---|---|---|
+| RN1 | A planilha é traduzida para o mesmo padrão, linha a linha; linha que não se traduz é recusada com o motivo, e as outras entram. | `RN-SL-029` |
+| RN2 | Cada linha passa pelas mesmas regras de comprovante e de ciclo da integração. | `RN-SL-021`, `RN-SL-030` |
+| RN3 | Linha repetida de um retorno já recebido é gravada uma vez só. | `RN-SL-033` |
+| RN4 | O status considera a data e a hora do fato que a linha informa. | `RN-SL-035` |
+| RN5 | A planilha original fica guardada, com a associação de colunas usada. | `RN-SL-029` |
+
+**Critérios de aceitação**
+
+| # | Cenário | Dado | Quando | Então |
+|---|---|---|---|---|
+| CA1 | Primeira planilha | que mando uma planilha com colunas "Pedido", "Status" e "Hora" | o sistema lê a planilha | ele pede que eu associe cada coluna a um campo do padrão e guarda a associação. |
+| CA2 | Planilha conhecida | que já associei as colunas antes | mando a planilha do dia | ela é traduzida sem perguntar de novo. |
+| CA3 | Linha sem comprovante | que uma linha diz entregue mas não tem o nome de quem recebeu | a importação termina | essa linha é recusada com o motivo, e as demais entram. |
+| CA4 | Resultado | que a planilha tinha 40 linhas e 2 com problema | a importação termina | vejo 38 aceitas e 2 recusadas, cada uma com o motivo. |
+| CA5 | Coluna desconhecida | que a planilha tem uma coluna que não corresponde a nenhum campo | o sistema lê a planilha | pede que eu diga a que campo ela corresponde, ou que a ignore. |
+
+**Integrações e APIs** — `INT-003` Planilhas: entrada de planilha da terceirizada, em XLSX ou CSV, traduzida para o padrão de `INT-002`.
+
+**Referências** — Encontro 1 [13:15], [13:51], [23:17]; Planejamento da equipe (substituir planilha por banco).
+
+---
+
+### HU-SL-016 — Conferir o comprovante de entrega
+
+| | |
+|---|---|
+| **Módulo** | `retorno-terceirizada` |
+| **Sistema** | SEALog |
+| **Atores** | Coordenador, Atendente |
+| **Telas** | `TL-SL-009` Detalhe da entrega |
+| **Origem legada** | Hoje: a foto do comprovante vai solta para o grupo, e no caso do registro incorreto a equipe levou um dia para achá-la e descobrir que o pacote foi deixado no apartamento errado; depois da terceirização, a SEALog pode nem receber foto. Na lista da equipe: RF-15 |
+| **Prioridade** | Alta |
+
+**Como** coordenador de operação
+**Gostaria de** ter, em cada entrega concluída, um comprovante completo e no mesmo padrão
+**Para que** eu prove a entrega quando o destinatário disser que não recebeu, e pague a terceirizada só pelo que foi comprovado.
+
+**Descrição**
+
+Todo "Entregue" traz o comprovante padrão: foto, data e hora, nome de quem recebeu e identificação
+do entregador. O comprovante fica preso à entrega, no detalhe dela, e não existe solto.
+
+O sistema compara quem recebeu com o destinatário e com as pessoas que a loja autorizou. Se quem
+recebeu não é nenhum deles — o vizinho que ninguém autorizou —, a entrega conta como feita, mas
+abre-se um chamado de recebedor não autorizado para a equipe tratar. É também o comprovante aceito
+que conta no pagamento da terceirizada.
+
+**Regras de negócio**
+
+| # | Regra | Catálogo |
+|---|---|---|
+| RN1 | Entregue só é aceito com foto, data e hora, nome de quem recebeu e identificação do entregador. | `RN-SL-030` |
+| RN2 | Entrega a vizinho, porteiro ou outra pessoa só vale com autorização prévia da loja. | `RN-SL-013` |
+| RN3 | Recebedor fora do destinatário e dos autorizados abre um chamado de recebedor não autorizado. | `RN-SL-031` |
+| RN4 | O comprovante é o mesmo para toda terceirizada. | `RN-SL-019` |
+| RN5 | Só a entrega com comprovante aceito entra no pagamento da terceirizada. | `RN-SL-048` |
+
+**Critérios de aceitação**
+
+| # | Cenário | Dado | Quando | Então |
+|---|---|---|---|---|
+| CA1 | Destinatário recebeu | que a entrega foi recebida pela própria destinatária | abro a entrega | vejo a foto, a hora, o nome dela e o entregador, marcados como recebimento pelo destinatário. |
+| CA2 | Porteiro autorizado | que a loja autorizou Dona Lúcia a receber | a terceirizada informa que Dona Lúcia recebeu | a entrega fica "Entregue" sem chamado. |
+| CA3 | Vizinho sem autorização | que ninguém autorizou outra pessoa | a terceirizada informa que um vizinho recebeu | a entrega fica "Entregue" e abre-se um chamado de recebedor não autorizado. |
+| CA4 | Destinatário nega | que o destinatário diz, três dias depois, que não recebeu | abro a entrega | encontro o comprovante na hora, sem procurar foto em grupo. |
+| CA5 | Comprovante incompleto | que a terceirizada mandou entregue sem a identificação do entregador | o retorno chega | ele é recusado e a entrega não conta como feita. |
+
+**Integrações e APIs** — `INT-002` API padrão da terceirizada, por onde chega a maior parte dos comprovantes; a foto é guardada pelo SEALog, não só referenciada.
+
+**Referências** — Encontro 1 [26:53], [38:44], [40:16], [42:33], [43:19]; Enunciado §8 (caso "O registro incorreto"); Planejamento da equipe (RF-15); Gargalos §3.
+
+---
+
+## Ocorrências e devoluções
+
+### HU-SL-017 — Relatar um problema pelo WhatsApp
+
+| | |
+|---|---|
+| **Módulo** | `ocorrencias` |
+| **Sistema** | SEALog |
+| **Atores** | Loja, Agente de ocorrências |
+| **Telas** | `TL-SL-002` Conversa do WhatsApp |
+| **Origem legada** | Hoje: a loja reclama por mensagem ao Atendimento, que repassa no grupo interno; não há formato nem registro, e fora do horário a reclamação espera. Na lista da equipe: RF-18 (comunicação com o Atendimento quando destinatários relatam problemas) |
+| **Prioridade** | Alta |
+
+**Como** loja cliente da SEALog
+**Gostaria de** contar pelo WhatsApp o que deu errado num pedido
+**Para que** meu relato chegue organizado a quem resolve, a qualquer hora, sem eu repetir a história.
+
+**Descrição**
+
+No acompanhamento de um pedido, a loja toca em "Relatar problema". Quem conversa com ela é o agente
+de ocorrências: ele confirma o pedido pelo código, entende o tipo de problema — atraso, não entregue,
+avaria, entregue no endereço errado ou outro —, pede uma descrição e, se houver avaria, uma foto.
+
+Com o relato, o agente consulta o protocolo de atendimento da SEALog e escreve uma ação sugerida.
+Ele não decide nem promete nada à loja: encerra dizendo que uma pessoa da equipe vai analisar e
+responder ali mesmo, e o chamado aparece no painel da equipe. O agente recebe só o código, o tipo, o
+relato e as fotos; os dados pessoais do destinatário não passam por ele.
+
+**Regras de negócio**
+
+| # | Regra | Catálogo |
+|---|---|---|
+| RN1 | A loja relata o problema a partir do acompanhamento do pedido. | `RN-SL-004`, `RN-SL-036` |
+| RN2 | O agente identifica o pedido pelo código, classifica o tipo, pede descrição e, se houver avaria, foto. | `RN-SL-036` |
+| RN3 | O agente compara o relato com o protocolo de atendimento da SEALog e escreve uma ação sugerida; o protocolo é da SEALog. | `RN-SL-037`, `Q-SL-05` |
+| RN4 | O agente não decide nem responde a decisão à loja. | `RN-SL-037` |
+| RN5 | Nome, telefone e endereço do destinatário não vão ao agente; o sistema os junta ao gravar o chamado. | `RN-SL-038` |
+| RN6 | O relato vira um chamado no painel, com a sugestão. | `RN-SL-039` |
+
+**Critérios de aceitação**
+
+| # | Cenário | Dado | Quando | Então |
+|---|---|---|---|---|
+| CA1 | Avaria | que a caixa chegou amassada | relato o problema e mando a foto | recebo a confirmação de que uma pessoa vai analisar, e o chamado aparece no painel com a foto e a sugestão. |
+| CA2 | Avaria sem foto | que relatei avaria | o agente pede a foto e eu não mando | o chamado é aberto mesmo assim, marcado sem foto. |
+| CA3 | Atraso | que a entrega era para hoje às 10h e não chegou | relato atraso | o chamado é aberto com o tipo atraso e a situação atual do pedido. |
+| CA4 | Pedido de outra loja | que informo o código de um pedido que não é meu | tento relatar | recebo a mensagem de pedido não encontrado, e nenhum chamado é aberto. |
+| CA5 | Sem promessa | que pergunto ao agente se vou receber reembolso | ele responde | ele diz que a equipe vai analisar e responder, sem prometer nada. |
+| CA6 | Fora do horário | que é domingo | relato um problema | o chamado é aberto e fica Pendente para a equipe no próximo turno. |
+
+**Integrações e APIs** — `INT-001` WhatsApp, para a conversa (`MSG-SL-025`); `INT-004` Agente de ocorrências (n8n com modelo de linguagem GPT-4o), que conduz a triagem e grava o chamado em `POST /api/v1/bot/incidents`.
+
+**Referências** — Plano do agente (triagem, coleta de evidências, análise de regras); Planejamento da equipe (RF-18; cuidado com dados sensíveis); Enunciado §2 (atendimento com horário limitado); Gargalos §5.
+
+---
+
+### HU-SL-018 — Tratar o chamado com a sugestão do agente
+
+| | |
+|---|---|
+| **Módulo** | `ocorrencias` |
+| **Sistema** | SEALog |
+| **Atores** | Atendente, Coordenador |
+| **Telas** | `TL-SL-012` Painel de chamados, `TL-SL-013` Detalhe do chamado |
+| **Origem legada** | Hoje: o aviso de problema se perde no grupo de cerca de 18 motoristas — no caso do buquê, o aviso das 9h40 só foi visto às 11h — e o coordenador decide caso a caso, sem regra formal. Na lista da equipe: RF-14 e RF-18 |
+| **Prioridade** | Alta |
+
+**Como** atendente
+**Gostaria de** ver todo problema num painel, com o resumo e uma sugestão do que fazer
+**Para que** nenhum problema se perca e eu decida rápido, com o protocolo à mão.
+
+**Descrição**
+
+O painel de chamados reúne toda ocorrência: a relatada pela loja, o não entregue da terceirizada, o
+recebedor não autorizado e a entrega sem retorno. Chamado novo aparece na hora, sem recarregar a
+tela. Cada um mostra a entrega, a loja, o tipo, o relato, o resumo da conversa, as fotos e a ação
+sugerida pelo agente de ocorrências.
+
+A pessoa da equipe aprova a sugestão, muda ou recusa, e registra a ação final. Se a ação final difere
+da sugerida, informa o motivo. A loja recebe a resposta pelo WhatsApp. O chamado passa de Pendente a
+Em atendimento quando alguém o assume, e a Concluído com a decisão; o que não foi concluído até 19h
+fica destacado.
+
+**Regras de negócio**
+
+| # | Regra | Catálogo |
+|---|---|---|
+| RN1 | Toda ocorrência vira chamado no painel, com a sugestão do agente; não existe ocorrência tratada fora dele. | `RN-SL-039` |
+| RN2 | O chamado fica Pendente, Em atendimento ou Concluído. | `RN-SL-039` |
+| RN3 | Uma pessoa aprova, muda ou recusa a sugestão; o chamado registra quem, quando, a ação final e o motivo. | `RN-SL-040` |
+| RN4 | Quem aprova — atendente ou coordenador — está para confirmação. | `RN-SL-040`, `Q-SL-06` |
+| RN5 | A loja recebe a resposta pelo WhatsApp. | `RN-SL-040`, `RN-SL-043` |
+| RN6 | Chamado sem conclusão até 19h fica destacado. | `RN-SL-046` |
+
+**Critérios de aceitação**
+
+| # | Cenário | Dado | Quando | Então |
+|---|---|---|---|---|
+| CA1 | Chamado novo | que estou com o painel aberto | a terceirizada informa um não entregue | o chamado aparece na hora, com a sugestão. |
+| CA2 | Aprovar a sugestão | que a sugestão é nova tentativa amanhã | aprovo | o chamado fica Concluído com a ação aprovada, e a loja recebe a resposta. |
+| CA3 | Mudar a sugestão | que discordo da sugestão | escolho outra ação sem informar o motivo | o sistema pede o motivo antes de concluir. |
+| CA4 | Buquê de sábado | que um não entregue chegou às 9h40 de sábado | o chamado é aberto | ele aparece no painel na hora e a floricultura já foi avisada, sem depender de alguém ler um grupo. |
+| CA5 | Passou das 19h | que um chamado ainda está Pendente às 19h | abro o painel | ele aparece destacado. |
+| CA6 | Assumir | que vou cuidar de um chamado | o assumo | ele passa a Em atendimento, com o meu nome, e os colegas veem isso. |
+
+**Integrações e APIs** — `INT-004` Agente de ocorrências, que produz a sugestão; `INT-001` WhatsApp, para a resposta à loja (`MSG-SL-023`). O painel é atualizado em tempo real por conexão contínua (websocket), conforme o plano do agente.
+
+**Referências** — Plano do agente (painel admin, atendente aprova, status do chamado); Enunciado §2 (o coordenador decide sem regra), §8 (caso "O buquê de sábado"); Planejamento da equipe (RF-14, RF-18); Gargalos §5.
+
+---
+
+### HU-SL-019 — Receber a devolução no galpão e decidir o destino
+
+| | |
+|---|---|
+| **Módulo** | `ocorrencias` |
 | **Sistema** | SEALog |
 | **Atores** | Coordenador |
-| **Telas** | `TL-SL-014` Painel de exceções · `TL-SL-007` Detalhe da entrega |
-| **Origem legada** | Hoje: não há regra formal para o retorno ao galpão; o coordenador decide caso a caso o que fazer com o que não foi entregue, e a decisão não fica registrada |
+| **Telas** | `TL-SL-014` Devoluções no galpão |
+| **Origem legada** | Hoje: entre 17h e 18h os volumes não entregues voltam ao galpão, e o coordenador avalia cada caso sem regras formalizadas; depois da terceirização, a devolução também volta à SEALog. Na lista da equipe: RF-16 e RF-17 |
 | **Prioridade** | Alta |
 
 **Como** coordenador de operação
-**Gostaria de** registrar, para cada entrega não realizada, o que vai acontecer com ela
-**Para que** a decisão siga uma regra conhecida, fique registrada e seja comunicada ao cliente.
+**Gostaria de** registrar a chegada de cada pacote devolvido e decidir o destino dele no sistema
+**Para que** nenhum pacote fique esquecido no galpão e a loja saiba o que vai acontecer.
 
 **Descrição**
 
-A partir do painel, o coordenador decide cada ocorrência escolhendo uma de quatro saídas: nova
-tentativa, com a data; devolver ao cliente; guardar no galpão aguardando instrução do cliente; ou
-cancelar a pedido do cliente. A decisão registra quem decidiu, quando e o motivo, e o cliente
-recebe um aviso com o que vai acontecer.
+A terceirizada informa que devolveu o pacote ao galpão, e a entrega fica "Em devolução". Quando o
+pacote chega, a equipe registra a chegada pelo código, e a entrega passa a "No galpão", ligada ao
+chamado que a fez voltar.
 
-A nova tentativa devolve a entrega às prontas para rota na data escolhida. A devolução cria a volta
-do pacote ao cliente. A guarda deixa a entrega no galpão até a instrução. O número máximo de
-tentativas e o prazo de guarda dependem da política da SEALog, que a origem não traz (`Q-SL-07`).
+O coordenador decide o destino: nova tentativa, com a data, que despacha de novo; devolver à loja;
+guardar aguardando instrução da loja; ou cancelar a pedido da loja. A decisão registra quem decidiu,
+quando e o motivo, e gera aviso à loja. Quantas tentativas cabem e por quanto tempo o pacote fica
+guardado são decisões da SEALog.
 
 **Regras de negócio**
 
 | # | Regra | Catálogo |
 |---|---|---|
-| RN1 | A decisão é uma de quatro: nova tentativa com data, devolver ao cliente, guardar no galpão aguardando instrução, cancelar a pedido do cliente. | `RN-SL-037` |
-| RN2 | A decisão registra quem decidiu, quando e o motivo. | `RN-SL-037` |
-| RN3 | A decisão gera aviso ao cliente com o que vai acontecer. | `RN-SL-040` |
-| RN4 | O pacote que volta ao galpão é registrado pela etiqueta, ligado à ocorrência. | `RN-SL-039` |
-| RN5 | Limite de tentativas e prazo de guarda seguem a política da SEALog. | `RN-SL-038` |
-| RN6 | Decidir é exclusivo do coordenador. | `RN-SL-051` |
+| RN1 | O pacote não entregue volta ao galpão da SEALog, e a chegada é registrada pelo código. | `RN-SL-041` |
+| RN2 | A janela de devolução de hoje (17h a 18h) está para confirmação com as terceirizadas. | `RN-SL-041`, `Q-SL-03` |
+| RN3 | O coordenador decide entre nova tentativa, devolver à loja, guardar aguardando instrução ou cancelar, com motivo. | `RN-SL-042` |
+| RN4 | O número de tentativas e o prazo de guarda dependem da política da SEALog. | `RN-SL-042`, `Q-SL-07` |
+| RN5 | A decisão gera aviso à loja. | `RN-SL-043` |
 
 **Critérios de aceitação**
 
 | # | Cenário | Dado | Quando | Então |
 |---|---|---|---|---|
-| CA1 | Nova tentativa | que a ocorrência é "Destinatário ausente" | decido nova tentativa para amanhã | a entrega volta às prontas para amanhã e o cliente recebe o aviso com a nova data. |
-| CA2 | Devolver | que o destinatário recusou o pacote | decido devolver ao cliente | a entrega passa a "Em devolução" e o cliente é avisado. |
-| CA3 | Sem motivo | que estou decidindo uma ocorrência | tento gravar sem motivo | o sistema exige o motivo. |
-| CA4 | Registro | que decidi uma ocorrência | abro o detalhe da entrega | vejo a decisão, meu nome, a hora e o motivo. |
-| CA5 | Sem permissão | que sou analista | abro uma ocorrência | não vejo a ação de decidir. |
+| CA1 | Chegada | que a terceirizada informou a devolução | o pacote chega e eu informo o código | a entrega passa a "No galpão" e aparece para decisão. |
+| CA2 | Nova tentativa | que o destinatário estava ausente | decido nova tentativa para amanhã | a entrega é despachada de novo com a nova data prevista, e a loja é avisada. |
+| CA3 | Devolver à loja | que a loja pediu o pacote de volta | decido devolver | a entrega passa a "Devolvido à loja" e a loja recebe o aviso. |
+| CA4 | Código desconhecido | que informo um código que não está em devolução | registro a chegada | o sistema avisa que não há devolução esperada para esse código e pede confirmação. |
+| CA5 | Sem motivo | que escolhi cancelar | tento gravar sem motivo | o sistema pede o motivo. |
 
-**Integrações e APIs** — `INT-001` WhatsApp, para o aviso da decisão ao cliente.
+**Integrações e APIs** — `INT-002` API padrão da terceirizada, por onde chega o aviso de devolução; `INT-001` WhatsApp, para o aviso da decisão à loja (`MSG-SL-023`).
 
-**Referências** — Gargalos §5 (retorno ao galpão sem regra formal; sem aviso proativo); `Q-SL-07`.
+**Referências** — Enunciado §2 (volta ao galpão de 17h a 18h, decisão sem regra); Encontro 1 [47:01]; Planejamento da equipe (RF-16, RF-17, RN-02); Gargalos §5.
 
 ---
 
-### HU-SL-020 — Avisar o cliente de problema na entrega
+### HU-SL-020 — Avisar a loja de problema na entrega
 
 | | |
 |---|---|
-| **Módulo** | `excecoes` |
+| **Módulo** | `ocorrencias` |
 | **Sistema** | SEALog |
-| **Atores** | Coordenador, Atendente, Analista, Cliente |
-| **Telas** | `TL-SL-014` Painel de exceções · `TL-SL-015` Entregas afetadas por cliente |
-| **Origem legada** | Hoje: não há aviso proativo ao cliente quando há problema; ele descobre quando pergunta. No caso "Buquê de sábado", o cliente não foi avisado; no caso "Segunda-feira de chuva", foram mais de 120 mensagens para 40 entregas |
+| **Atores** | Sistema |
+| **Telas** | `TL-SL-012` Painel de chamados |
+| **Origem legada** | Hoje: ninguém avisa a loja; no caso do buquê de sábado, a floricultura soube do problema pela consumidora às 11h30, quase duas horas depois do aviso do motorista. Na lista da equipe: RF-09 (notificação, por WhatsApp em vez de e-mail) |
 | **Prioridade** | Alta |
 
-**Como** cliente da SEALog
-**Gostaria de** ser avisado assim que houver problema na minha entrega
-**Para que** eu não descubra o atraso só quando o destinatário reclamar.
+**Como** loja cliente da SEALog
+**Gostaria de** ser avisada pelo WhatsApp assim que algo der errado com meu pedido
+**Para que** eu saiba antes do meu cliente e possa avisá-lo.
 
 **Descrição**
 
-Toda ocorrência gera um aviso automático ao cliente, por WhatsApp, com o motivo e o link de
-rastreio, sem que ninguém da equipe precise escrever. A decisão sobre a ocorrência gera um segundo
-aviso. Os avisos saem a qualquer hora, sem depender do horário do atendimento.
+Todo não entregue e todo chamado aberto geram, na hora, um aviso à loja pelo WhatsApp, com o pedido,
+o destinatário e o motivo, dizendo que a SEALog já está cuidando. Não depende de atendente nem do
+horário do atendimento. Quando a equipe decide o que fazer, a loja recebe um segundo aviso, com a
+decisão.
 
-Quando o problema atinge muitas entregas de uma vez — a chuva de segunda-feira —, a equipe usa a
-consulta de afetados (`HU-SL-021`) e envia um aviso em lote: uma mensagem por cliente, com a lista
-das entregas dele. Todo aviso fica registrado na entrega, com o resultado do envio; o que falha
-aparece no painel para reenvio.
+Todo aviso fica registrado na entrega, com o texto, a hora e o resultado do envio. Aviso que não
+chegou aparece no painel de chamados para reenvio.
 
 **Regras de negócio**
 
 | # | Regra | Catálogo |
 |---|---|---|
-| RN1 | Toda ocorrência gera aviso automático ao cliente, com motivo e link de rastreio; a decisão gera um segundo aviso. | `RN-SL-040` |
-| RN2 | Os avisos não dependem do horário do atendimento. | `RN-SL-032` |
-| RN3 | O aviso em lote manda uma mensagem por cliente, com a lista das entregas dele. | `RN-SL-041` |
-| RN4 | Todo aviso fica registrado na entrega; o que falha vai para o painel. | `RN-SL-043` |
+| RN1 | Todo não entregue e todo chamado aberto geram aviso automático à loja, com o motivo, sem depender do horário do atendimento. | `RN-SL-043` |
+| RN2 | A decisão gera um segundo aviso. | `RN-SL-043` |
+| RN3 | Todo aviso fica registrado na entrega, com texto, hora e resultado. | `RN-SL-045` |
+| RN4 | Aviso que falhou aparece no painel para reenvio. | `RN-SL-045` |
+| RN5 | Se o destinatário também recebe aviso da SEALog está para confirmação. | `Q-SL-15` |
 
 **Critérios de aceitação**
 
 | # | Cenário | Dado | Quando | Então |
 |---|---|---|---|---|
-| CA1 | Aviso automático | que o motorista registrou uma ocorrência | o registro chega ao sistema | o cliente recebe pelo WhatsApp o motivo e o link de rastreio, sem ação da equipe. |
-| CA2 | Aviso da decisão | que o coordenador decidiu nova tentativa | grava a decisão | o cliente recebe o segundo aviso, com a nova data. |
-| CA3 | Lote | que 40 entregas de 12 clientes atrasaram pela chuva | envio o aviso em lote aos 12 | cada cliente recebe uma só mensagem, com as entregas dele. |
-| CA4 | Falha | que o número do cliente não recebe mensagens | o envio falha | o aviso aparece no painel com a falha e a opção de reenviar. |
-| CA5 | Registro | que o cliente recebeu dois avisos | abro o detalhe da entrega | vejo os dois, com texto, hora e resultado do envio. |
+| CA1 | Buquê de sábado | que a floricultura pediu entrega até 10h e às 9h40 a terceirizada informou que não acha o endereço | o retorno chega | a floricultura recebe o aviso às 9h40, e não às 11h30 pela consumidora. |
+| CA2 | Decisão | que a equipe decidiu nova tentativa às 14h | conclui o chamado | a loja recebe o segundo aviso com a decisão. |
+| CA3 | Sábado à tarde | que o atendimento fecha às 12h no sábado | um não entregue chega às 15h | o aviso sai na hora, sem atendente. |
+| CA4 | Falha no envio | que o número da loja não recebeu a mensagem | o envio falha | o aviso aparece no painel de chamados para reenvio, com o motivo. |
+| CA5 | Registro | que um aviso foi enviado | abro a entrega | vejo o texto, a hora e se a mensagem foi entregue. |
 
-**Integrações e APIs** — `INT-001` WhatsApp, para os avisos automáticos e em lote.
+**Integrações e APIs** — `INT-001` WhatsApp: mensagem iniciada pela SEALog, com modelo de mensagem aprovado (`MSG-SL-022`, `MSG-SL-023`, `MSG-SL-027`).
 
-**Referências** — Gargalos §5 (sem aviso proativo ao cliente), §7 (casos "Buquê de sábado" e "Segunda-feira de chuva"), §9 (atendimento com horário limitado).
+**Referências** — Enunciado §2 (atendimento até 12h no sábado), §8 (caso "O buquê de sábado"); Planejamento da equipe (RF-09); Gargalos §5.
 
 ---
 
-### HU-SL-021 — Consultar entregas afetadas por cliente
+### HU-SL-021 — Consultar entregas afetadas por loja e avisar em lote
 
 | | |
 |---|---|
-| **Módulo** | `excecoes` |
+| **Módulo** | `ocorrencias` |
 | **Sistema** | SEALog |
-| **Atores** | Coordenador, Atendente, Analista, Financeiro |
-| **Telas** | `TL-SL-015` Entregas afetadas por cliente |
-| **Origem legada** | Hoje: não há visão de quem foi afetado e não dá para filtrar atrasos por cliente. No caso "Segunda-feira de chuva", 40 entregas atrasadas geraram mais de 120 mensagens |
+| **Atores** | Atendente, Coordenador |
+| **Telas** | `TL-SL-015` Entregas afetadas por loja |
+| **Origem legada** | Hoje: numa segunda-feira de chuva, cerca de 40 entregas atrasaram, o Atendimento recebeu mais de 120 mensagens e a equipe não conseguia saber quais clientes foram afetados para priorizar os avisos. Não está na lista da equipe; vem do caso do enunciado |
 | **Prioridade** | Alta |
 
-**Como** coordenador de operação
-**Gostaria de** ver, num dia ruim, quais clientes tiveram entregas atrasadas ou com problema, e quantas cada um
-**Para que** eu avise cada cliente uma vez, em vez de responder dezenas de mensagens.
+**Como** atendente
+**Gostaria de** ver, num dia ruim, quais lojas têm entregas atrasadas ou com problema, e avisar todas de uma vez
+**Para que** eu avise antes de as mensagens chegarem, em vez de responder uma a uma.
 
 **Descrição**
 
-A consulta lista as entregas atrasadas ou com ocorrência num período, agrupadas por cliente, com a
-contagem de cada grupo. Atrasada é a entrega não concluída até o fim da data prevista. Filtra por
-período, motivo da ocorrência, bairro e motorista.
+A consulta de afetados lista, num período, as entregas atrasadas ou com chamado, agrupadas por loja,
+com a contagem de cada uma. Atrasada é a entrega não concluída até o fim da data prevista. A equipe
+filtra por terceirizada, bairro ou motivo e ordena pelas lojas com mais entregas afetadas.
 
-Daqui a equipe seleciona os clientes e envia o aviso em lote (`HU-SL-020`), e pode exportar a
-consulta para planilha (`HU-SL-023`).
+Daí a equipe envia o aviso em lote: uma mensagem por loja, com a lista das entregas dela que foram
+afetadas e a situação de cada uma. A lista também pode ser exportada para planilha.
 
 **Regras de negócio**
 
 | # | Regra | Catálogo |
 |---|---|---|
-| RN1 | A consulta lista as entregas atrasadas ou com ocorrência, agrupadas por cliente, com a contagem. | `RN-SL-042` |
-| RN2 | Atrasada é a entrega não concluída até o fim da data prevista. | `RN-SL-042` |
-| RN3 | A partir da consulta, envia-se o aviso em lote aos clientes selecionados. | `RN-SL-041` |
-| RN4 | A consulta pode ser exportada para planilha. | `RN-SL-048` |
+| RN1 | A consulta lista as entregas atrasadas ou com chamado no período, agrupadas por loja, com a contagem. | `RN-SL-044` |
+| RN2 | Atrasada é a entrega não concluída até o fim da data prevista. | `RN-SL-044` |
+| RN3 | O aviso em lote é uma mensagem por loja, com a lista das entregas dela. | `RN-SL-044` |
+| RN4 | Todo aviso fica registrado, e o que falhou aparece no painel. | `RN-SL-045` |
+| RN5 | A consulta pode ser exportada para planilha. | `RN-SL-050` |
 
 **Critérios de aceitação**
 
 | # | Cenário | Dado | Quando | Então |
 |---|---|---|---|---|
-| CA1 | Dia de chuva | que 40 entregas de 12 clientes atrasaram na segunda-feira | consulto a segunda-feira | vejo 12 clientes, cada um com a contagem e as entregas dele. |
-| CA2 | Filtro por motivo | que houve ocorrências de vários motivos | filtro por "Condição climática" | vejo só as entregas com esse motivo. |
-| CA3 | Atraso sem ocorrência | que uma entrega não foi registrada até o fim da data prevista | consulto o dia | ela aparece como atrasada. |
-| CA4 | Nenhum afetado | que não houve atraso nem ocorrência no período | consulto | a consulta informa que nenhuma entrega foi encontrada. |
+| CA1 | Segunda-feira de chuva | que cerca de 40 entregas atrasaram hoje | abro a consulta de afetados | vejo as lojas afetadas, cada uma com quantas entregas e quais. |
+| CA2 | Aviso em lote | que selecionei as lojas afetadas | envio o aviso | cada loja recebe uma mensagem só, com a lista das entregas dela. |
+| CA3 | Priorizar | que quero começar pelas lojas mais afetadas | ordeno pela contagem | as lojas com mais entregas afetadas aparecem primeiro. |
+| CA4 | Nada afetado | que não houve atraso no período | abro a consulta | o sistema informa que não há entregas para os filtros. |
+| CA5 | Falha em uma loja | que o aviso a uma das lojas falhou | o lote termina | as outras recebem, e a falha aparece no painel para reenvio. |
 
-**Integrações e APIs** — `INT-001` WhatsApp, pelo aviso em lote; `INT-003` Planilhas, pela exportação.
+**Integrações e APIs** — `INT-001` WhatsApp, para o aviso em lote (`MSG-SL-024`); `INT-003` Planilhas, para a exportação.
 
-**Referências** — Gargalos §5 (sem visão de quem foi afetado), §7 (caso "Segunda-feira de chuva": 40 entregas, mais de 120 mensagens).
+**Referências** — Enunciado §8 (caso "A segunda-feira de chuva"); Gargalos §5, §7.
 
 ---
 
 ## Financeiro
 
-### HU-SL-022 — Fechar a cobrança do período por cliente
+### HU-SL-022 — Fechar a cobrança das lojas
 
 | | |
 |---|---|
 | **Módulo** | `financeiro` |
 | **Sistema** | SEALog |
 | **Atores** | Financeiro |
-| **Telas** | `TL-SL-016` Fechamento de cobrança |
-| **Origem legada** | Hoje: a cobrança é calculada sobre planilhas manuais, e qualquer erro de registro na planilha passa para a cobrança |
+| **Telas** | `TL-SL-016` Fechamentos, `TL-SL-017` Exportação para planilha |
+| **Origem legada** | Hoje: às 19h a planilha do dia é considerada fechada, e o financeiro usa esses registros, com os erros que eles têm, para calcular o que cobrar de cada loja. Não está na lista da equipe |
 | **Prioridade** | Média |
 
 **Como** financeiro
-**Gostaria de** gerar o fechamento de cada cliente a partir das entregas registradas no sistema
-**Para que** a cobrança saia do mesmo registro que a operação usa, sem recontar planilhas.
+**Gostaria de** gerar a cobrança de cada loja a partir das entregas registradas
+**Para que** eu não cobre a mais nem a menos por causa de uma linha errada na planilha.
 
 **Descrição**
 
-O financeiro escolhe o período e gera os fechamentos: um por cliente, com as entregas que chegaram
-a um status final no período e o valor de cada uma, segundo a tabela de preços da SEALog. O extrato
-lista cada entrega com código, data, destinatário, bairro, status final e valor, e o total.
+O financeiro escolhe a loja e o período, e o sistema monta o fechamento com as entregas que chegaram
+a um status final, cada uma com código, data, destinatário, bairro, status e valor. O valor vem da
+tabela de preços da SEALog.
 
-O fechamento passa por conferência e depois é fechado. Fechado, não muda: uma correção descoberta
-depois entra como ajuste, com motivo, no fechamento seguinte do mesmo cliente. A tabela de preços e
-a forma de cobrar tentativa sem sucesso, devolução e coleta não estão na origem (`Q-SL-08`,
-`Q-SL-09`).
+O fechamento passa por conferência antes de ser fechado. Depois de fechado, não muda: correção
+posterior entra como ajuste, com motivo, no fechamento seguinte da mesma loja. O fechamento pode ser
+exportado para planilha.
 
 **Regras de negócio**
 
 | # | Regra | Catálogo |
 |---|---|---|
-| RN1 | A cobrança vem das entregas registradas no sistema, por cliente e período. | `RN-SL-044` |
-| RN2 | Entram as entregas que chegaram a um status final no período, valoradas pela tabela de preços. | `RN-SL-045` |
-| RN3 | O fechamento passa por conferência; fechado, não muda, e a correção entra como ajuste no seguinte. | `RN-SL-046` |
-| RN4 | O extrato lista cada entrega com código, data, destinatário, bairro, status e valor; o total é a soma das linhas mais os ajustes. | `RN-SL-047` |
-| RN5 | Fechar a cobrança é exclusivo do financeiro. | `RN-SL-051` |
+| RN1 | A cobrança é calculada das entregas registradas, por loja e período, nunca de planilha. | `RN-SL-047` |
+| RN2 | O valor depende da tabela de preços da SEALog. | `RN-SL-047`, `Q-SL-08` |
+| RN3 | O fechamento é conferido antes de fechado; fechado não muda, e correção vira ajuste no seguinte. | `RN-SL-049` |
+| RN4 | O fechamento pode ser exportado para planilha. | `RN-SL-050` |
 
 **Critérios de aceitação**
 
 | # | Cenário | Dado | Quando | Então |
 |---|---|---|---|---|
-| CA1 | Gerar | que um cliente teve 30 entregas concluídas em outubro | gero o fechamento de outubro | o extrato dele tem as 30 entregas, cada uma com valor, e o total. |
-| CA2 | Entrega em aberto | que uma entrega do cliente ainda está "Em rota" no fim do período | gero o fechamento | ela não entra neste fechamento. |
-| CA3 | Fechado não muda | que o fechamento de outubro foi fechado | tento alterar uma linha | o sistema recusa e oferece lançar ajuste no fechamento seguinte. |
-| CA4 | Ajuste | que lancei um ajuste com motivo | gero o fechamento seguinte | o ajuste aparece nele, com o motivo, e entra no total. |
-| CA5 | Sem permissão | que sou coordenador | tento abrir o fechamento | o sistema recusa e informa que meu perfil não tem acesso. |
+| CA1 | Gerar | que a farmácia teve 60 entregas finalizadas no mês | gero o fechamento do mês | vejo as 60 entregas, cada uma com o valor, e o total. |
+| CA2 | Conferir e fechar | que conferi o fechamento | fecho | ele fica Fechado, com quem fechou e quando. |
+| CA3 | Alterar fechado | que o fechamento já está fechado | tento mudar um valor | o sistema recusa e orienta lançar um ajuste no próximo. |
+| CA4 | Ajuste | que uma entrega foi cobrada errado no mês passado | lanço o ajuste com motivo no fechamento deste mês | o ajuste entra no total, com o motivo. |
+| CA5 | Exportar | que o fechamento está conferido | exporto | a planilha sai com as mesmas colunas da tela. |
 
-**Integrações e APIs** — `INT-003` Planilhas, pela exportação do extrato (`HU-SL-023`). Emissão de nota e cobrança bancária estão fora do escopo.
+**Integrações e APIs** — `INT-003` Planilhas, para a exportação do fechamento.
 
-**Referências** — Gargalos §6 (cobrança calculada sobre planilhas manuais, com risco de erro herdado); `Q-SL-08`, `Q-SL-09`.
+**Referências** — Enunciado §2 (o financeiro calcula a cobrança pelos registros do dia); Gargalos §6.
 
 ---
 
-### HU-SL-023 — Exportar listas para planilha
+### HU-SL-023 — Fechar o pagamento das terceirizadas
 
 | | |
 |---|---|
 | **Módulo** | `financeiro` |
 | **Sistema** | SEALog |
-| **Atores** | Atendente, Analista, Coordenador, Financeiro |
-| **Telas** | `TL-SL-017` Exportação para planilha · `TL-SL-006` Lista de entregas · `TL-SL-015` Entregas afetadas por cliente · `TL-SL-016` Fechamento de cobrança |
-| **Origem legada** | Hoje: a equipe trabalha em planilhas e está acostumada com elas; o enunciado aponta a adoção como o risco principal da solução |
+| **Atores** | Financeiro |
+| **Telas** | `TL-SL-016` Fechamentos, `TL-SL-017` Exportação para planilha |
+| **Origem legada** | Hoje: a SEALog paga as terceirizadas pelas entregas realizadas, mas cada empresa informa do seu jeito, e quando a terceirizada diz que entregou e o destinatário diz que não, não há prova. Não está na lista da equipe; vem do Encontro 1 |
 | **Prioridade** | Média |
 
-**Como** pessoa da equipe acostumada com planilha
-**Gostaria de** levar para uma planilha o que estou vendo na tela
-**Para que** eu continue fazendo minhas análises do jeito que sei, sem que a planilha volte a ser a fonte dos dados.
+**Como** financeiro
+**Gostaria de** calcular o pagamento de cada terceirizada pelas entregas que ela comprovou
+**Para que** a SEALog pague só pelo que foi entregue e provado.
 
 **Descrição**
 
-A lista de entregas, a consulta de afetados e o fechamento de cobrança têm a ação Exportar. A
-planilha sai com as mesmas colunas e os mesmos filtros da tela, em XLSX ou CSV, com a data e a
-hora da exportação no nome do arquivo.
+O financeiro escolhe a terceirizada e o período, e o sistema monta o fechamento com as entregas que
+ela concluiu com comprovante aceito. Entrega sem comprovante aceito não entra. O valor por entrega, e
+o que acontece com tentativa sem sucesso e devolução, depende do contrato da SEALog com cada
+terceirizada.
 
-A planilha exportada é uma fotografia daquele momento: ela não volta para o sistema. Quem precisa
-corrigir um dado corrige no sistema. É isso que impede que voltem a existir planilhas divergentes.
+Como na cobrança das lojas, o fechamento é conferido antes de ser fechado, e correção posterior vira
+ajuste no fechamento seguinte. O fechamento pode ser exportado para planilha.
 
 **Regras de negócio**
 
 | # | Regra | Catálogo |
 |---|---|---|
-| RN1 | Lista de entregas, consulta de afetados e fechamento exportam para XLSX e CSV, com as colunas e os filtros da tela. | `RN-SL-048` |
-| RN2 | A planilha exportada não é importada de volta: a fonte continua sendo o sistema. | `RN-SL-013` |
-| RN3 | Cada perfil exporta só o que pode ver. | `RN-SL-051` |
+| RN1 | O pagamento é calculado pelas entregas com comprovante aceito, por terceirizada e período. | `RN-SL-048` |
+| RN2 | Entrega sem comprovante aceito não entra no pagamento. | `RN-SL-030`, `RN-SL-048` |
+| RN3 | O valor, e o tratamento de tentativa e devolução, dependem do contrato. | `RN-SL-048`, `Q-SL-09` |
+| RN4 | O fechamento é conferido antes de fechado; correção vira ajuste no seguinte. | `RN-SL-049` |
+| RN5 | O fechamento pode ser exportado para planilha. | `RN-SL-050` |
 
 **Critérios de aceitação**
 
 | # | Cenário | Dado | Quando | Então |
 |---|---|---|---|---|
-| CA1 | Com filtro | que filtrei a lista de entregas por "Entregue" e pela semana | exporto em XLSX | a planilha traz só as entregas filtradas, com as colunas da tela. |
-| CA2 | CSV | que estou no fechamento de um cliente | exporto em CSV | recebo o arquivo com as linhas do extrato e o total. |
-| CA3 | Nome do arquivo | que exportei às 14h05 de 29/10/2026 | abro a pasta de downloads | o nome do arquivo traz a data e a hora da exportação. |
-| CA4 | Lista vazia | que o filtro não trouxe nenhuma entrega | tento exportar | o sistema avisa que não há o que exportar. |
+| CA1 | Gerar | que a empresa da zona sul fez 900 entregas comprovadas na quinzena | gero o fechamento | vejo as 900 entregas e o total. |
+| CA2 | Sem comprovante | que uma entrega foi informada como feita mas o comprovante foi recusado | gero o fechamento | essa entrega não entra. |
+| CA3 | Recebedor não autorizado | que uma entrega teve chamado de recebedor não autorizado ainda aberto | gero o fechamento | a entrega aparece destacada para conferência. |
+| CA4 | Alterar fechado | que o fechamento já foi fechado | tento tirar uma entrega | o sistema recusa e orienta lançar um ajuste no próximo. |
+| CA5 | Exportar | que o fechamento está fechado | exporto | a planilha sai com as entregas, o comprovante de cada uma e o total. |
 
-**Integrações e APIs** — `INT-003` Planilhas.
+**Integrações e APIs** — `INT-003` Planilhas, para a exportação do fechamento.
 
-**Referências** — Gargalos §9 (equipe acostumada com planilha; risco principal é adoção), §2 (planilhas divergentes).
+**Referências** — Encontro 1 [26:53], [38:44]; Enunciado §2 (o financeiro calcula a partir dos registros).
 
 ---
 
 ## Acesso
 
-### HU-SL-024 — Entrar no sistema com o perfil
+### HU-SL-024 — Entrar no painel com o perfil
 
 | | |
 |---|---|
 | **Módulo** | `acesso` |
 | **Sistema** | SEALog |
-| **Atores** | Atendente, Analista, Coordenador, Motorista, Financeiro |
-| **Telas** | `TL-SL-001` Entrada no sistema |
-| **Origem legada** | Hoje: não há sistema; o acesso à informação é estar no grupo de WhatsApp ou ter a planilha |
+| **Atores** | Atendente, Coordenador, Financeiro, Terceirizada |
+| **Telas** | `TL-SL-001` Entrada no painel |
+| **Origem legada** | Hoje: não há sistema; todos veem tudo no grupo de WhatsApp e nas planilhas compartilhadas, inclusive as conversas de todos os motoristas. Na lista da equipe: RF-02 e RNF-01 (bloqueio depois de cinco tentativas) |
 | **Prioridade** | Alta |
 
 **Como** pessoa da equipe da SEALog
-**Gostaria de** entrar no sistema com meu usuário e ver só o que meu papel usa
-**Para que** cada um trabalhe na sua parte, e cada registro tenha um autor.
+**Gostaria de** entrar no painel com meu usuário e ver só o que meu perfil permite
+**Para que** cada um faça a sua parte, e ninguém altere o que não é seu.
 
 **Descrição**
 
-A equipe entra com usuário e senha. O perfil — atendente, analista, coordenador, motorista ou
-financeiro — define o menu e as ações. O motorista entra pelo celular e continua conectado durante o
-dia. Usuário ou senha errados são recusados sem dizer qual dos dois errou. Tela fora do perfil é
-recusada com aviso.
+A equipe entra no painel com usuário e senha, num de três perfis: atendente, coordenador e
+financeiro. A terceirizada entra no portal com usuário próprio. O perfil define o menu e as ações, e
+a permissão vale no servidor: o que a tela não mostra também não pode ser feito por outro caminho.
 
-O coordenador cadastra os usuários da equipe e define o perfil de cada um. O cliente não entra: usa
-o link do pedido e o link de rastreio. Quem administra o acesso está para confirmação (`Q-SL-10`).
+Depois de cinco tentativas seguidas sem sucesso, a entrada fica bloqueada por um tempo. A loja não
+entra no painel: ela é reconhecida pelo número de WhatsApp autorizado.
 
 **Regras de negócio**
 
 | # | Regra | Catálogo |
 |---|---|---|
-| RN1 | A equipe entra com usuário e senha, em um de cinco perfis. | `RN-SL-049` |
-| RN2 | O cliente não tem login: usa os links. | `RN-SL-050` |
-| RN3 | Cada perfil vê e faz só o que a matriz de permissões permite; tela fora do perfil é recusada. | `RN-SL-051` |
+| RN1 | A equipe entra com usuário e senha, num de três perfis; a lista de perfis está para confirmação. | `RN-SL-051`, `Q-SL-10` |
+| RN2 | A permissão é conferida no servidor, não só escondida na tela. | `RN-SL-051` |
+| RN3 | Depois de cinco tentativas seguidas sem sucesso, a entrada fica bloqueada por um tempo; a duração e o desbloqueio estão para confirmação. | `RN-SL-052`, `Q-SL-17` |
+| RN4 | A terceirizada entra com usuário próprio e vê só as entregas despachadas para ela. | `RN-SL-053` |
+| RN5 | A loja não tem senha: é identificada pelo número de WhatsApp autorizado. | `RN-SL-054` |
 
 **Critérios de aceitação**
 
 | # | Cenário | Dado | Quando | Então |
 |---|---|---|---|---|
-| CA1 | Entrada | que tenho usuário de analista | entro com usuário e senha corretos | vejo o menu do analista. |
-| CA2 | Senha errada | que errei a senha | tento entrar | o sistema recusa e informa que usuário ou senha estão incorretos, sem dizer qual. |
-| CA3 | Fora do perfil | que sou motorista | abro o endereço do fechamento de cobrança | o sistema recusa e informa que meu perfil não tem acesso. |
-| CA4 | Motorista conectado | que entrei no celular de manhã | abro o aplicativo à tarde | continuo conectado, sem digitar a senha. |
-| CA5 | Cadastro | que sou coordenador | cadastro um motorista novo | ele consegue entrar e vê só o próprio roteiro. |
+| CA1 | Entrada certa | que sou atendente | entro com usuário e senha certos | vejo o menu do atendente. |
+| CA2 | Senha errada | que errei a senha | tento entrar | vejo a mensagem de usuário ou senha incorretos, sem dizer qual dos dois errou. |
+| CA3 | Bloqueio | que errei a senha cinco vezes seguidas | tento a sexta | a entrada está bloqueada e a mensagem diz por quanto tempo e a quem recorrer. |
+| CA4 | Tela fora do perfil | que sou do financeiro | tento abrir a tabela de regiões | o sistema recusa e informa que meu perfil não tem acesso. |
+| CA5 | Terceirizada | que entro no portal como terceirizada | abro a lista | vejo só as entregas despachadas para a minha empresa. |
 
-**Integrações e APIs** — Nenhuma.
+**Integrações e APIs** — Nenhuma. Acesso interno do painel e do portal; a identificação da loja pelo número está em `HU-SL-005`.
 
-**Referências** — Gargalos §1 a §6 (papéis da operação); `Q-SL-10`.
+**Referências** — Planejamento da equipe (RBAC e Auth; RF-02; RNF-01); Encontro 1 [24:38] (todos veem tudo no grupo).

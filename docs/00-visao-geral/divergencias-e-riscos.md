@@ -9,12 +9,16 @@ dele; aqui ficam o que é do projeto inteiro (`*-GERAL-*`) e o resumo dos riscos
 
 ### `DIV-GERAL-01` — Fonte única e secundária
 
-> **Risco:** toda a documentação sai de um resumo de duas páginas dos gargalos, não do enunciado do
-> desafio. Nenhum número, caso ou restrição foi conferido no texto original.
+> **Risco:** a primeira versão desta documentação saiu de um resumo de duas páginas dos gargalos,
+> não do enunciado do desafio.
 
-> **Pergunta `Q-GERAL-01`:** obter o enunciado do Desafio Prático em Grupo (SEAL 2026.2) e
-> conferi-lo contra esta documentação com `/conferir-origem`. Até lá, `fontes/README.md` registra
-> só o resumo.
+> **Pergunta `Q-GERAL-01`:** obter o enunciado do Desafio Prático em Grupo e conferi-lo contra esta
+> documentação.
+
+**Desfecho** — o enunciado chegou em 29/10/2026 e foi conferido junto com o Encontro 1 e o
+planejamento da equipe. As correções entraram em `docs/01-sealog/`: os horários exatos do
+atendimento, o prazo padrão, os dados do pedido, o canal único de WhatsApp e os detalhes dos quatro
+casos. A cobertura está na tabela do `09`.
 
 ### `DIV-GERAL-02` — Requisito sem sistema por trás
 
@@ -24,17 +28,31 @@ dele; aqui ficam o que é do projeto inteiro (`*-GERAL-*`) e o resumo dos riscos
 
 **Desfecho** — a regra continua, adaptada: toda regra diz se é fato da origem ou proposta
 (`docs/01-sealog/02-regras-de-negocio.md`), e o que só o cliente pode decidir — preço, prazo,
-política de tentativas — fica como `Q-SL-*`, nunca como número inventado.
+política de tentativas, protocolo de atendimento — fica como `Q-SL-*`, nunca como número inventado.
+
+### `DIV-GERAL-03` — A reunião mudou o problema no meio do desafio
+
+> **Divergência `DIV-GERAL-03`:** o enunciado descreve uma frota própria; no Encontro 1 o cliente
+> contou que terceirizou as entregas. O critério "capacidade de adaptação às mudanças" vale 5 dos
+> 35 pontos (Enunciado §7).
+
+**Desfecho** — vale a reunião, e a mudança fica visível em vez de apagada: `DIV-SL-01` diz o que
+saiu do escopo, `DIV-SL-02` diz o que mudou na lista da equipe, e as decisões estão em
+[`decisoes`](decisoes.md).
+
+> **Pergunta `Q-GERAL-02`:** a equipe recebeu da SEALog um e-mail com mudanças nos requisitos,
+> citado no canal da equipe em 28/10/2026. Se ele traz algo além do Encontro 1, precisa ser
+> conferido contra esta documentação.
 
 ## 2. Riscos do SEALog
 
 | ID | Risco | Mitigação |
 |---|---|---|
-| `DIV-SL-03` | Aviso automático por WhatsApp pode não ser viável no início | Painel mostra os avisos a enviar, com texto pronto |
-| `DIV-SL-04` | Motorista não registrar na hora | Registro sem digitar, sem sinal, e comprovante obrigatório |
-| `DIV-SL-05` | Adoção pela equipe acostumada com planilha | Exportação, lista com cara de planilha; transição em `Q-SL-14` |
-| `DIV-SL-06` | Dados pessoais no rastreio e no comprovante | Link com chave impossível de adivinhar, sem rua e telefone; `Q-SL-05` |
-| `DIV-SL-07` | A origem é um resumo | Conferir com o enunciado (`Q-GERAL-01`) |
+| `DIV-SL-05` | Conta e custo do WhatsApp | Pedir a conta e os modelos cedo; avisos com texto pronto no painel enquanto isso |
+| `DIV-SL-06` | Terceirizada não adotar a integração | API, portal e planilha com o mesmo padrão; entrega sem retorno sinalizada; pagamento só com comprovante |
+| `DIV-SL-07` | "A parceira diz que entregou" | Comprovante padrão obrigatório; recebedor não autorizado abre chamado |
+| `DIV-SL-08` | Dados pessoais no modelo de IA e nas fotos | O modelo não recebe dados do destinatário; guarda definida com a SEALog (`Q-SL-16`) |
+| `DIV-SL-09` | Adoção e custo, com a meta de 400 entregas por dia | Serviços pagos por uso; entrada gradual (`Q-SL-14`) |
 
 ## 3. Perguntas que bloqueiam
 
@@ -42,11 +60,11 @@ As perguntas sem as quais uma parte do sistema não fecha:
 
 | Pergunta | O que bloqueia |
 |---|---|
-| `Q-SL-03` | A validação de entrada — o coração do caso "Pedido incompleto" |
-| `Q-SL-04` | A data prevista e, com ela, o conceito de atraso |
-| `Q-SL-07` | A regra formal de retorno ao galpão |
-| `Q-SL-09` | O valor de qualquer fechamento de cobrança |
-| `Q-SL-12` | O aviso proativo automático |
+| `Q-SL-05` | A sugestão do agente de ocorrências: sem protocolo, ela fica genérica |
+| `Q-SL-07` | A regra formal do que volta ao galpão |
+| `Q-SL-08`, `Q-SL-09` | O valor da cobrança das lojas e do pagamento das terceirizadas |
+| `Q-SL-12` | O pedido pelo WhatsApp e o aviso proativo |
+| `Q-SL-02`, `Q-SL-03` | O que vai no despacho e a rotina do galpão |
 
 A lista completa está em
 [`docs/01-sealog/09-divergencias-e-lacunas.md`](../01-sealog/09-divergencias-e-lacunas.md) §3.
