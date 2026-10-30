@@ -8495,6 +8495,91 @@
     },
     {
       "system": "geral",
+      "file": "devops",
+      "title": "SEALog — Plano DevOps",
+      "intro": "Este documento define como planejar a construção, a entrega e a operação técnica do SEALog. A proposta parte da arquitetura e dos requisitos já registrados no repositório: aplicação em Python/FastAPI, PostgreSQL e arquivos no Supabase, painel web em React, integração de mensagens da Meta e automação de ocorrências no n8n.\n\nO plano adota entregas pequenas, automação de verificações, ambientes separados, segurança incorporada ao ciclo de desenvolvimento e operação guiada por sinais do serviço. As escolhas evitam infraestrutura maior do que a escala prevista no projeto.",
+      "sections": [
+        {
+          "anchor": "1-arquitetura-de-entrega",
+          "level": 2,
+          "title": "1. Arquitetura de entrega",
+          "body": "```mermaid\nflowchart LR\n  Loja[Loja] -->|WhatsApp Cloud API| Meta[Meta]\n  Meta -->|HTTPS webhook assinado| API[FastAPI no Render]\n  Painel[Painel React] -->|HTTPS API| API\n  Terc[Terceirizada] -->|API ou portal| API\n  API -->|TLS / conexão agrupada| DB[(Supabase Postgres)]\n  API -->|objeto| Storage[(Supabase Storage)]\n  API -->|chamado autorizado| N8N[n8n Cloud]\n  N8N -->|sugestão, após avaliação| Modelo[Modelo de linguagem]\n  Git[GitHub: código e migrações] --> CI[CI e verificações]\n  CI --> HML[Homologação]\n  HML -->|mesmo commit aprovado| PRD[Produção]\n```\n\n| Componente | Planejamento | Motivo no contexto SEALog |\n|---|---|---|\n| Back end | Um serviço modular em FastAPI no Render | Um ponto de validação para WhatsApp, painel, terceirizadas e agente; reduz operação e mantém as regras no servidor |\n| Banco | PostgreSQL gerenciado no Supabase | Os registros de entrega, histórico e cobrança são relacionais; backups e operação gerenciada reduzem trabalho de infraestrutura |\n| Arquivos | Supabase Storage para fotos e planilhas | Mantém referências de arquivos junto ao sistema; exige cópia independente porque backup do banco não inclui objetos |\n| Painel | React como site estático servido por CDN | O painel é uma aplicação web responsiva e não precisa de servidor próprio para renderização |\n| Tarefas assíncronas | Fila persistida no banco no primeiro patamar; separar worker apenas se métricas mostrarem necessidade | Evita serviço adicional antes de haver volume que justifique |\n| Agente | n8n Cloud como orquestração fora do caminho crítico do webhook | Falha do agente não pode impedir pedido, registro de entrega ou abertura manual de chamado |\n| Publicação | GitHub Actions para verificações e promoção controlada | Mantém o processo repetível, revisável e ligado a um commit específico |",
+          "ids": []
+        },
+        {
+          "anchor": "2-ambientes-e-configuracao",
+          "level": 2,
+          "title": "2. Ambientes e configuração",
+          "body": "Manter desenvolvimento local, homologação e produção como contextos distintos. Homologação e produção usam projetos/bancos, buckets, credenciais e configurações separados. Homologação usa dados sintéticos; cópias de dados de produção não são usadas como massa de teste.\n\nO código e as migrações são versionados. Segredos e valores específicos de ambiente ficam em armazenamento de configuração protegido, fora do Git e dos logs. O painel web não recebe a chave de serviço do banco. Cada integração recebe apenas a credencial e as permissões que precisa.\n\nO projeto já propõe Render, Supabase, n8n Cloud e Meta. A região do banco e do back end deve ser escolhida considerando latência e transferência internacional de dados; a arquitetura atual deixa essa escolha sujeita à validação de privacidade e negócio.",
+          "ids": []
+        },
+        {
+          "anchor": "3-integracao-e-promocao-de-mudancas",
+          "level": 2,
+          "title": "3. Integração e promoção de mudanças",
+          "body": "",
+          "ids": []
+        },
+        {
+          "anchor": "fluxo-proposto",
+          "level": 3,
+          "title": "Fluxo proposto",
+          "body": "1. Alterações pequenas entram por pull request e revisão de código.\n2. A integração contínua executa verificações automatizadas antes da homologação.\n3. O candidato é identificado por SHA e promovido à homologação.\n4. A homologação valida o comportamento integrado, as migrações e fluxos críticos.\n5. Produção recebe o mesmo SHA que passou em homologação, com configuração própria e uma liberação controlada.\n\nO uso de ambientes do GitHub pode restringir branches, separar segredos e exigir aprovação para o ambiente de produção. A disponibilidade de certas proteções depende do plano e da visibilidade do repositório; essa condição deve ser confirmada ao configurar o workflow. [GitHub — deployment environments](https://docs.github.com/en/actions/concepts/workflows-and-actions/deployment-environments)",
+          "ids": []
+        },
+        {
+          "anchor": "verificacoes-da-pipeline",
+          "level": 3,
+          "title": "Verificações da pipeline",
+          "body": "| Etapa | Cobertura planejada | Risco que reduz |\n|---|---|---|\n| Qualidade do código | Lint, tipos e testes unitários do back end e painel | Erros simples e regressões localizadas |\n| Migrações | Aplicação em banco vazio e execução repetida | Banco que não inicia do zero ou mudança não repetível |\n| Webhook | Teste HTTP com corpo cru assinado e corpo alterado; deduplicação por `wamid` | Falsificação, alteração do payload e entrega duplicada |\n| Integrações | Contratos de API, respostas de erro e processamento de filas | Mudança incompatível entre componentes |\n| Segurança | Análise de dependências e vulnerabilidades no código/build | Componentes vulneráveis antes da publicação |\n| Evidência da release | SHA, resultados e relatório da pipeline | Perda de rastreabilidade do que está publicado |\n\nAs verificações aplicam o princípio de segurança desde o desenvolvimento descrito pelo [NIST SSDF](https://csrc.nist.gov/pubs/sp/800/218/final). A pipeline começa com checagens proporcionais ao serviço e pode crescer conforme surgirem riscos ou incidentes observados.",
+          "ids": []
+        },
+        {
+          "anchor": "mudancas-de-banco-e-reversao",
+          "level": 3,
+          "title": "Mudanças de banco e reversão",
+          "body": "Usar migrações versionadas e compatíveis com a versão anterior do back end. Preferir mudanças aditivas: criar nova estrutura, migrar leituras/escritas e remover a estrutura antiga em release posterior. Evitar uma publicação que exija que aplicação e banco mudem simultaneamente.\n\nSe uma versão falhar, o plano é retornar ao commit anterior já publicado, desde que as migrações mantenham compatibilidade. Mudanças destrutivas ficam fora de uma release comum até haver estratégia de restauração testada. O Render faz health checks e mantém a versão anterior ativa quando a nova versão falha nas verificações do deploy. [Render — health checks](https://render.com/docs/health-checks), [Render — rollbacks](https://render.com/docs/rollbacks)",
+          "ids": []
+        },
+        {
+          "anchor": "4-seguranca-de-entrega",
+          "level": 2,
+          "title": "4. Segurança de entrega",
+          "body": "- Proteger a branch principal e exigir revisão antes de integrar mudanças.\n- Guardar segredos por ambiente, com acesso mínimo e rotação quando necessário.\n- Manter a chave de serviço Supabase somente no back end; nunca no painel ou bundle do navegador.\n- Validar `X-Hub-Signature-256` sobre os bytes originais do webhook antes de interpretar o JSON; gravar o `wamid` com restrição única antes de responder sucesso.\n- Tratar mensagem, planilha e saída de modelo como entrada não confiável; validar esquema e limites no back end.\n- Não registrar segredos, corpo de mensagens, fotos ou dados pessoais em logs técnicos.\n- Executar análise de dependências e registrar a procedência do código e do artefato publicado.\n\nEssas práticas adaptam o NIST SSDF ao porte da solução: proteger o ambiente de desenvolvimento, verificar componentes externos, testar software antes de publicar e registrar vulnerabilidades e correções. [NIST SSDF](https://csrc.nist.gov/projects/SSDF)",
+          "ids": []
+        },
+        {
+          "anchor": "5-confiabilidade-e-observabilidade",
+          "level": 2,
+          "title": "5. Confiabilidade e observabilidade",
+          "body": "Observar o serviço por quatro grupos de sinais: latência, volume, erros e saturação. Separar o tempo até reconhecer e persistir o webhook do tempo para baixar mídia e processar planilha; os processos assíncronos não devem ocultar uma resposta lenta do webhook.\n\n| Sinal | Medida útil ao SEALog |\n|---|---|\n| Latência | Tempo de confirmação HTTP do webhook; duração da mídia; duração da planilha; tempo das APIs do painel |\n| Volume | Eventos recebidos, chamadas por integração e tarefas por fila |\n| Erros | Falhas de assinatura, banco, envio, processamento de mídia/planilha e respostas externas |\n| Saturação | CPU e memória do Render, conexões do banco e idade/profundidade das filas |\n\nA meta de engenharia do reconhecimento do webhook é p95 inferior a 1 segundo; p95 acima de 2 segundos gera aviso informativo. Alertas que interrompem uma pessoa devem indicar falha acionável e visível ao usuário, como webhook indisponível; alertas de lentidão ou tendência ficam no painel. Essa separação segue a orientação do [Google SRE](https://sre.google/sre-book/monitoring-distributed-systems/) para evitar alertas sem ação imediata.\n\nO `/saude` verifica se o serviço está pronto para receber tráfego. Uma sonda externa verifica a rota a partir de fora da hospedagem. O painel do produto continua sendo a referência operacional para aviso que falhou e entrega sem retorno.",
+          "ids": []
+        },
+        {
+          "anchor": "6-continuidade-escala-e-custo",
+          "level": 2,
+          "title": "6. Continuidade, escala e custo",
+          "body": "Os requisitos existentes definem perda máxima de 24 horas de dados e restauração em até 4 horas. O plano deve combinar backup diário do Postgres com cópia independente das fotos e planilhas: o backup do Supabase não inclui objetos do Storage. A recuperação deve ser ensaiada como processo completo, porque cópias sem teste não demonstram o RTO. [Supabase — database backups](https://supabase.com/docs/guides/platform/backups)\n\nComeçar com um back end modular, um banco gerenciado e a fila no próprio banco. Adicionar worker separado, aumentar recursos do Render/Supabase ou criar réplica apenas quando as métricas e gatilhos já definidos em `escalabilidade.md` indicarem gargalo. Kubernetes, microsserviços, canário com fração de tráfego e plataforma própria de tracing não entram na arquitetura inicial: elevam custo e operação sem atender um problema atual do projeto.\n\nAs mudanças de custo são avaliadas junto com volume, tempo de fila, latência de consulta, consumo de CPU/memória, armazenamento de fotos e faturas de provedores. O objetivo é manter a infraestrutura previsível no patamar de aproximadamente 400 entregas por dia previsto no contexto do sistema, e aumentar capacidade em resposta a medições.",
+          "ids": []
+        },
+        {
+          "anchor": "7-decisoes-de-planejamento",
+          "level": 2,
+          "title": "7. Decisões de planejamento",
+          "body": "| Decisão | Justificativa | Consequência |\n|---|---|---|\n| Um serviço FastAPI modular no primeiro patamar | Menos componentes para manter e um ponto consistente de regras/permissões | Separar worker só quando filas ou recursos justificarem |\n| Homologação separada e dados sintéticos | Evita exposição de dados e permite ensaio sem afetar operação | Mantém configuração e banco próprios por ambiente |\n| SHA imutável promovido entre ambientes | Permite saber qual código foi ensaiado e publicado | Variáveis e segredos não viajam com o artefato |\n| Migrações compatíveis e aditivas | Permite voltar ao código anterior sem exigir rollback destrutivo do banco | Remoções são adiadas para etapa posterior |\n| Serviços gerenciados | Reduz manutenção de banco, arquivos e hospedagem | Aceita dependência do fornecedor e mantém plano de saída/backup |\n| Métricas simples antes de plataforma avançada | Escala e custo são decididos por dados do próprio serviço | Métricas DORA, tracing distribuído e deploys canário ficam para uma necessidade concreta |",
+          "ids": []
+        },
+        {
+          "anchor": "referencias",
+          "level": 2,
+          "title": "Referências",
+          "body": "- Contexto do projeto: `docs/00-visao-geral/arquitetura.md`, `infraestrutura-e-custos.md`, `escalabilidade.md`, `requisitos.md`; `docs/01-sealog/07-integracoes.md`.\n- [Google Cloud — DevOps capabilities](https://docs.cloud.google.com/architecture/devops).\n- [NIST SP 800-218 — Secure Software Development Framework](https://csrc.nist.gov/pubs/sp/800/218/final).\n- [GitHub — deployment environments](https://docs.github.com/en/actions/concepts/workflows-and-actions/deployment-environments).\n- [Render — health checks](https://render.com/docs/health-checks) e [rollbacks](https://render.com/docs/rollbacks).\n- [Supabase — database backups](https://supabase.com/docs/guides/platform/backups).\n- [Google SRE — monitoring distributed systems](https://sre.google/sre-book/monitoring-distributed-systems/).\n\nFontes de fornecedor e recomendações técnicas conferidas em 29/10/2026.",
+          "ids": []
+        }
+      ]
+    },
+    {
+      "system": "geral",
       "file": "divergencias-e-riscos",
       "title": "Divergências e riscos",
       "intro": "Visão consolidada do que está em aberto no projeto SEAL. O detalhe de cada sistema está no `09`\ndele; aqui ficam o que é do projeto inteiro (`*-GERAL-*`) e o resumo dos riscos do SEALog.\n\n---",
@@ -8778,6 +8863,123 @@
             "Q-SL-05",
             "DIV-SL-08"
           ]
+        }
+      ]
+    },
+    {
+      "system": "geral",
+      "file": "mlops",
+      "title": "SEALog — Plano MLOps",
+      "intro": "Este documento define como planejar o agente de ocorrências do SEALog: um fluxo no n8n usa um modelo de linguagem para sugerir uma ação a partir do relato da loja, das informações da entrega e do protocolo de atendimento. O escopo é operação de um modelo externo; não há treinamento de modelo próprio.\n\nO desenho mantém a sugestão separada da decisão operacional. Uma pessoa avalia o chamado e decide se aceita, altera ou ignora a sugestão.",
+      "sections": [
+        {
+          "anchor": "1-escopo-da-solucao",
+          "level": 2,
+          "title": "1. Escopo da solução",
+          "body": "| Dentro do plano | Fora do plano inicial |\n|---|---|\n| Classificar e resumir ocorrências para a equipe | Treinar ou fazer fine-tuning de modelo próprio |\n| Consultar protocolo aprovado e sugerir uma ação | Decidir, alterar status ou responder sozinho em nome da SEALog |\n| Criar um chamado para análise humana | Reembolso, devolução ou outra ação operacional autônoma |\n| Versionar prompt, fluxo, modelo e conjunto de avaliação | Feature store, registry de pesos ou treino contínuo |\n| Medir resultados por casos de referência e decisões humanas | Troca automática de modelo ou detector complexo de drift |\n\nSem protocolo aprovado (`Q-SL-05`), o modelo não deve produzir uma recomendação de negócio. O fluxo permanece sem sugestão e o chamado segue pelo tratamento humano existente.",
+          "ids": [
+            "Q-SL-05"
+          ]
+        },
+        {
+          "anchor": "2-fluxo-do-agente",
+          "level": 2,
+          "title": "2. Fluxo do agente",
+          "body": "```mermaid\nflowchart LR\n  Loja[Relato da loja] --> Entrada[Classificar tipo e coletar relato/foto]\n  Entrada --> Contrato[Montar entrada permitida]\n  Contrato --> N8N[n8n: prompt e fluxo versionados]\n  N8N --> Modelo[Modelo fixado por ID]\n  Modelo --> Saida[Validar saída estruturada]\n  Saida --> Registro[Gravar sugestão e versões no chamado]\n  Registro --> Pessoa[Pessoa da equipe revisa]\n  Pessoa -->|aceita, edita ou ignora| Decisao[Registrar decisão humana]\n  Contrato -->|protocolo ausente| Manual[Chamado sem sugestão]\n  Modelo -->|erro, limite ou indisponibilidade| Manual\n  Saida -->|schema inválido| Manual\n```\n\nO único recurso que o agente pode acionar é abrir um chamado por API. O servidor valida credencial, campos e permissões. A API não aceita do agente uma decisão final, mudança de status ou ação sobre a entrega.",
+          "ids": []
+        },
+        {
+          "anchor": "3-modelo-prompt-e-fluxo",
+          "level": 2,
+          "title": "3. Modelo, prompt e fluxo",
+          "body": "",
+          "ids": []
+        },
+        {
+          "anchor": "escolha-do-modelo",
+          "level": 3,
+          "title": "Escolha do modelo",
+          "body": "O projeto original propõe GPT-4o. A OpenAI lista os snapshots `gpt-4o-2024-08-06` e `gpt-4o-2024-11-20` para retirada em 14/01/2027 e recomenda `gpt-6-luna` como substituto. Como o agente precisa processar relato e fotos com custo controlado, o plano usa `gpt-6-luna` como candidato inicial para avaliação, sujeito a aprovação pelos casos do domínio. O modelo e o snapshot exatos ficam fixados por versão; atualizar a família exige nova avaliação. [OpenAI — deprecations](https://developers.openai.com/api/docs/deprecations), [GPT-6 Luna](https://developers.openai.com/api/docs/models/gpt-6-luna)",
+          "ids": []
+        },
+        {
+          "anchor": "versionamento",
+          "level": 3,
+          "title": "Versionamento",
+          "body": "- Prompt de sistema, instruções do protocolo e configuração do modelo ficam em arquivos versionados no Git.\n- Export do fluxo n8n também fica versionado e passa por revisão; editar somente na interface não constitui uma mudança reproduzível.\n- Cada resultado de avaliação e sugestão registra o SHA do prompt, o ID do modelo e a versão do fluxo.\n- Não versionar segredos, dados reais de chamados nem execuções exportadas. O JSON do n8n pode incluir referências e nomes de credenciais, então deve ser limpo antes de entrar no Git. [n8n — export and import](https://docs.n8n.io/build/manage-workflows/export-and-import/)",
+          "ids": []
+        },
+        {
+          "anchor": "4-dados-e-privacidade",
+          "level": 2,
+          "title": "4. Dados e privacidade",
+          "body": "",
+          "ids": []
+        },
+        {
+          "anchor": "contrato-de-entrada",
+          "level": 3,
+          "title": "Contrato de entrada",
+          "body": "Enviar somente os elementos definidos para a tarefa:\n\n| Campo | Uso |\n|---|---|\n| Código da entrega | Relacionar a sugestão ao registro correto |\n| Tipo de ocorrência | Guiar a análise e a avaliação |\n| Relato integral | Preservar o contexto informado pela loja |\n| Foto relacionada | Ajudar a avaliar avaria ou evidência, quando existir |\n| Texto do protocolo aprovado | Limitar a sugestão às regras da SEALog |\n\nNome, telefone e endereço do destinatário não são campos da requisição. O payload é montado por lista fechada; não se envia o registro completo da entrega. O relato integral e a imagem ainda podem conter dados pessoais no próprio conteúdo, então esse risco precisa ser considerado na regra de entrada, acesso às imagens e política de retenção (`Q-SL-16`). Não afirmar anonimização se ela não foi aplicada.",
+          "ids": [
+            "Q-SL-16"
+          ]
+        },
+        {
+          "anchor": "tratamento-do-provedor",
+          "level": 3,
+          "title": "Tratamento do provedor",
+          "body": "Dados enviados à API da OpenAI não são usados para treinamento por padrão, mas logs de monitoramento de abuso podem conter conteúdo e ser mantidos por até 30 dias. Zero Data Retention e Modified Abuse Monitoring dependem de elegibilidade, aprovação e limitações por endpoint. O plano considera a retenção padrão até haver confirmação de controles diferentes e seleciona o endpoint/configuração sem estado persistido quando aplicável. [OpenAI — data controls](https://developers.openai.com/api/docs/guides/your-data)",
+          "ids": []
+        },
+        {
+          "anchor": "5-avaliacao-e-qualidade",
+          "level": 2,
+          "title": "5. Avaliação e qualidade",
+          "body": "",
+          "ids": []
+        },
+        {
+          "anchor": "conjunto-de-referencia",
+          "level": 3,
+          "title": "Conjunto de referência",
+          "body": "Manter no Git casos sintéticos de atraso, não entregue, avaria, endereço errado, recebedor não autorizado, sem retorno e outros, além do buquê de sábado e do registro incorreto. Cada caso contém a entrada permitida, a ação prevista no protocolo aprovado e a justificativa/referência de negócio. Casos reais só podem ser incorporados após remoção/minimização de dados pessoais e aprovação da política de uso.\n\nEsse conjunto inicial cobre categorias mínimas, não representa toda a distribuição de chamados e não deve ser apresentado como medida de desempenho geral. Crescer com exemplos típicos, limites, ambiguidades e tentativas de instrução maliciosa. A OpenAI recomenda conjuntos representativos e avaliação contínua a cada alteração de prompt/modelo; a [OWASP](https://genai.owasp.org/glossary/prompt-injection/) destaca prompt injection e agência excessiva como riscos centrais.",
+          "ids": []
+        },
+        {
+          "anchor": "criterios-de-avaliacao",
+          "level": 3,
+          "title": "Critérios de avaliação",
+          "body": "| Dimensão | Critério planejado |\n|---|---|\n| Aderência ao protocolo | A sugestão coincide com a ação esperada nos casos de referência |\n| Segurança da ação | Não sugere ação fora do protocolo e não tenta executar uma decisão |\n| Privacidade | Não usa os campos de nome, telefone ou endereço como entrada explícita |\n| Robustez | Entrada ambígua, incompleta ou com instruções embutidas não amplia as permissões do agente |\n| Formato | Saída estruturada válida, com tipo, justificativa curta e ação sugerida |\n| Falha | Protocolo ausente, erro de API, teto ou saída inválida resultam em chamado sem sugestão |\n\nAntes de liberar uma versão, executar todos os casos obrigatórios e revisar as divergências. A porta inicial exige todos os casos definidos para o protocolo aprovados; o resultado é válido apenas para aquela amostra, versão de prompt e modelo. Depois, ampliar o conjunto com a revisão dos resultados humanos.\n\nNão usar a plataforma OpenAI Evals como registro permanente: ela fica somente leitura em 31/10/2026 e está prevista para encerrar em 30/11/2026. Armazenar dados e resultados no Git e executar um avaliador controlado pela aplicação/pipeline. [OpenAI — Evals](https://developers.openai.com/api/docs/guides/evals), [depreciações](https://developers.openai.com/api/docs/deprecations)",
+          "ids": []
+        },
+        {
+          "anchor": "6-seguranca-e-supervisao-humana",
+          "level": 2,
+          "title": "6. Segurança e supervisão humana",
+          "body": "- Tratar relatos, fotos, planilhas e texto recuperado como conteúdo não confiável; não obedecer instruções que apareçam dentro desses dados.\n- Limitar o agente a uma ferramenta: abrir chamado. Negar ferramentas e credenciais não necessárias.\n- Validar a resposta pelo schema e pelas regras no servidor antes de registrar.\n- Mostrar de forma visível que a saída é sugestão; apresentar controles de aceitar, editar e ignorar.\n- Registrar a decisão humana, quem a tomou, quando e se aceitou, alterou ou ignorou a sugestão.\n- Erro do modelo não bloqueia o fluxo de ocorrências: o chamado continua disponível sem sugestão.\n\nO NIST AI RMF para IA generativa organiza a gestão em governar, mapear, medir e gerenciar riscos; neste projeto isso se traduz em delimitar finalidade, dados, permissões, avaliação e tratamento de falhas. [NIST AI RMF — Generative AI Profile](https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf)",
+          "ids": []
+        },
+        {
+          "anchor": "7-operacao-do-modelo-e-custos",
+          "level": 2,
+          "title": "7. Operação do modelo e custos",
+          "body": "Manter uma configuração única de produção, sem roteamento automático entre modelos. Mudança de modelo é tratada como nova versão: comparar com a anterior no mesmo conjunto, analisar casos divergentes e atualizar o ID versionado somente após a avaliação.\n\nO limite de planejamento do projeto para chamadas ao modelo é cerca de R$ 120 por mês, com aviso ao atingir 80%. Configurar limite de gasto no projeto da API e complementar com controle de consumo na aplicação. A documentação da OpenAI esclarece que hard limits podem não ser aplicados instantaneamente e podem exceder um pouco o valor contabilizado; por isso, não tratar o limite do provedor isoladamente como teto exato em reais. [OpenAI — project spend limits](https://help.openai.com/en/articles/9186755-managing-projects-in-the-api-platform)\n\nMedir apenas o necessário para entender custo e qualidade: chamadas concluídas/falhas, tokens/custo por período, latência, modelo/prompt/fluxo e desfecho humano. Não registrar corpo do relato, imagem, segredo ou resposta integral em telemetria geral. Revisão humana dos desfechos é suficiente no início; automação de drift e quadro analítico ficam para quando volume e estabilidade do conjunto justificarem.",
+          "ids": []
+        },
+        {
+          "anchor": "8-decisoes-de-planejamento",
+          "level": 2,
+          "title": "8. Decisões de planejamento",
+          "body": "| Decisão | Justificativa | Efeito |\n|---|---|---|\n| Sem treinamento de modelo próprio | O sistema propõe um assistente de atendimento com regras e contexto, sem dados rotulados em volume para treinar | O esforço fica em protocolo, prompt, testes e supervisão |\n| Sugestão com decisão humana obrigatória | O agente trata exceções que afetam pedido e cliente; a responsabilidade operacional continua na equipe | Nenhum output do modelo muda status ou destino da entrega sozinho |\n| Entrada por lista fechada | Reduz exposição de dados do registro completo | Relato/foto ainda requerem avaliação de conteúdo sensível |\n| Prompt, modelo e fluxo versionados em conjunto | Mudanças de modelo e instrução alteram comportamento | Cada release pode ser reproduzida e comparada |\n| Avaliação própria em Git/CI | A plataforma Evals está em encerramento e a amostra é específica ao domínio | Casos e resultados ficam independentes de ferramenta externa |\n| `gpt-6-luna` como candidato a avaliar | É o substituto recomendado pela OpenAI para GPT-4o e adequado a cargas focadas/custo-sensíveis | Só usar depois de avaliar texto e imagem no conjunto SEALog |\n| Sem fallback automático | Modelos diferentes podem produzir comportamento e custo distintos | Indisponibilidade gera atendimento humano sem sugestão |",
+          "ids": []
+        },
+        {
+          "anchor": "referencias",
+          "level": 2,
+          "title": "Referências",
+          "body": "- Contexto do projeto: `docs/00-visao-geral/decisoes.md`, `arquitetura.md`, `requisitos.md`, `infraestrutura-e-custos.md`; `docs/01-sealog/02-regras-de-negocio.md`, `07-integracoes.md`, `09-divergencias-e-lacunas.md`.\n- [OpenAI — evaluation best practices](https://developers.openai.com/api/docs/guides/evaluation-best-practices).\n- [OpenAI — data controls](https://developers.openai.com/api/docs/guides/your-data).\n- [OpenAI — model deprecations](https://developers.openai.com/api/docs/deprecations) e [GPT-6 Luna](https://developers.openai.com/api/docs/models/gpt-6-luna).\n- [NIST AI RMF — Generative AI Profile](https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf).\n- [OWASP GenAI — prompt injection](https://genai.owasp.org/glossary/prompt-injection/) e [excessive agency](https://genai.owasp.org/llmrisk2023-24/llm08-excessive-agency/).\n- [n8n — export and import](https://docs.n8n.io/build/manage-workflows/export-and-import/).\n\nFontes de fornecedor e recomendações técnicas conferidas em 29/10/2026.",
+          "ids": []
         }
       ]
     },

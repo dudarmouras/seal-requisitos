@@ -41,8 +41,8 @@ sai do mesmo registro.
 3. **[Divergências e riscos](docs/00-visao-geral/divergencias-e-riscos.md)** — o que está em aberto
    e as perguntas que bloqueiam.
 4. As páginas de produto em `docs/00-visao-geral/`: decisões, requisitos funcionais e não
-   funcionais, backlog e priorização, arquitetura, infraestrutura e custos, adoção gradual e
-   escalabilidade.
+   funcionais, backlog e priorização, arquitetura, infraestrutura e custos, adoção gradual,
+   escalabilidade, DevOps e MLOps.
 5. Os demais arquivos de `docs/01-sealog/`, na ordem.
 
 > **Atenção ao ler:** a origem não é engenharia reversa de um sistema existente. É um resumo dos
