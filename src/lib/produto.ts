@@ -1,7 +1,7 @@
 import type { ArtifactKind, DocFile } from "./types";
 
 /*
- * Visão de produto: oito arquivos de `docs/00-visao-geral/`, cada um com rota própria.
+ * Visão de produto: dez arquivos de `docs/00-visao-geral/`, cada um com rota própria.
  * Decisões, requisitos e backlog são lidos pelos ids (`DEC`, `RF`, `RNF`, `BL`) e pelas
  * colunas de cada um (`Artifact.fields`); os outros quatro são texto corrido, e a página
  * os mostra inteiros, como a leitura integral.
@@ -22,6 +22,8 @@ export const PAGINAS_PRODUTO: PaginaProduto[] = [
   { path: "/infraestrutura", file: "infraestrutura-e-custos", label: "Infraestrutura e custos" },
   { path: "/adocao", file: "adocao-gradual", label: "Adoção gradual" },
   { path: "/escalabilidade", file: "escalabilidade", label: "Escalabilidade adaptativa" },
+  { path: "/devops", file: "devops", label: "DevOps" },
+  { path: "/mlops", file: "mlops", label: "MLOps" },
 ];
 
 export const paginaDoArquivo = (file: string) => PAGINAS_PRODUTO.find((p) => p.file === file);

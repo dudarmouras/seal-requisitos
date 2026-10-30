@@ -59,6 +59,8 @@ function Shell() {
         <Route path="/infraestrutura" element={<DocPage key="infra" systemId="geral" file="infraestrutura-e-custos" />} />
         <Route path="/adocao" element={<DocPage key="adocao" systemId="geral" file="adocao-gradual" />} />
         <Route path="/escalabilidade" element={<DocPage key="escala" systemId="geral" file="escalabilidade" />} />
+        <Route path="/devops" element={<DocPage key="devops" systemId="geral" file="devops" />} />
+        <Route path="/mlops" element={<DocPage key="mlops" systemId="geral" file="mlops" />} />
       </Route>
       <Route path="/fluxos/:boardId" element={<FlowBoardPage />} />
       <Route path="*" element={<Navigate to="/" replace />} />
