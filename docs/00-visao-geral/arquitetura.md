@@ -183,7 +183,16 @@ sequenceDiagram
   S-->>W: decisão para a loja
 ```
 
-### 4.4 Modelo de dados
+### 4.4 Estrutura do back end
+
+Como o back end se organiza por dentro: cada porta de entrada (webhook do WhatsApp, painel) chega a
+um controlador, que chama o serviço do seu módulo, que grava pelo repositório no banco. Os serviços
+conversam entre si nos pontos desenhados embaixo — por exemplo, o despacho atualiza a situação da
+entrega, que alimenta o histórico, os avisos e o financeiro.
+
+![Diagrama da estrutura do back end do SEALog](/img/arquitetura-backend.png)
+
+### 4.5 Modelo de dados
 
 As tabelas do banco relacional e como se ligam: lojas, pedidos, terceirizadas e regiões, despacho,
 comprovantes, avisos, histórico de eventos e fechamento financeiro.
