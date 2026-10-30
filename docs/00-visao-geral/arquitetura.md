@@ -183,6 +183,13 @@ sequenceDiagram
   S-->>W: decisão para a loja
 ```
 
+### 4.4 Modelo de dados
+
+As tabelas do banco relacional e como se ligam: lojas, pedidos, terceirizadas e regiões, despacho,
+comprovantes, avisos, histórico de eventos e fechamento financeiro.
+
+![Diagrama do banco de dados do SEALog](/img/modelo-de-dados.png)
+
 ## 5. Segurança
 
 | Ameaça | Proteção |

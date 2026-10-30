@@ -138,6 +138,7 @@ type Bloco =
   | { t: "list"; ordered: boolean; items: string[][] }
   | { t: "quote"; lines: string[] }
   | { t: "code"; lang: string; code: string }
+  | { t: "img"; alt: string; src: string }
   | { t: "hr" };
 
 function blocos(md: string): Bloco[] {
@@ -164,6 +165,12 @@ function blocos(md: string): Bloco[] {
     const h = t.match(/^(#{1,6})\s+(.+)$/);
     if (h) {
       out.push({ t: "h", level: h[1].length, text: h[2] });
+      i++;
+      continue;
+    }
+    const img = t.match(/^!\[([^\]]*)\]\(([^)\s]+)\)$/);
+    if (img) {
+      out.push({ t: "img", alt: img[1], src: img[2] });
       i++;
       continue;
     }
@@ -208,7 +215,7 @@ function blocos(md: string): Bloco[] {
     while (
       i < linhas.length &&
       linhas[i].trim() &&
-      !/^(#{1,6}\s|```|~~~|>|\||(-{3,}|\*{3,})$)/.test(linhas[i].trim()) &&
+      !/^(#{1,6}\s|```|~~~|>|\||!\[|(-{3,}|\*{3,})$)/.test(linhas[i].trim()) &&
       !/^\s*([-*+]|\d+\.)\s+/.test(linhas[i])
     ) {
       par.push(linhas[i++].trim());
@@ -261,6 +268,15 @@ export default function MdBlock({ text, system, idBase = "md" }: { text: string;
             );
           case "hr":
             return <hr key={i} />;
+          case "img":
+            return (
+              <figure key={i} className="md-figure">
+                <a href={b.src} target="_blank" rel="noreferrer">
+                  <img src={b.src} alt={b.alt} loading="lazy" />
+                </a>
+                {b.alt && <figcaption>{b.alt}</figcaption>}
+              </figure>
+            );
           case "quote":
             return (
               <blockquote key={i} className="md-quote">

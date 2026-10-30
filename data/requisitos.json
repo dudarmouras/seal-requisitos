@@ -7877,6 +7877,13 @@
           "ids": []
         },
         {
+          "anchor": "4-4-modelo-de-dados",
+          "level": 3,
+          "title": "4.4 Modelo de dados",
+          "body": "As tabelas do banco relacional e como se ligam: lojas, pedidos, terceirizadas e regiões, despacho,\ncomprovantes, avisos, histórico de eventos e fechamento financeiro.\n\n![Diagrama do banco de dados do SEALog](/img/modelo-de-dados.png)",
+          "ids": []
+        },
+        {
           "anchor": "5-seguranca",
           "level": 2,
           "title": "5. Segurança",
